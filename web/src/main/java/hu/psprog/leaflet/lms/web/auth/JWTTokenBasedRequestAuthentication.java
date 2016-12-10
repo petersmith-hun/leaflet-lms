@@ -9,10 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * {@link RequestAuthentication} implementation required by Bridge Client to authorize requests.
+ *
  * @author Peter Smith
  */
 @Component
-public class TokenBasedRequestAuthentication implements RequestAuthentication {
+public class JWTTokenBasedRequestAuthentication implements RequestAuthentication {
 
     private static final String HEADER_PARAMETER_AUTHORIZATION = "Authorization";
     private static final String AUTHORIZATION_SCHEMA = "Bearer {0}";
@@ -20,7 +22,7 @@ public class TokenBasedRequestAuthentication implements RequestAuthentication {
     @Override
     public Map<String, String> getAuthenticationHeader() {
 
-        String token = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String token = SecurityContextHolder.getContext().getAuthentication().getCredentials().toString();
         Map<String, String> authenticationHeader = new HashMap<>();
         authenticationHeader.put(HEADER_PARAMETER_AUTHORIZATION, MessageFormat.format(AUTHORIZATION_SCHEMA, token));
 

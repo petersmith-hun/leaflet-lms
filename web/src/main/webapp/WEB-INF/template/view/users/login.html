@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
     <body>
         <!-- Login start-->
         <main class="main-content" layout:fragment="content">
             <div class="login-form">
                 <h1 class="login-form__header">Leaflet</h1>
-                <form class="login-form__form" method="get" action="index.html">
+                <form class="login-form__form" method="post" th:action="@{/login}">
                     <div class="form-group">
                         <label for="email">Email</label>
                         <input class="form-control" id="email" name="email" placeholder="Email" type="email">
