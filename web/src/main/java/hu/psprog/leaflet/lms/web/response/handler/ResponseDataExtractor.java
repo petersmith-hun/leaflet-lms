@@ -8,9 +8,7 @@ import java.util.Map;
  *
  * @author Peter Smith
  */
-public abstract class ResponseDataExtractor<T> {
-
-    private static final String BODY = "body";
+public interface ResponseDataExtractor<T> {
 
     /**
      * Extracts a given part of the response Map.
@@ -18,16 +16,5 @@ public abstract class ResponseDataExtractor<T> {
      * @param response original response map
      * @return T type of extracted data
      */
-    public abstract T extract(Map<String, Object> response);
-
-    /**
-     * Extracts body node of the response.
-     *
-     * @param response original response map
-     * @return content of body node as a Map
-     */
-    protected Map<String, Object> extractBody(Map<String, Object> response) {
-
-        return response.get(BODY) instanceof Map ? (Map) response.get(BODY) : null;
-    }
+    T extract(Map<String, Object> response);
 }

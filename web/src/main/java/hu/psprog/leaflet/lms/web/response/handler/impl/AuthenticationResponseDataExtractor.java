@@ -1,6 +1,5 @@
 package hu.psprog.leaflet.lms.web.response.handler.impl;
 
-import hu.psprog.leaflet.lms.web.response.handler.ResponseDataExtractor;
 import hu.psprog.leaflet.lms.web.response.model.user.LoginResponseModel;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import java.util.Objects;
  * @author Peter Smith
  */
 @Component
-public class AuthenticationResponseDataExtractor extends ResponseDataExtractor<LoginResponseModel> {
+public class AuthenticationResponseDataExtractor extends AbstractResponseDataExtractor<LoginResponseModel> {
 
     private static final String STATUS = "status";
     private static final String TOKEN = "token";
@@ -25,8 +24,8 @@ public class AuthenticationResponseDataExtractor extends ResponseDataExtractor<L
         Map<String, Object> content = extractBody(response);
         if (Objects.nonNull(content.get(STATUS))) {
             LoginResponseModel.AuthenticationResult authenticationResult =
-                    LoginResponseModel.AuthenticationResult.valueOf(content.get(STATUS).toString());
-            loginResponseModel = new LoginResponseModel(authenticationResult, content.get(TOKEN).toString());
+                    LoginResponseModel.AuthenticationResult.valueOf(extractString(content, STATUS));
+            loginResponseModel = new LoginResponseModel(authenticationResult, extractString(content, TOKEN));
         }
 
         return loginResponseModel;
