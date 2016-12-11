@@ -1,0 +1,28 @@
+.l-login{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    .main-content{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .login-form{
+        min-width: 400px;
+        padding: 20px 30px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        &__header,
+        &__credits{
+            text-align: center;
+        }
+        &__credits{
+            font-size: .75rem;
+            margin: 0;
+        }
+        &__version{
+            font-size: .5rem;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+extends _layout/_login
+block head-content
+    title Login - Leaflet
+block content
+    // Login start
+    .login-form
+        h1.login-form__header Leaflet
+        form(method='get',action='index.html',class='login-form__form')
+            .form-group
+                label(for='email') Email
+                input(id='email',name='email',placeholder='Email',type='email',class='form-control')
+            .form-group
+                label(for='password') Password
+                input(id='password',name='password',placeholder='Password',type='password',class='form-control')
+            .form-group
+                .row
+                    .col-xs-12
+                        button.btn.btn-primary Login
+                        a(href='#',class='btn btn-link pull-right') Forgot password?
+        p.login-form__credits.text-muted
+            | Copyright &copy; <time>2016</time> LFLT-AP <span class='version'>#{version}</span>
+    // Login end

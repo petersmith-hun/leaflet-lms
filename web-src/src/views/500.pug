@@ -1,0 +1,12 @@
+extends _layout/_error
+
+block head-content
+    title Error 500 - Leaflet
+block content
+    // 500 error start
+    section.error-message
+        svg
+            use(xlink:href="#error_icon")
+        h1.display-1 Error 500
+        p.lead Internal server error
+    // 500 error

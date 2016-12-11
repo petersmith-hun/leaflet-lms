@@ -1,0 +1,6 @@
+.idea
+.sass-cache
+.publish
+dist
+bower_components
+node_modules

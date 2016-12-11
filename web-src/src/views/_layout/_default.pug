@@ -1,0 +1,14 @@
+extends _master
+block body
+    body.l-default
+        include ../_partials/svg
+        include ../_partials/_header
+        main.main
+            aside.main__side
+                include ../_partials/_menu
+                include ../_partials/_footer
+            section.main__content
+                block content
+        script(src='scripts/vendor.min.js')
+        script(src='scripts/app.min.js')
+        block script

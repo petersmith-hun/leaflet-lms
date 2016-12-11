@@ -1,0 +1,13 @@
+extends _layout/_error
+
+block head-content
+    title Error 403 - Leaflet
+block content
+    // 403 error start
+    section.error-message
+        svg
+            use(xlink:href="#error_icon")
+        h1.display-1 Error 403
+        p.lead Forbidden
+        a.btn.btn-outline-primary.btn-lg(href="index.html") Return to Dashboard
+    // 403 error end
