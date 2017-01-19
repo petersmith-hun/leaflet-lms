@@ -19,8 +19,8 @@
         <java.version>1.8</java.version>
 
         <!-- leaflet internal dependency versions -->
-        <leaflet.rest-api.version>0.3.0</leaflet.rest-api.version>
-        <leaflet.bridge.version>0.1</leaflet.bridge.version>
+        <leaflet.rest-api.version>0.5.0</leaflet.rest-api.version>
+        <leaflet.bridge.version>0.2</leaflet.bridge.version>
 
         <!-- Spring versions -->
         <spring.framework.version>4.3.3.RELEASE</spring.framework.version>
@@ -33,6 +33,7 @@
         <thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
         <thymeleaf.extras.version>3.0.1.RELEASE</thymeleaf.extras.version>
         <thymeleaf.layout-dialect.version>2.1.2</thymeleaf.layout-dialect.version>
+        <commons.lang.version>3.4</commons.lang.version>
 
         <!-- compiler settings -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -98,6 +99,7 @@
                 <artifactId>thymeleaf-extras-springsecurity4</artifactId>
                 <version>${thymeleaf.extras.version}</version>
             </dependency>
+
             <!-- Servlet dependencies -->
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -125,6 +127,12 @@
                 <version>${logback.version}</version>
                 <scope>provided</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -140,6 +148,10 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
 
