@@ -20,7 +20,7 @@
 
         <!-- leaflet internal dependency versions -->
         <leaflet.rest-api.version>0.5.0</leaflet.rest-api.version>
-        <leaflet.bridge.version>0.2</leaflet.bridge.version>
+        <leaflet.bridge.version>0.2.1</leaflet.bridge.version>
 
         <!-- Spring versions -->
         <spring.framework.version>4.3.3.RELEASE</spring.framework.version>
