@@ -1,12 +1,11 @@
 package hu.psprog.leaflet.lms.web.auth;
 
 import hu.psprog.leaflet.api.rest.request.user.LoginRequestModel;
+import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
 import hu.psprog.leaflet.lms.web.exception.TokenAuthenticationFailureException;
 import hu.psprog.leaflet.lms.web.response.handler.JWTTokenPayloadReader;
-import hu.psprog.leaflet.lms.web.response.handler.impl.AuthenticationResponseDataExtractor;
-import hu.psprog.leaflet.lms.web.response.model.user.LoginResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,19 +31,15 @@ public class JWTTokenClaimAuthenticationProvider implements AuthenticationProvid
     private UserBridgeService userBridgeService;
 
     @Autowired
-    private AuthenticationResponseDataExtractor authenticationResponseDataExtractor;
-
-    @Autowired
     private JWTTokenPayloadReader jwtTokenPayloadReader;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         try {
-            Map<String, Object> authenticationResult = userBridgeService.claimToken(convertToLoginRequest(authentication));
-            LoginResponseModel loginResponseModel = authenticationResponseDataExtractor.extract(authenticationResult);
+            LoginResponseDataModel loginResponseModel = userBridgeService.claimToken(convertToLoginRequest(authentication));
 
-            if (Objects.isNull(loginResponseModel) || loginResponseModel.getResult() != LoginResponseModel.AuthenticationResult.AUTH_SUCCESS) {
+            if (Objects.isNull(loginResponseModel) || loginResponseModel.getStatus() != LoginResponseDataModel.AuthenticationResult.AUTH_SUCCESS) {
                 throw new TokenAuthenticationFailureException(INVALID_USER_CREDENTIALS);
             }
 
