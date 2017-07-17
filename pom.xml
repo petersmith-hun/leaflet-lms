@@ -159,4 +159,8 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>leaflet-lms</finalName>
+    </build>
 </project>
