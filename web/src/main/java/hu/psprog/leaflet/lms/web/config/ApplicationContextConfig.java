@@ -1,6 +1,5 @@
 package hu.psprog.leaflet.lms.web.config;
 
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -9,8 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @author Peter Smith
  */
 @Configuration
-@ComponentScan(ApplicationContextConfig.COMPONENT_SCAN)
 public class ApplicationContextConfig {
 
-    static final String COMPONENT_SCAN = "hu.psprog.leaflet";
 }

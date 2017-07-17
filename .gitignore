@@ -11,3 +11,4 @@
 .springBeans
 deploy.bat
 */docs/*
+logs/

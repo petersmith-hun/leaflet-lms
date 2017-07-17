@@ -5,11 +5,11 @@
     <parent>
         <artifactId>lms</artifactId>
         <groupId>hu.psprog.leaflet</groupId>
-        <version>0.1.1-dev</version>
+        <version>0.2.0-dev</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <artifactId>lms-web</artifactId>
 
     <dependencies>
@@ -22,12 +22,8 @@
             <artifactId>leaflet-bridge</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -59,4 +55,28 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <configuration>
+                    <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9992</jvmArguments>
+                    <arguments>
+                        <argument>--spring.profiles.active=${spring.profiles.active}</argument>
+                        <argument>--spring.config.location=${spring.config.location}</argument>
+                    </arguments>
+                    <addResources>true</addResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
