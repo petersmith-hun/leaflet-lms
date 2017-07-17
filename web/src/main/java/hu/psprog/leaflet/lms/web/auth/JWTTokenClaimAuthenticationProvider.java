@@ -62,7 +62,10 @@ public class JWTTokenClaimAuthenticationProvider implements AuthenticationProvid
 
     private LoginRequestModel convertToLoginRequest(Authentication authentication) {
 
-        return new LoginRequestModel(authentication.getPrincipal().toString(),
-                authentication.getCredentials().toString());
+        LoginRequestModel loginRequestModel = new LoginRequestModel();
+        loginRequestModel.setEmail(authentication.getPrincipal().toString());
+        loginRequestModel.setPassword(authentication.getCredentials().toString());
+
+        return loginRequestModel;
     }
 }
