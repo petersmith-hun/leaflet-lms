@@ -1,6 +1,10 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import org.springframework.boot.web.filter.OrderedRequestContextFilter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.web.filter.RequestContextFilter;
 
 /**
  * Main application context configuration.
@@ -10,4 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ApplicationContextConfig {
 
+    @Bean
+    public RequestContextFilter requestContextFilter() {
+        OrderedRequestContextFilter orderedRequestContextFilter = new OrderedRequestContextFilter();
+        orderedRequestContextFilter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return orderedRequestContextFilter;
+    }
 }
