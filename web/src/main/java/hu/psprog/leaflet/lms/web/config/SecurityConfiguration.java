@@ -1,5 +1,7 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import hu.psprog.leaflet.lms.web.auth.TokenRevokeLogoutHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,8 +18,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String PATH_LOGIN = "/login";
-    private static final String PATH_ROOT = "/";
+    private static final String PATH_LOGOUT = "/logout";
     private static final String USERNAME_PARAMETER = "email";
+
+    @Autowired
+    private TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -42,12 +47,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .formLogin()
                 .loginPage(PATH_LOGIN)
-                .successForwardUrl(PATH_ROOT)
                 .failureForwardUrl(PATH_LOGIN)
                 .usernameParameter(USERNAME_PARAMETER)
                 .and()
 
             .logout()
-                .logoutSuccessUrl(PATH_LOGIN);
+                .logoutUrl(PATH_LOGOUT)
+                .logoutSuccessUrl(PATH_LOGIN)
+                .addLogoutHandler(tokenRevokeLogoutHandler);
     }
 }
