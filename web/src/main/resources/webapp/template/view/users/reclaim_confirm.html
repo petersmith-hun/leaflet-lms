@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/login}">
+<body>
+<!-- Login start-->
+<main class="main-content" layout:fragment="content">
+    <div class="login-form">
+        <h1 class="login-form__header">Leaflet</h1>
+        <form class="login-form__form" method="post" th:action="@{''}">
+            <div class="form-group">
+                <label for="password">New password</label>
+                <input class="form-control" id="password" name="password" placeholder="Password" type="password">
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm new password</label>
+                <input class="form-control" id="password_confirm" name="passwordConfirmation" placeholder="Confirm password" type="password">
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary">Change password</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p class="login-form__credits text-muted">Copyright &copy;
+            <time>2016</time> LFLT-AP
+            <span class='version'>v0.0.1</span>
+        </p>
+    </div>
+</main>
+<!-- Login end-->
+</body>
+</html>

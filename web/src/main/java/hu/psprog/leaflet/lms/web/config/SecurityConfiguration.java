@@ -19,6 +19,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String PATH_LOGIN = "/login";
     private static final String PATH_LOGOUT = "/logout";
+    private static final String PATH_RECLAIM = "/password-reset/**";
     private static final String USERNAME_PARAMETER = "email";
 
     @Autowired
@@ -39,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
             .authorizeRequests()
-                .antMatchers(PATH_LOGIN)
+                .antMatchers(PATH_LOGIN, PATH_RECLAIM)
                     .permitAll()
                 .anyRequest()
                     .authenticated()
