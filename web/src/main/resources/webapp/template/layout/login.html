@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" >
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login - Leaflet</title>
-        <link rel="icon" href="favicon.ico" type="image/x-icon">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="stylesheet" href="css/app.min.css" type="text/css">
+        <link rel="icon" href="favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png" th:href="@{/apple-touch-icon.png}">
+        <link rel="stylesheet" href="css/app.min.css" th:href="@{/css/app.min.css}" type="text/css">
     </head>
     <body class="l-login" style="background-image: url(&quot;https://source.unsplash.com/random/1920x1080&quot;)">
         <main class="main-content" layout:fragment="content">
 
         </main>
-        <script src="scripts/vendor.min.js"></script>
-        <script src="scripts/app.min.js"></script>
+        <script src="scripts/vendor.min.js" th:src="@{/scripts/vendor.min.js}"></script>
+        <script src="scripts/app.min.js" th:src="@{/scripts/app.min.js}"></script>
     </body>
 </html>
