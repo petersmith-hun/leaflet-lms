@@ -12,3 +12,4 @@
 deploy.bat
 */docs/*
 logs/
+application.yml
