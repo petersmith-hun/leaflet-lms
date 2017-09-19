@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Peter Smith
  */
+@ControllerAdvice
 class BaseController {
 
     private static final String VIEW_ATTRIBUTE_MESSAGE = "message";
