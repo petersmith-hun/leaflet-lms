@@ -20,16 +20,12 @@ public class EntriesController {
     private EntryBridgeService entryBridgeService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getAllEntries() throws Exception {
+    public ModelAndView getAllEntries() throws CommunicationFailureException {
 
-        try {
-            EntryListDataModel response = entryBridgeService.getAllEntries();
-            ModelAndView modelAndView = new ModelAndView("view/entries/list");
-            modelAndView.addObject("entries", response.getEntries());
+        EntryListDataModel response = entryBridgeService.getAllEntries();
+        ModelAndView modelAndView = new ModelAndView("view/entries/list");
+        modelAndView.addObject("entries", response.getEntries());
 
-            return modelAndView;
-        } catch (CommunicationFailureException e) {
-            throw new Exception(e);
-        }
+        return modelAndView;
     }
 }

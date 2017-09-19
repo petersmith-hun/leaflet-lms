@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Peter Smith
  */
 @Controller
-public class AuthenticationController {
+public class AuthenticationController extends BaseController {
 
     private static final String LOGIN = "/login";
     private static final String PASSWORD_RESET = "/password-reset";
