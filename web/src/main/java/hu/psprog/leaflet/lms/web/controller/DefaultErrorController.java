@@ -1,6 +1,8 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.UnauthorizedAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 import static hu.psprog.leaflet.lms.web.controller.DefaultErrorController.PATH_ERROR;
 
@@ -25,8 +28,11 @@ import static hu.psprog.leaflet.lms.web.controller.DefaultErrorController.PATH_E
 @RequestMapping(PATH_ERROR)
 public class DefaultErrorController implements ErrorController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultErrorController.class);
+
     private static final String MESSAGE = "message";
     private static final String EXCEPTION = "exception";
+    private static final String TRACE = "trace";
 
     static final String PATH_ERROR = "/error";
 
@@ -52,6 +58,8 @@ public class DefaultErrorController implements ErrorController {
         modelAndView.addObject(MESSAGE, errorAttributes.get(MESSAGE));
         modelAndView.setStatus(extractStatus(errorAttributes));
 
+        LOGGER.error("Unknown error occurred while processing request:\n{}", extractErrorMessage(errorAttributes));
+
         return modelAndView;
     }
 
@@ -61,16 +69,26 @@ public class DefaultErrorController implements ErrorController {
     }
 
     private Map<String, Object> extractErrorAttributes(HttpServletRequest request) {
-        return errorAttributes.getErrorAttributes(new ServletRequestAttributes(request), false);
+        return errorAttributes.getErrorAttributes(new ServletRequestAttributes(request), true);
     }
 
     private HttpStatus extractStatus(Map<String, Object> errorAttributes) {
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if (UnauthorizedAccessException.class.getName().equals(errorAttributes.get(EXCEPTION) )) {
+        if (UnauthorizedAccessException.class.getName().equals(errorAttributes.get(EXCEPTION))) {
             status = HttpStatus.UNAUTHORIZED;
         }
 
         return status;
+    }
+
+    private String extractErrorMessage(Map<String, Object> errorAttributes) {
+
+        Object message = errorAttributes.get(TRACE);
+        if (Objects.isNull(message)) {
+            message = errorAttributes.get(MESSAGE);
+        }
+
+        return String.valueOf(message);
     }
 }

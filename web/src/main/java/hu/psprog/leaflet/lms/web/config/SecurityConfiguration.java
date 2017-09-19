@@ -23,6 +23,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
     private static final String USERNAME_PARAMETER = "email";
+    private static final String ROLE_ADMIN = "ADMIN";
+    private static final String ROLE_EDITOR = "EDITOR";
 
     @Autowired
     private TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
@@ -50,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(PATH_LOGIN, PATH_RECLAIM)
                     .permitAll()
                 .anyRequest()
-                    .authenticated()
+                    .hasAnyAuthority(ROLE_ADMIN, ROLE_EDITOR)
                 .and()
 
             .formLogin()
