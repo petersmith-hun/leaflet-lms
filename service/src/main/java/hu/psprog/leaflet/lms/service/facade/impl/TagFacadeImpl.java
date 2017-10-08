@@ -1,0 +1,63 @@
+package hu.psprog.leaflet.lms.service.facade.impl;
+
+import hu.psprog.leaflet.api.rest.request.tag.TagAssignmentRequestModel;
+import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
+import hu.psprog.leaflet.api.rest.response.tag.TagDataModel;
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.service.TagBridgeService;
+import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
+import hu.psprog.leaflet.lms.service.facade.TagFacade;
+import hu.psprog.leaflet.lms.service.util.EntityConnectionDifferenceCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Implementation of {@link TagFacade}.
+ *
+ * @author Peter Smith
+ */
+@Service
+public class TagFacadeImpl implements TagFacade {
+
+    private EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator;
+    private TagBridgeService tagBridgeService;
+
+    @Autowired
+    public TagFacadeImpl(EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator, TagBridgeService tagBridgeService) {
+        this.entityConnectionDifferenceCalculator = entityConnectionDifferenceCalculator;
+        this.tagBridgeService = tagBridgeService;
+    }
+
+    @Override
+    public List<TagDataModel> getAllTags() throws CommunicationFailureException {
+        return Optional.ofNullable(tagBridgeService.getAllTags().getTags())
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void handleAssignmentsOnChange(ModifyEntryRequest modifyEntryRequest, EditEntryDataModel editEntryDataModel) throws CommunicationFailureException {
+        EntityConnectionDifferenceCalculator.EntityConnectionContext<Long, TagDataModel> connectionContext =
+                entityConnectionDifferenceCalculator.createContextFor(modifyEntryRequest.getTags(), editEntryDataModel.getTags(), TagDataModel::getId);
+
+        for (Long tagID : connectionContext.collectForAttach()) {
+            tagBridgeService.attachTag(createTagAssignmentRequestModel(editEntryDataModel, tagID));
+        }
+
+        for (Long tagID : connectionContext.collectForDetach()) {
+            tagBridgeService.detachTag(createTagAssignmentRequestModel(editEntryDataModel, tagID));
+        }
+    }
+
+    private TagAssignmentRequestModel createTagAssignmentRequestModel(EditEntryDataModel entryDataModel, Long tagID) {
+
+        TagAssignmentRequestModel tagAssignmentRequestModel = new TagAssignmentRequestModel();
+        tagAssignmentRequestModel.setEntryID(entryDataModel.getId());
+        tagAssignmentRequestModel.setTagID(tagID);
+
+        return tagAssignmentRequestModel;
+    }
+}

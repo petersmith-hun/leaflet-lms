@@ -41,7 +41,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="entry,stat: ${entries}">
+                                <tr th:each="entry,stat: ${content.entries}">
                                     <td>
                                         <input type="checkbox" name="entity-0">
                                     </td>
@@ -56,32 +56,29 @@
                         </div>
                     </div>
                     <div class="card-footer text-xs-center">
-                        <ul class="pagination pagination-sm m-0">
-                            <li class="page-item">
-                                <a class="page-link" href="#">
+                        <ul class="pagination pagination-sm m-0" th:if="${pagination.pageCount > 1}">
+                            <li class="page-item" th:if="${pagination.hasPrevious}">
+                                <a class="page-link" href="#" th:href="@{/entries/{page}(
+                                                    page=__${pagination.pageNumber - 1}__,
+                                                    limit=__${@entryPaginationHelper.getLimit(#request)}__,
+                                                    orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
+                                                    orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">
                                     <i class="fa fa-angle-left"></i>
                                 </a>
                             </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">1</a>
+                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
+                                <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/entries/{page}(
+                                                    page=__${pageNum}__,
+                                                    limit=__${@entryPaginationHelper.getLimit(#request)}__,
+                                                    orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
+                                                    orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">1</a>
                             </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">4</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">5</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">6</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">
+                            <li class="page-item" th:if="${pagination.hasNext}">
+                                <a class="page-link" href="#" th:href="@{/entries/{page}(
+                                                    page=__${pagination.pageNumber + 1}__,
+                                                    limit=__${@entryPaginationHelper.getLimit(#request)}__,
+                                                    orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
+                                                    orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">
                                     <i class="fa fa-angle-right"></i>
                                 </a>
                             </li>
@@ -92,7 +89,7 @@
             <div class="col-lg-3 flex-lg-unordered flex-xs-first">
                 <div class="card">
                     <div class="card-block">
-                        <a class="btn btn-primary" href="#">New entry</a>
+                        <a class="btn btn-primary" th:href="@{/entries/create}" href="#">New entry</a>
                     </div>
                 </div>
             </div>

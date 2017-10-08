@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Entries - Leaflet</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="css/app.min.css" type="text/css">
+    <link rel="icon" href="favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" th:href="@{/apple-touch-icon.png}">
+    <link rel="stylesheet" href="css/app.min.css" th:href="@{/css/app.min.css}" type="text/css">
 </head>
 
 <body class="l-default">
@@ -61,7 +61,7 @@
         <a class="navbar-brand" href="index.html">Leaflet</a>
         <ul class="nav navbar-nav float-xs-right">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="userDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">John Doe
+                <a class="nav-link dropdown-toggle" id="userDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span th:text="${#authentication.getName()}">username</span>
                     <span class="caret"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -169,11 +169,13 @@
         </footer>
         <!-- Footer end-->
     </aside>
-    <section class="main__content" layout:fragment="content">
+    <section class="main__content">
+        <p th:if="${flash != null}" th:text="${flash}" style="color: #fff; background-color: #047800; font-weight: bold; padding: 10px;">Flash message</p>
+        <div layout:fragment="content">Content</div>
     </section>
 </main>
-<script src="scripts/vendor.min.js"></script>
-<script src="scripts/app.min.js"></script>
+<script src="scripts/vendor.min.js" th:src="@{/scripts/vendor.min.js}"></script>
+<script src="scripts/app.min.js" th:src="@{/scripts/app.min.js}"></script>
 </body>
 
 </html>

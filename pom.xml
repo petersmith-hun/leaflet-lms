@@ -6,7 +6,7 @@
 
     <groupId>hu.psprog.leaflet</groupId>
     <artifactId>lms</artifactId>
-    <version>0.7.1-dev</version>
+    <version>0.8.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -17,6 +17,7 @@
 
     <modules>
         <module>web</module>
+        <module>service</module>
     </modules>
 
     <properties>
@@ -28,8 +29,8 @@
         <java.version>1.8</java.version>
 
         <!-- leaflet internal dependency versions -->
-        <leaflet.rest-api.version>1.1.4</leaflet.rest-api.version>
-        <leaflet.bridge.version>1.5.0</leaflet.bridge.version>
+        <leaflet.rest-api.version>1.1.5</leaflet.rest-api.version>
+        <leaflet.bridge.version>1.6.1</leaflet.bridge.version>
 
         <!-- Spring versions -->
         <spring.boot.version>1.5.4.RELEASE</spring.boot.version>
@@ -44,6 +45,8 @@
         <thymeleaf.extras.version>3.0.1.RELEASE</thymeleaf.extras.version>
         <thymeleaf.layout-dialect.version>2.1.2</thymeleaf.layout-dialect.version>
         <commons.lang.version>3.6</commons.lang.version>
+        <commons.collections.version>4.1</commons.collections.version>
+        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
         <!-- compiler settings -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -84,6 +87,7 @@
                 <version>${spring.boot.version}</version>
             </dependency>
 
+            <!-- Thymeleaf dependencies -->
             <dependency>
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>
@@ -135,6 +139,17 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons.lang.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons.collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -154,6 +169,10 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
         </dependency>
     </dependencies>
 

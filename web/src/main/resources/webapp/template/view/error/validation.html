@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Login - Leaflet</title>
+        <link rel="icon" href="favicon.ico" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png" th:href="@{/apple-touch-icon.png}">
+        <link rel="stylesheet" href="css/app.min.css" th:href="@{/css/app.min.css}" type="text/css">
+    </head>
+    <body>
+        <main class="main-content" style="font-family: 'Calibri'; padding: 20px;">
+            <h1 style="font-size: 3em; color: #555555;" th:text="${#response.status}">Status</h1>
+            <p style="font-weight: bold; font-size: 1.5em;" th:text="${message}">Error message</p>
+            <table>
+                <tr th:each="violation : ${validationErrors}">
+                    <td th:text="${violation.field}"></td>
+                    <td th:text="${violation.message}"></td>
+                </tr>
+            </table>
+            <p><a class="btn btn-link pull-left" th:href="@{/}" href="/">Back to LMS home</a></p>
+        </main>
+        <script src="scripts/vendor.min.js" th:src="@{/scripts/vendor.min.js}"></script>
+        <script src="scripts/app.min.js" th:src="@{/scripts/app.min.js}"></script>
+    </body>
+</html>

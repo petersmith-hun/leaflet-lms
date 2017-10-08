@@ -22,7 +22,7 @@ public class AuthenticationUserDetailsModel {
     private String role;
 
     @JsonProperty("uid")
-    private Integer id;
+    private Long id;
 
     @JsonProperty("exp")
     @JsonDeserialize(using = JWTExpirationDateDeserializer.class)
@@ -48,11 +48,11 @@ public class AuthenticationUserDetailsModel {
         this.role = role;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

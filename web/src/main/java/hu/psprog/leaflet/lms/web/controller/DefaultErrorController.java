@@ -33,6 +33,8 @@ public class DefaultErrorController implements ErrorController {
     private static final String MESSAGE = "message";
     private static final String EXCEPTION = "exception";
     private static final String TRACE = "trace";
+    private static final String STATUS = "status";
+    private static final String ERROR = "error";
 
     static final String PATH_ERROR = "/error";
 
@@ -55,10 +57,10 @@ public class DefaultErrorController implements ErrorController {
         ModelAndView modelAndView = new ModelAndView(BaseController.DEFAULT_ERROR_PAGE);
         Map<String, Object> errorAttributes = extractErrorAttributes(request);
 
-        modelAndView.addObject(MESSAGE, errorAttributes.get(MESSAGE));
+        modelAndView.addObject(MESSAGE, extractShortErrorMessage(errorAttributes));
         modelAndView.setStatus(extractStatus(errorAttributes));
 
-        LOGGER.error("Unknown error occurred while processing request:\n{}", extractErrorMessage(errorAttributes));
+        LOGGER.error("Unknown error occurred while processing request:\n{}", extractTraceErrorMessage(errorAttributes));
 
         return modelAndView;
     }
@@ -77,18 +79,24 @@ public class DefaultErrorController implements ErrorController {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         if (UnauthorizedAccessException.class.getName().equals(errorAttributes.get(EXCEPTION))) {
             status = HttpStatus.UNAUTHORIZED;
+        } else if (Objects.nonNull(errorAttributes.get(STATUS))) {
+            status = HttpStatus.valueOf((Integer) errorAttributes.get(STATUS));
         }
 
         return status;
     }
 
-    private String extractErrorMessage(Map<String, Object> errorAttributes) {
+    private String extractTraceErrorMessage(Map<String, Object> errorAttributes) {
 
         Object message = errorAttributes.get(TRACE);
         if (Objects.isNull(message)) {
-            message = errorAttributes.get(MESSAGE);
+            message = extractShortErrorMessage(errorAttributes);
         }
 
         return String.valueOf(message);
+    }
+
+    private String extractShortErrorMessage(Map<String, Object> errorAttributes) {
+        return errorAttributes.get(ERROR) + ": " + errorAttributes.get(MESSAGE);
     }
 }
