@@ -8,6 +8,8 @@ import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import java.util.List;
 
 /**
+ * Tag operations facade.
+ *
  * @author Peter Smith
  */
 public interface TagFacade {

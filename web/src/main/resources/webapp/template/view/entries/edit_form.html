@@ -16,7 +16,7 @@
                     <label for="category">Category</label>
                     <select class="form-control" name="categoryID" id="category">
                         <option th:each="category : ${categorySelector}"
-                                th:selected="${entryData != null && category.id == entryData.body.category.id}"
+                                th:selected="${entryData != null and category.id == entryData.body.category.id}"
                                 th:value="${category.id}"
                                 th:text="${category.title}">
                         </option>
@@ -48,13 +48,13 @@
                 </div>
                 <div class="form-group">
                     <label for="enabled">Enabled</label>
-                    <input type="checkbox" class="form-control" name="enabled" id="enabled" th:checked="${entryData != null && entryData.body.enabled}" />
+                    <input type="checkbox" class="form-control" name="enabled" id="enabled" th:checked="${entryData != null and entryData.body.enabled}" />
                 </div>
                 <div class="form-group">
                     <label for="tags">Tags</label>
                     <select multiple class="form-control" name="tags" id="tags">
                         <option th:each="tag : ${tagSelector}"
-                                th:selected="${entryData != null && entryData.body.tags.contains(tag)}"
+                                th:selected="${entryData != null and entryData.body.tags.contains(tag)}"
                                 th:value="${tag.id}"
                                 th:text="${tag.name}">
                         </option>
@@ -64,7 +64,7 @@
                     <label for="attachments">Files</label>
                     <select multiple class="form-control" name="attachments" id="attachments">
                         <option th:each="file : ${fileSelector}"
-                                th:selected="${entryData != null && entryData.body.attachments.contains(file)}"
+                                th:selected="${entryData != null and entryData.body.attachments.contains(file)}"
                                 th:value="${@commonExtractor.extractPathUUIDFromReference(file.reference)}"
                                 th:text="${file.originalFilename}">
                         </option>
@@ -74,7 +74,7 @@
                     <label for="status">Status</label>
                     <select class="form-control" name="status" id="status">
                         <option th:each="status : ${T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).values()}"
-                                th:selected="${entryData != null && status == T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).valueOf(entryData.body.entryStatus)}"
+                                th:selected="${entryData != null and status == T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).valueOf(entryData.body.entryStatus)}"
                                 th:value="${status}"
                                 th:text="${status}">
                         </option>
@@ -84,7 +84,7 @@
                     <label for="locale">Language</label>
                     <select class="form-control" name="locale" id="locale" th:with="localeList = ${ {'HU', 'EN'} }">
                         <option th:each="locale : ${localeList}"
-                                th:selected="${entryData != null && locale == entryData.body.locale}"
+                                th:selected="${entryData != null and locale == entryData.body.locale}"
                                 th:value="${locale}"
                                 th:text="${locale}">
                         </option>
