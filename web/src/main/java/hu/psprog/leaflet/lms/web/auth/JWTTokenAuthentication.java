@@ -20,7 +20,7 @@ public class JWTTokenAuthentication implements Authentication {
     private AuthenticationUserDetailsModel details;
 
     private JWTTokenAuthentication() {
-        // prevent direct initalization
+        // prevent direct initialization
     }
 
     @Override
@@ -55,7 +55,7 @@ public class JWTTokenAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return emailAddress;
+        return details.getName();
     }
 
     public static class Builder {
