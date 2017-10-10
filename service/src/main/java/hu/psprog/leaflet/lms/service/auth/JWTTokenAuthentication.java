@@ -1,6 +1,6 @@
-package hu.psprog.leaflet.lms.web.auth;
+package hu.psprog.leaflet.lms.service.auth;
 
-import hu.psprog.leaflet.lms.web.response.model.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

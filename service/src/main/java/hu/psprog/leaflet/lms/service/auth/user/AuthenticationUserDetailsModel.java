@@ -1,9 +1,9 @@
-package hu.psprog.leaflet.lms.web.response.model.user;
+package hu.psprog.leaflet.lms.service.auth.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import hu.psprog.leaflet.lms.web.response.handler.deserializer.JWTExpirationDateDeserializer;
+import hu.psprog.leaflet.lms.service.auth.handler.deserializer.JWTExpirationDateDeserializer;
 
 import java.util.Date;
 

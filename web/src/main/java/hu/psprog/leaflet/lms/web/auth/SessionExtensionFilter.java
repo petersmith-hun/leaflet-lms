@@ -1,10 +1,9 @@
 package hu.psprog.leaflet.lms.web.auth;
 
-import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.bridge.service.UserBridgeService;
-import hu.psprog.leaflet.lms.web.response.handler.JWTTokenPayloadReader;
-import hu.psprog.leaflet.lms.web.response.model.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
+import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +34,14 @@ public class SessionExtensionFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionExtensionFilter.class);
 
-    private UserBridgeService userBridgeService;
-    private JWTTokenPayloadReader jwtTokenPayloadReader;
+    private UserFacade userFacade;
 
     private boolean enabled;
     private int threshold;
 
     @Autowired
-    public SessionExtensionFilter(UserBridgeService userBridgeService, JWTTokenPayloadReader jwtTokenPayloadReader) {
-        this.userBridgeService = userBridgeService;
-        this.jwtTokenPayloadReader = jwtTokenPayloadReader;
+    public SessionExtensionFilter(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @Override
@@ -54,7 +51,7 @@ public class SessionExtensionFilter extends OncePerRequestFilter {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (isExpiringSoon(authentication)) {
                 try {
-                    replaceAuthentication(authentication.getPrincipal().toString(), userBridgeService.renewToken());
+                    userFacade.renewToken(authentication);
                 } catch (CommunicationFailureException e) {
                     LOGGER.error("Leaflet unreachable - failed to renew user session.", e);
                 }
@@ -92,16 +89,5 @@ public class SessionExtensionFilter extends OncePerRequestFilter {
         }
 
         return expiringSoon;
-    }
-
-    private void replaceAuthentication(String username, LoginResponseDataModel loginResponseDataModel) {
-
-        Authentication authentication = new JWTTokenAuthentication.Builder()
-                .withEmailAddress(username)
-                .withDetails(jwtTokenPayloadReader.readPayload(loginResponseDataModel.getToken()))
-                .withToken(loginResponseDataModel.getToken())
-                .build();
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

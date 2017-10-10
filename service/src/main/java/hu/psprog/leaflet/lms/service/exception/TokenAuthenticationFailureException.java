@@ -1,4 +1,4 @@
-package hu.psprog.leaflet.lms.web.exception;
+package hu.psprog.leaflet.lms.service.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

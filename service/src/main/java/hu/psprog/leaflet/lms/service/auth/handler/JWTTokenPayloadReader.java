@@ -1,6 +1,6 @@
-package hu.psprog.leaflet.lms.web.response.handler;
+package hu.psprog.leaflet.lms.service.auth.handler;
 
-import hu.psprog.leaflet.lms.web.response.model.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
 
 /**
  * Extracts payload from a JWT token.
