@@ -1,4 +1,4 @@
-package hu.psprog.leaflet.lms.web.response.handler.deserializer;
+package hu.psprog.leaflet.lms.service.auth.handler.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

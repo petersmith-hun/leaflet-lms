@@ -2,9 +2,9 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
-import hu.psprog.leaflet.lms.web.auth.JWTTokenAuthentication;
+import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
-import hu.psprog.leaflet.lms.web.response.model.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

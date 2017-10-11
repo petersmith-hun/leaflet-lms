@@ -1,8 +1,8 @@
-package hu.psprog.leaflet.lms.web.response.handler.impl;
+package hu.psprog.leaflet.lms.service.auth.handler.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.psprog.leaflet.lms.web.response.handler.JWTTokenPayloadReader;
-import hu.psprog.leaflet.lms.web.response.model.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.service.auth.handler.JWTTokenPayloadReader;
+import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,14 @@ import java.util.Base64;
 public class JWTTokenPayloadReaderImpl implements JWTTokenPayloadReader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTTokenPayloadReaderImpl.class);
-    public static final String TOKEN_PAYLOAD_SPLIT_REGEX_PATTERN = "\\.";
+    private static final String TOKEN_PAYLOAD_SPLIT_REGEX_PATTERN = "\\.";
+
+    private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    public JWTTokenPayloadReaderImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public AuthenticationUserDetailsModel readPayload(String token) {
