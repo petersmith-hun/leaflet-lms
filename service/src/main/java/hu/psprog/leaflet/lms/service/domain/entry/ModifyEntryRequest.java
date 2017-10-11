@@ -1,6 +1,5 @@
 package hu.psprog.leaflet.lms.service.domain.entry;
 
-import com.sun.istack.internal.NotNull;
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -8,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collections;
