@@ -108,7 +108,7 @@ public class AuthenticationController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_PASSWORD_RESET_CONFIRM)
     public ModelAndView processPasswordResetConfirmation(@ModelAttribute UserPasswordRequestModel userPasswordRequestModel,
-                                                         @PathVariable("token") String token, RedirectAttributes redirectAttributes)
+                                                         @PathVariable(PATH_VARIABLE_TOKEN) String token, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
         userFacade.confirmPasswordReset(userPasswordRequestModel, token);

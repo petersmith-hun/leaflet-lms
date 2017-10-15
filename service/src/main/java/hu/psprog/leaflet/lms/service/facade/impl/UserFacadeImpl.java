@@ -2,19 +2,26 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.user.LoginRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
+import hu.psprog.leaflet.api.rest.request.user.UpdateRoleRequestModel;
+import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
+import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
 import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
 import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
 import hu.psprog.leaflet.lms.service.auth.handler.JWTTokenPayloadReader;
+import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import hu.psprog.leaflet.lms.service.exception.TokenAuthenticationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Implementation of {@link UserFacade}.
@@ -72,6 +79,42 @@ public class UserFacadeImpl implements UserFacade {
                 .withToken(loginResponseModel.getToken())
                 .withDetails(jwtTokenPayloadReader.readPayload(loginResponseModel.getToken()))
                 .build();
+    }
+
+    @Override
+    public List<ExtendedUserDataModel> listUsers() throws CommunicationFailureException {
+        return Optional.ofNullable(userBridgeService.getAllUsers().getUsers())
+                .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public AvailableRole[] getAvailableRoles() {
+        return AvailableRole.values();
+    }
+
+    @Override
+    public Long processUserCreation(UserCreateRequestModel userCreateRequestModel) throws CommunicationFailureException {
+        return Optional.ofNullable(userBridgeService.createUser(userCreateRequestModel))
+                .map(ExtendedUserDataModel::getId)
+                .orElse(0L);
+    }
+
+    @Override
+    public ExtendedUserDataModel retrieveUserDetails(Long userID) throws CommunicationFailureException {
+        return userBridgeService.getUserByID(userID);
+    }
+
+    @Override
+    public void processUserRoleChange(Long userID, AvailableRole newRole) throws CommunicationFailureException {
+        userBridgeService.updateRole(userID, mapAvailableRoleToUpdateRoleRequestModel(newRole));
+    }
+
+    private UpdateRoleRequestModel mapAvailableRoleToUpdateRoleRequestModel(AvailableRole role) {
+
+        UpdateRoleRequestModel updateRoleRequestModel = new UpdateRoleRequestModel();
+        updateRoleRequestModel.setRole(role.name());
+
+        return updateRoleRequestModel;
     }
 
     private LoginRequestModel convertToLoginRequest(Authentication authentication) {
