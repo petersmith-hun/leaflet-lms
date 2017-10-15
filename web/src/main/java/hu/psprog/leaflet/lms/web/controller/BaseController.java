@@ -40,6 +40,9 @@ class BaseController {
     static final String PATH_OPTIONAL_PAGE_NUMBER = "/{page}";
     static final String PATH_CURRENT = "";
 
+    static final String PATH_VARIABLE_ID = "id";
+    static final String PATH_VARIABLE_TOKEN = "token";
+
     static final String FLASH_MESSAGE = "flash";
 
     @Autowired

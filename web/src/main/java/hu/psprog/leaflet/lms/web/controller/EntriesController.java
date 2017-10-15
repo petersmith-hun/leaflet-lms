@@ -88,7 +88,7 @@ public class EntriesController extends BaseController {
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_VIEW)
-    public ModelAndView viewEntry(@PathVariable("id") Long entryID) throws CommunicationFailureException {
+    public ModelAndView viewEntry(@PathVariable(PATH_VARIABLE_ID) Long entryID) throws CommunicationFailureException {
 
         WrapperBodyDataModel<EditEntryDataModel> response = entryFacade.getEntry(entryID);
 
@@ -146,7 +146,7 @@ public class EntriesController extends BaseController {
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_EDIT)
-    public ModelAndView showEditEntryForm(@PathVariable("id") Long id) throws CommunicationFailureException {
+    public ModelAndView showEditEntryForm(@PathVariable(PATH_VARIABLE_ID) Long id) throws CommunicationFailureException {
 
         EntryFormContent response = entryFacade.fillForm(id);
 
@@ -168,7 +168,7 @@ public class EntriesController extends BaseController {
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_EDIT)
-    public ModelAndView processEntryEditing(@PathVariable("id") Long id, @ModelAttribute ModifyEntryRequest modifyEntryRequest, RedirectAttributes redirectAttributes)
+    public ModelAndView processEntryEditing(@PathVariable(PATH_VARIABLE_ID) Long id, @ModelAttribute ModifyEntryRequest modifyEntryRequest, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
         entryFacade.processEditEntry(id, modifyEntryRequest);
@@ -188,7 +188,7 @@ public class EntriesController extends BaseController {
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)
-    public ModelAndView processStatusChange(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
+    public ModelAndView processStatusChange(@PathVariable(PATH_VARIABLE_ID) Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
         String viewPath = PATH_ENTRIES + replaceIDInViewPath(id);
         String currentStatus = entryFacade.processStatusChange(id)
@@ -208,7 +208,7 @@ public class EntriesController extends BaseController {
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE)
-    public ModelAndView processDeletion(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
+    public ModelAndView processDeletion(@PathVariable(PATH_VARIABLE_ID) Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
         entryFacade.processDeletion(id);
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_DELETED);
