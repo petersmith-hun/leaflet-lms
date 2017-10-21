@@ -19,12 +19,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String PATH_LOGIN = "/login";
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
     private static final String USERNAME_PARAMETER = "email";
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_EDITOR = "EDITOR";
+
+    public static final String PATH_LOGIN = "/login";
 
     @Autowired
     private TokenRevokeLogoutHandler tokenRevokeLogoutHandler;

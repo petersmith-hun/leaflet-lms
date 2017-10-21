@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.user.LoginRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
+import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateRoleRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
@@ -15,7 +16,9 @@ import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import hu.psprog.leaflet.lms.service.exception.TokenAuthenticationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -107,6 +110,33 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public void processUserRoleChange(Long userID, AvailableRole newRole) throws CommunicationFailureException {
         userBridgeService.updateRole(userID, mapAvailableRoleToUpdateRoleRequestModel(newRole));
+    }
+
+    @Override
+    public void processUserProfileUpdate(Long userID, UpdateProfileRequestModel updateProfileRequestModel) throws CommunicationFailureException {
+        userBridgeService.updateProfile(userID, updateProfileRequestModel);
+    }
+
+    @Override
+    public void processPasswordChange(Long userID, UserPasswordRequestModel userPasswordRequestModel) throws CommunicationFailureException {
+        userBridgeService.updatePassword(userID, userPasswordRequestModel);
+    }
+
+    @Override
+    public void processAccountDeletion(Long userID, String password) throws CommunicationFailureException {
+
+        SecurityContextHolder.getContext().setAuthentication(reAuthenticate(userID, password));
+        userBridgeService.deleteUser(userID);
+    }
+
+    private Authentication reAuthenticate(Long userID, String password) throws CommunicationFailureException {
+
+        ExtendedUserDataModel user = userBridgeService.getUserByID(userID);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), password);
+        Authentication reAuthenticatedUser = claimToken(usernamePasswordAuthenticationToken);
+        revokeToken();
+
+        return reAuthenticatedUser;
     }
 
     private UpdateRoleRequestModel mapAvailableRoleToUpdateRoleRequestModel(AvailableRole role) {

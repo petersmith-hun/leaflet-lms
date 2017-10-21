@@ -10,8 +10,9 @@
         <link rel="stylesheet" href="css/app.min.css" th:href="@{/css/app.min.css}" type="text/css">
     </head>
     <body class="l-login" style="background-image: url(&quot;https://source.unsplash.com/random/1920x1080&quot;)">
-        <main class="main-content" layout:fragment="content">
-
+        <main class="main-content">
+            <p th:if="${flash != null}" th:text="${flash}" style="color: #fff; background-color: #047800; font-weight: bold; padding: 10px;">Flash message</p>
+            <div layout:fragment="content">Content</div>
         </main>
         <script src="scripts/vendor.min.js" th:src="@{/scripts/vendor.min.js}"></script>
         <script src="scripts/app.min.js" th:src="@{/scripts/app.min.js}"></script>

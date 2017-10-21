@@ -32,6 +32,7 @@ class BaseController {
 
     static final String DEFAULT_ERROR_PAGE = "view/error/default";
 
+    static final String PATH_HOME = "/";
     static final String PATH_CREATE = "/create";
     static final String PATH_VIEW = "/view/{id}";
     static final String PATH_EDIT = "/edit/{id}";
