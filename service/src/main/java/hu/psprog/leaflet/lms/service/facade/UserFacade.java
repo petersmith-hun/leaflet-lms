@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
+import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
@@ -99,4 +100,31 @@ public interface UserFacade {
      * @throws CommunicationFailureException if Bridge fails to reach Leaflet
      */
     void processUserRoleChange(Long userID, AvailableRole newRole) throws CommunicationFailureException;
+
+    /**
+     * Processes user profile update request.
+     *
+     * @param userID ID of the user to update profile for
+     * @param updateProfileRequestModel updated user data
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    void processUserProfileUpdate(Long userID, UpdateProfileRequestModel updateProfileRequestModel) throws CommunicationFailureException;
+
+    /**
+     * Processes password change request.
+     *
+     * @param userID ID of the user to change password for
+     * @param userPasswordRequestModel new password with its confirmation
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    void processPasswordChange(Long userID, UserPasswordRequestModel userPasswordRequestModel) throws CommunicationFailureException;
+
+    /**
+     * Processes account deletion request.
+     *
+     * @param userID ID of the user to delete account of
+     * @param password password as confirmation
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    void processAccountDeletion(Long userID, String password) throws CommunicationFailureException;
 }

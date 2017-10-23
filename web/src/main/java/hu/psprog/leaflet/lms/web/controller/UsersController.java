@@ -84,7 +84,7 @@ public class UsersController extends BaseController {
             throws CommunicationFailureException {
 
         Long createdID = userFacade.processUserCreation(userCreateRequestModel);
-        String viewPath = replaceIDInViewPath(createdID);
+        String viewPath = PATH_USERS + replaceIDInViewPath(createdID);
 
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, USER_SUCCESSFULLY_CREATED);
 
