@@ -172,11 +172,10 @@ public class EntriesController extends BaseController {
             throws CommunicationFailureException {
 
         entryFacade.processEditEntry(id, modifyEntryRequest);
-        String viewPath = PATH_ENTRIES + replaceIDInViewPath(id);
 
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_SAVED);
 
-        return modelAndViewFactory.createRedirectionTo(viewPath);
+        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
     }
 
     /**
@@ -190,13 +189,12 @@ public class EntriesController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)
     public ModelAndView processStatusChange(@PathVariable(PATH_VARIABLE_ID) Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
-        String viewPath = PATH_ENTRIES + replaceIDInViewPath(id);
         String currentStatus = entryFacade.processStatusChange(id)
                 ? "enabled"
                 : "disabled";
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, String.format(ENTRY_STATUS_SUCCESSFULLY_CHANGED, currentStatus));
 
-        return modelAndViewFactory.createRedirectionTo(viewPath);
+        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
     }
 
     /**
@@ -214,5 +212,9 @@ public class EntriesController extends BaseController {
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_DELETED);
 
         return modelAndViewFactory.createRedirectionTo(PATH_ENTRIES);
+    }
+
+    private String getRedirectionPath(Long entryID) {
+        return PATH_ENTRIES + replaceIDInViewPath(entryID);
     }
 }
