@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <p>[todo populate]</p>
+    <form method="post" th:action="@{/documents/status/{id}(id=__${#request.getAttribute('id')}__)}">
+        <input type="submit" value="Change status" />
+    </form>
+    <form method="post" th:action="@{/documents/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+        <input type="submit" value="Delete document" />
+    </form>
+</section>
+</body>
+</html>
