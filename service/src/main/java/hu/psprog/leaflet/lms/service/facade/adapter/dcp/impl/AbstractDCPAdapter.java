@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Abstract {@link DCPAdapter} implementation for common operations used be all adapters.
+ * Abstract {@link DCPAdapter} implementation for common operations used by all adapters.
  *
  * @author Peter Smith
  */
@@ -58,7 +58,7 @@ abstract class AbstractDCPAdapter<T> implements DCPAdapter<T> {
      * Maps a domain object to list of {@link DCPDataModel} items.
      *
      * @param data domain data
-     * @return List of {@link DCPDataModel}
+     * @return List of {@link DCPDataModel} objects
      */
     abstract List<DCPDataModel> mapToDataModel(T data);
 
