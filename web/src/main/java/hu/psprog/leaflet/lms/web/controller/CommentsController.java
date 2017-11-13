@@ -37,6 +37,7 @@ public class CommentsController extends BaseController {
     private static final String VIEW_COMMENTS_LIST = "view/comments/list";
     private static final String VIEW_COMMENTS_DETAILS = "view/comments/details";
     private static final String VIEW_COMMENTS_EDIT_FORM = "view/comments/edit_form";
+    private static final String VIEW_COMMENTS_DELETE_FORM = "view/comments/delete_form";
 
     private static final String COMMENT_SUCCESSFULLY_UPDATED = "Comment successfully updated.";
     private static final String COMMENT_SUCCESSFULLY_DELETED = "Comment successfully deleted (%s)";
@@ -150,7 +151,7 @@ public class CommentsController extends BaseController {
     public ModelAndView showDeleteCommentForm(@PathVariable(PATH_VARIABLE_ID) Long commentID) throws CommunicationFailureException {
 
         return modelAndViewFactory
-                .createForView("view/comments/delete_form")
+                .createForView(VIEW_COMMENTS_DELETE_FORM)
                 .withAttribute("comment", commentFacade.getComment(commentID))
                 .build();
     }
