@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <p>Comment '<span style="font-style: italic;" th:text="${comment.content}"></span>' will be deleted ...</p>
+    <form method="post" th:action="@{/comments/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+        <label for="permanent">Delete permanently?</label>
+        <input type="checkbox" name="permanent" id="permanent" />
+        <br />
+        <input type="submit" value="Delete comment" />
+    </form>
+</section>
+</body>
+</html>
