@@ -81,82 +81,25 @@
         <!-- Main menu start-->
         <nav class="main-nav">
             <ul class="main-nav__menu">
-                <li>
-                    <a href="index.html">
-                        <i class="fa fa-tachometer"></i>Dashboard</a>
-                </li>
-                <li class="active">
-                    <a class="main-nav__menu-dropdown" href="#">
-                        <i class="fa fa-cogs"></i>System
-                        <i class="dropdown-arrow fa fa-angle-left"></i>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="status.html">Status</a>
-                        </li>
-                        <li>
-                            <a href="seo.html">Default SEO</a>
-                        </li>
-                        <li>
-                            <a href="menus.html">Front menus</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="users.html">
-                        <i class="fa fa-users"></i>User management</a>
-                </li>
-                <li>
-                    <a href="documents.html">
-                        <i class="fa fa-file-text"></i>Documents</a>
-                </li>
-                <li>
-                    <a class="main-nav__menu-dropdown" href="#">
-                        <i class="fa fa-comments"></i>Blog management
-                        <i class="dropdown-arrow fa fa-angle-left"></i>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="entries.html">Entries</a>
-                        </li>
-                        <li>
-                            <a href="categories.html">Categories</a>
-                        </li>
-                        <li>
-                            <a href="tags.html">Tags</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="main-nav__menu-dropdown" href="#">
-                        <i class="fa fa-desktop"></i>External systems
-                        <i class="dropdown-arrow fa fa-angle-left"></i>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="#">LCM</a>
-                        </li>
-                        <li>
-                            <a href="#">Jenkins</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="main-nav__menu-dropdown" href="#">
-                        <i class="fa fa-exclamation-circle"></i>Error pages
-                        <i class="dropdown-arrow fa fa-angle-left"></i>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="403.html">403 error</a>
-                        </li>
-                        <li>
-                            <a href="404.html">404 error</a>
-                        </li>
-                        <li>
-                            <a href="500.html">500 error</a>
-                        </li>
-                    </ul>
+                <li th:each="item : ${menu}">
+                    <div th:remove="tag" th:if="${item.children == null}">
+                        <a th:href="@{${item.link}}">
+                            <i class="fa fa-tachometer" th:class="${'fa ' + item.iconClass}"></i>
+                            <span th:remove="tag" th:text="${item.name}">item</span>
+                        </a>
+                    </div>
+                    <div th:remove="tag" th:if="${item.children != null}">
+                        <a class="main-nav__menu-dropdown" href="#">
+                            <i class="fa fa-cogs" th:class="${'fa ' + item.iconClass}"></i>
+                            <span th:remove="tag" th:text="${item.name}">item</span>
+                            <i class="dropdown-arrow fa fa-angle-left"></i>
+                        </a>
+                        <ul>
+                            <li th:each="sub : ${item.children}">
+                                <a th:href="@{${sub.link}}" th:text="${sub.name}">sub item</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
             </ul>
         </nav>
