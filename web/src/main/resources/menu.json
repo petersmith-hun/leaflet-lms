@@ -1,0 +1,61 @@
+{
+  "menu": [
+    {
+      "name": "Home",
+      "link": "/",
+      "iconClass": "fa-tachometer"
+    },
+    {
+      "name": "System",
+      "iconClass": "fa-cogs",
+      "children": [
+        {
+          "name": "Default SEO",
+          "link": "/system/seo"
+        }
+      ]
+    },
+    {
+      "name": "User management",
+      "link": "/users",
+      "iconClass": "fa-users"
+    },
+    {
+      "name": "Documents",
+      "link": "/documents",
+      "iconClass": "fa-file-text"
+    },
+    {
+      "name": "Blog management",
+      "iconClass": "fa-comments",
+      "children": [
+        {
+          "name": "Entries",
+          "link": "/entries"
+        },
+        {
+          "name": "Categories",
+          "link": "/categories"
+        },
+        {
+          "name": "Tags",
+          "link": "/tags"
+        }
+      ]
+    },
+    {
+      "name": "External systems",
+      "iconClass": "fa-desktop",
+      "children": [
+        {
+          "name": "Jenkins",
+          "link": "https://ci.psprog.hu"
+        },
+        {
+          "name": "Grafana",
+          "link": "https://psprog.hu/grafana/"
+        }
+      ]
+    }
+  ]
+}

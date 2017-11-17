@@ -1,10 +1,12 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import hu.psprog.leaflet.lms.web.menu.interceptor.SystemMenuInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -21,6 +23,15 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
     private WebAppResources webAppResources;
+
+    @Autowired
+    private SystemMenuInterceptor systemMenuInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        super.addInterceptors(registry);
+        registry.addInterceptor(systemMenuInterceptor);
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
