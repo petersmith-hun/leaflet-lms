@@ -40,6 +40,10 @@
         {
           "name": "Tags",
           "link": "/tags"
+        },
+        {
+          "name": "File management",
+          "link": "/files/browse"
         }
       ]
     },

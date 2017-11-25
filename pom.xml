@@ -29,8 +29,8 @@
         <java.version>1.8</java.version>
 
         <!-- leaflet internal dependency versions -->
-        <leaflet.rest-api.version>1.1.8</leaflet.rest-api.version>
-        <leaflet.bridge.version>1.6.4</leaflet.bridge.version>
+        <leaflet.rest-api.version>1.1.9</leaflet.rest-api.version>
+        <leaflet.bridge.version>1.7.0</leaflet.bridge.version>
 
         <!-- Spring versions -->
         <spring.boot.version>1.5.4.RELEASE</spring.boot.version>
@@ -46,6 +46,7 @@
         <thymeleaf.layout-dialect.version>2.1.2</thymeleaf.layout-dialect.version>
         <commons.lang.version>3.6</commons.lang.version>
         <commons.collections.version>4.1</commons.collections.version>
+        <commons.io.version>2.6</commons.io.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 
         <!-- compiler settings -->
@@ -143,6 +144,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${commons.collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>

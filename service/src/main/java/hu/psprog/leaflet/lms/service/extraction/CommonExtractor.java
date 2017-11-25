@@ -17,7 +17,7 @@ public class CommonExtractor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonExtractor.class);
 
-    private static final String UUID_EXTRACTION_FAILURE = "Failed to extract UUID from given file reference [%s]. Reference value must match '/<UUID>/filename.ext'";
+    private static final String UUID_EXTRACTION_FAILURE = "Failed to extractFilePathUUID UUID from given file reference [%s]. Reference value must match '/<UUID>/filename.ext'";
 
     /**
      * Extracts UUID from {@link FileDataModel}.

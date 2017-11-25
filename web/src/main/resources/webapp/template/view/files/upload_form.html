@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <h3>[PROTOTYPE TEMPLATE] Upload file</h3>
+    <form method="post" th:action="@{''}" enctype="multipart/form-data">
+        <input id="subFolder" name="subFolder" type="hidden" th:value="${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}" />
+        <div class="form-group">
+            <label for="inputFile"></label>
+            <input class="form-control" id="inputFile" name="inputFile" type="file" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input class="form-control" id="description" name="description" placeholder="Description" type="text" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</section>
+</body>
+</html>

@@ -48,7 +48,7 @@ public class DefaultErrorController implements ErrorController {
     /**
      * Renders default error page on uncaught exceptions happened before controllers.
      *
-     * @param request {@link HttpServletRequest} object to extract exception info from
+     * @param request {@link HttpServletRequest} object to extractFilePathUUID exception info from
      * @return {@link ModelAndView} object set to the default error page view and populated with the error message
      */
     @RequestMapping

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <p>[todo populate]</p>
+    <form method="post" th:action="@{/files/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+        <input type="submit" value="Delete file" />
+    </form>
+</section>
+</body>
+</html>

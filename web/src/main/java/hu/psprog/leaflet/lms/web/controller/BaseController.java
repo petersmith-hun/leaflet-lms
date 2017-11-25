@@ -3,8 +3,8 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
-import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +107,7 @@ class BaseController {
      * @param id ID to replace placeholder to
      * @return path with ID inserted
      */
-    String replaceIDInViewPath(Long id) {
+    String replaceIDInViewPath(Object id) {
         return PATH_VIEW.replace("{id}", String.valueOf(id));
     }
 
