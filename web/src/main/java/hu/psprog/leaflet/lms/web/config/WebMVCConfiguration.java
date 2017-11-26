@@ -79,8 +79,7 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
                 MediaType.IMAGE_JPEG,
                 MediaType.IMAGE_PNG,
                 MediaType.IMAGE_GIF,
-                MediaType.APPLICATION_OCTET_STREAM,
-                MediaType.MULTIPART_FORM_DATA);
+                MediaType.APPLICATION_OCTET_STREAM);
     }
 
     @Component

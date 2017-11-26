@@ -11,7 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * File path UUID extractor tool.
+ * URL related manipulator tools.
  *
  * @author Peter Smith
  */
