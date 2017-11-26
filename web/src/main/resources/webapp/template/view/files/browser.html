@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <!-- Entries start-->
+    <section class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="page-header">
+                    <h1>File browser</h1>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-xs-9">
+                                <p class="form-control-static m-0">File browser</p>
+                            </div>
+                            <div class="col-xs-3">
+                                <input class="form-control pull-right" type="text" placeholder="Search">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <a th:href="@{/__${upURL}__}">..</a>
+                                        </td>
+                                    </tr>
+                                    <th:block th:if="${!browser.subFolders.isEmpty()}">
+                                        <tr th:each="folder: ${browser.subFolders}">
+                                            <td colspan="2">
+                                                <a th:href="@{/__${currentURL}__/__${folder}__}" th:text="${folder}">Test folder</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    <th:block th:if="${!browser.files.isEmpty()}">
+                                        <tr th:each="file: ${browser.files}">
+                                            <td>
+                                                <img th:src="@{/files/resource__${file.reference}__}" style="max-width: 100px;" th:if="${file.acceptedAs == 'image/jpeg' or file.acceptedAs == 'image/png'}">
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/files/view/__${@URLUtilities.extractFilePathUUID(file)}__}" th:text="${file.originalFilename}">Test file</a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 flex-lg-unordered flex-xs-first">
+                <div class="card">
+                    <div class="card-block">
+                        <th:block th:if="${@URLUtilities.extractSubPath(1, 0, #request.getServletPath())} != 'browse'">
+                            <a class="btn btn-primary" th:href="@{/files/upload/__${@URLUtilities.extractSubPath(3, 0, #request.getServletPath())}__}" href="#">Upload file here</a>
+                            <p>&nbsp;</p>
+                            <a class="btn btn-primary" th:href="@{/files/directory/create/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}" href="#">Create directory here</a>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Entries end-->
+</section>
+</body>
+</html>
