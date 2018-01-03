@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.api.rest.request.user.PasswordChangeRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
-import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,17 +96,17 @@ public class AccountController extends BaseController {
     /**
      * Processes password change request.
      *
-     * @param userPasswordRequestModel updated password and its confirmation wrapped as {@link UserPasswordRequestModel}
+     * @param passwordChangeRequestModel current password for validation and updated password with its confirmation wrapped as {@link PasswordChangeRequestModel}
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} object, redirection to logout
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_CHANGE_PASSWORD)
-    public ModelAndView processPasswordChange(@ModelAttribute UserPasswordRequestModel userPasswordRequestModel,
+    public ModelAndView processPasswordChange(@ModelAttribute PasswordChangeRequestModel passwordChangeRequestModel,
                                               RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest)
             throws CommunicationFailureException, ServletException {
 
-        userFacade.processPasswordChange(currentUserID(), userPasswordRequestModel);
+        userFacade.processPasswordChange(currentUserID(), passwordChangeRequestModel);
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_PASSWORD_HAS_BEEN_CHANGED_PLEASE_RE_LOGIN);
         httpServletRequest.logout();
 
