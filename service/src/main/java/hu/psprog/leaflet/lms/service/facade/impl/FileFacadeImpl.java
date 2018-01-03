@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link FileFacade}.
@@ -76,6 +77,17 @@ public class FileFacadeImpl implements FileFacade {
     @Override
     public FileDataModel getFileDetails(UUID pathUUID) throws CommunicationFailureException {
         return fileBridgeService.getFileDetails(pathUUID);
+    }
+
+    @Override
+    public List<String> getAcceptableMimeTypes(String path) throws CommunicationFailureException {
+
+        String normalizedPath = urlUtilities.normalize(path);
+
+        return fileBridgeService.getDirectories().getAcceptors().stream()
+                .filter(directoryDataModel -> normalizedPath.startsWith(directoryDataModel.getRoot()))
+                .flatMap(directoryDataModel -> directoryDataModel.getAcceptableMimeTypes().stream())
+                .collect(Collectors.toList());
     }
 
     @Override

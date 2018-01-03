@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * File management controller for LMS.
@@ -140,10 +141,14 @@ public class FilesController extends BaseController {
      * @return populated {@link ModelAndView} object
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_UPLOAD)
-    public ModelAndView showFileUploadForm() {
+    public ModelAndView showFileUploadForm(HttpServletRequest request) throws CommunicationFailureException {
+
+        String path = urlUtilities.extractSubPath(PATTERN_FILE_BROWSER_ROOT_PATH, request.getServletPath());
 
         return modelAndViewFactory
                 .createForView(VIEW_FILES_UPLOAD_FORM)
+                .withAttribute("acceptableMimeTypes", fileFacade.getAcceptableMimeTypes(path).stream()
+                        .collect(Collectors.joining(", ")))
                 .build();
     }
 

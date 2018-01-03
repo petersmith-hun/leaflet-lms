@@ -4,10 +4,10 @@
 <section class="main__content" layout:fragment="content">
     <h3>[PROTOTYPE TEMPLATE] Upload file</h3>
     <form method="post" th:action="@{''}" enctype="multipart/form-data">
-        <input id="subFolder" name="subFolder" type="hidden" th:value="${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}" />
+        <input id="subFolder" name="subFolder" type="hidden" th:value="${@URLUtilities.extractSubPath(3, 0, #request.getServletPath())}" />
         <div class="form-group">
             <label for="inputFile"></label>
-            <input class="form-control" id="inputFile" name="inputFile" type="file" />
+            <input class="form-control" id="inputFile" name="inputFile" type="file" th:accept="${acceptableMimeTypes}" />
         </div>
         <div class="form-group">
             <label for="description">Description</label>
