@@ -61,7 +61,7 @@
                 <div class="card">
                     <div class="card-block">
                         <th:block th:if="${@URLUtilities.extractSubPath(1, 0, #request.getServletPath())} != 'browse'">
-                            <a class="btn btn-primary" th:href="@{/files/upload/__${@URLUtilities.extractSubPath(3, 0, #request.getServletPath())}__}" href="#">Upload file here</a>
+                            <a class="btn btn-primary" th:href="@{/files/upload/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}" href="#">Upload file here</a>
                             <p>&nbsp;</p>
                             <a class="btn btn-primary" th:href="@{/files/directory/create/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}" href="#">Create directory here</a>
                         </th:block>

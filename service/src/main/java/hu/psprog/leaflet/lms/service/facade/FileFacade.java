@@ -54,6 +54,15 @@ public interface FileFacade {
     FileDataModel getFileDetails(UUID pathUUID) throws CommunicationFailureException;
 
     /**
+     * Returns acceptable MIME types for given path.
+     *
+     * @param path current virtual file system path
+     * @return list of acceptable MIME types for current folder
+     * @throws CommunicationFailureException if client fails to reach backend application
+     */
+    List<String> getAcceptableMimeTypes(String path) throws CommunicationFailureException;
+
+    /**
      * Processes file upload request.
      *
      * @param fileUploadRequestModel file data
