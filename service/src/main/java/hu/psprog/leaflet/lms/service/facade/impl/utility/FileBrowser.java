@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -47,7 +46,7 @@ public class FileBrowser {
         String normalizedPath = urlUtilities.normalize(path);
         
         List<FileDataModel> files = Collections.emptyList();
-        if (Objects.nonNull(normalizedPath) && !StringUtils.EMPTY.equals(normalizedPath)) {
+        if (!StringUtils.EMPTY.equals(normalizedPath)) {
             FileListDataModel fileList = fileBridgeService.getUploadedFiles();
             files = fileList.getFiles().stream()
                     .filter(fileDataModel -> {
@@ -78,7 +77,7 @@ public class FileBrowser {
         String normalizedPath = urlUtilities.normalize(path);
         DirectoryListDataModel directories = fileBridgeService.getDirectories();
 
-        if (Objects.isNull(normalizedPath) || StringUtils.EMPTY.equals(normalizedPath)) {
+        if (StringUtils.EMPTY.equals(normalizedPath)) {
             folders = directories.getAcceptors().stream()
                     .map(DirectoryDataModel::getRoot)
                     .collect(Collectors.toList());
