@@ -5,8 +5,6 @@ import hu.psprog.leaflet.lms.service.auth.util.AbstractTokenRelatedTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.text.ParseException;
 
@@ -23,7 +21,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class JWTTokenAuthenticationTest extends AbstractTokenRelatedTest {
 
-    private static final GrantedAuthority SERVICE_ROLE = new SimpleGrantedAuthority(EXPECTED_ROLE);
     private static final String EXPECTED_DATE = "2018-01-07 12:12:01+0000";
     private static final String EMAIL_ADDRESS = "test@local.dev";
 

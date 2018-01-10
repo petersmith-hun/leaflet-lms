@@ -1,6 +1,8 @@
 package hu.psprog.leaflet.lms.service.auth.util;
 
 import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,7 @@ public class AbstractTokenRelatedTest {
             "TE1MzI3MTIxLCJpYXQiOjE1MTUzMjM1MjEsInJvbCI6IlNFUlZJQ0" +
             "UifQ.fake-token-signature";
     protected static final String EXPECTED_ROLE = "SERVICE";
+    protected static final GrantedAuthority SERVICE_ROLE = new SimpleGrantedAuthority(EXPECTED_ROLE);
     protected static final String EXPECTED_NAME = "leaflet-test";
     private static final long EXPECTED_USER_ID = 0L;
 

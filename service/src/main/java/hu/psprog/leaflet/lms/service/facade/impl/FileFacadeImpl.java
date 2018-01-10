@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -67,7 +66,7 @@ public class FileFacadeImpl implements FileFacade {
         InputStream fileStream = fileBridgeService.downloadFile(pathUUID, filename);
         try {
             content = IOUtils.toByteArray(fileStream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("Failed to convert received file [{}] to byte array.", pathUUID);
         }
 
