@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import hu.psprog.leaflet.lms.service.auth.handler.deserializer.JWTExpirationDateDeserializer;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Date;
 
@@ -62,5 +65,41 @@ public class AuthenticationUserDetailsModel {
 
     public void setExpiration(Date expiration) {
         this.expiration = expiration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AuthenticationUserDetailsModel that = (AuthenticationUserDetailsModel) o;
+
+        return new EqualsBuilder()
+                .append(name, that.name)
+                .append(role, that.role)
+                .append(id, that.id)
+                .append(expiration, that.expiration)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(name)
+                .append(role)
+                .append(id)
+                .append(expiration)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("role", role)
+                .append("id", id)
+                .append("expiration", expiration)
+                .toString();
     }
 }
