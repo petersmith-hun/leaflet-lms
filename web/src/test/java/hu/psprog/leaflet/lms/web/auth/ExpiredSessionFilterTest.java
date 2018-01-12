@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -88,12 +89,40 @@ public class ExpiredSessionFilterTest {
         expiredSessionFilter.doFilterInternal(request, response, filterChain);
 
         // then
-        assertValidSession();
+        assertValidSession(true);
     }
 
-    private void assertValidSession() {
+    @Test
+    @WithMockUser
+    public void shouldNotClearSessionWhenUserIsNotAuthenticatedByJWT() throws ServletException, IOException {
+
+        //given
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        // when
+        expiredSessionFilter.doFilterInternal(request, response, filterChain);
+
+        // then
+        assertValidSession(false);
+    }
+
+    @Test
+    @WithMockedJWTUser(authenticated = false)
+    public void shouldNotClearSessionWhenUserIsMarkedAsNotAuthenticated() throws ServletException, IOException {
+
+        //given
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        // when
+        expiredSessionFilter.doFilterInternal(request, response, filterChain);
+
+        // then
+        assertValidSession(true);
+    }
+
+    private void assertValidSession(boolean withJWTAuthentication) {
         assertThat(SecurityContextHolder.getContext().getAuthentication(), notNullValue());
-        assertThat(SecurityContextHolder.getContext().getAuthentication() instanceof JWTTokenAuthentication, is(true));
+        assertThat(SecurityContextHolder.getContext().getAuthentication() instanceof JWTTokenAuthentication, is(withJWTAuthentication));
         assertThat(session.isInvalid(), is(false));
         assertThat(Arrays.stream(request.getCookies()).noneMatch(cookie -> cookie.getMaxAge() == 0), is(true));
     }

@@ -29,6 +29,7 @@ public class MockedJWTUserSecurityContextFactory implements WithSecurityContextF
                 .withEmailAddress(EMAIL_ADDRESS)
                 .withToken(TOKEN)
                 .withDetails(prepareUserDetails(withMockedJWTUser))
+                .withAuthenticated(withMockedJWTUser.authenticated())
                 .build();
         securityContext.setAuthentication(authentication);
 

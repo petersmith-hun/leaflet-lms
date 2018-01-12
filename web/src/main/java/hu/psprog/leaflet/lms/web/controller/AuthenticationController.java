@@ -4,7 +4,6 @@ import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
-import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,12 +33,10 @@ public class AuthenticationController extends BaseController {
     private static final String SUCCESSFUL_PASSWORD_RESET = "Your password was successfully reset.";
 
     private UserFacade userFacade;
-    private ModelAndViewFactory modelAndViewFactory;
 
     @Autowired
-    public AuthenticationController(UserFacade userFacade, ModelAndViewFactory modelAndViewFactory) {
+    public AuthenticationController(UserFacade userFacade) {
         this.userFacade = userFacade;
-        this.modelAndViewFactory = modelAndViewFactory;
     }
 
     /**
@@ -84,7 +81,7 @@ public class AuthenticationController extends BaseController {
      * @param passwordResetDemandRequestModel {@link PasswordResetDemandRequestModel} holding information to request password reset
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} object, redirection to self
-     * @throws CommunicationFailureException
+     * @throws CommunicationFailureException if failed to reach backend
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_PASSWORD_RESET_DEMAND)
     public ModelAndView processPasswordResetDemand(@ModelAttribute PasswordResetDemandRequestModel passwordResetDemandRequestModel,
@@ -104,7 +101,7 @@ public class AuthenticationController extends BaseController {
      * @param userPasswordRequestModel {@link UserPasswordRequestModel} holding the new password and its confirmation
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} object, redirection to login form
-     * @throws CommunicationFailureException
+     * @throws CommunicationFailureException if failed to reach backend
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_PASSWORD_RESET_CONFIRM)
     public ModelAndView processPasswordResetConfirmation(@ModelAttribute UserPasswordRequestModel userPasswordRequestModel,

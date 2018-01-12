@@ -16,4 +16,5 @@ public @interface WithMockedJWTUser {
 
     long userID() default 1L;
     String role() default "ADMIN";
+    boolean authenticated() default true;
 }

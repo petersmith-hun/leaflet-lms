@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -84,6 +85,21 @@ public class SessionExtensionFilterTest {
         // given
         sessionExtensionFilter.setEnabled(true);
         sessionExtensionFilter.setThreshold(NOT_SOON_EXPIRATION_IN_MINUTES);
+
+        // when
+        sessionExtensionFilter.doFilterInternal(request, response, filterChain);
+
+        // then
+        verify(filterChain).doFilter(request, response);
+        verifyZeroInteractions(userFacade);
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldNotTryToExtendSessionIfUserIsNotAuthenticatedByJWTToken() throws ServletException, IOException {
+
+        // given
+        sessionExtensionFilter.setEnabled(true);
 
         // when
         sessionExtensionFilter.doFilterInternal(request, response, filterChain);
