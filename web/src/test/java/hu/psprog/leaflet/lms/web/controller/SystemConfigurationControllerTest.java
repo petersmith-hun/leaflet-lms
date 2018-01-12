@@ -20,6 +20,8 @@ import static org.mockito.Mockito.verify;
 public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
     private static final String SYSTEM = "system";
+    private static final String VIEW_SEO_EDITOR_FORM = "seo_editor_form";
+    private static final String PATH_SYSTEM_SEO = "/system/seo";
 
     @Mock
     private SystemConfigurationFacade systemConfigurationFacade;
@@ -34,8 +36,8 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         systemConfigurationController.showSEOConfigurationForm();
 
         // then
-        verifyViewCreated("seo_editor_form");
-        verifyFieldsSet("seo");
+        verifyViewCreated(VIEW_SEO_EDITOR_FORM);
+        verifyFieldsSet(FIELD_SEO);
     }
 
     @Test
@@ -49,7 +51,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
         // then
         verify(systemConfigurationFacade).processUpdateSEOConfiguration(seoConfiguration);
-        verifyRedirectionCreated("/system/seo");
+        verifyRedirectionCreated(PATH_SYSTEM_SEO);
     }
 
     @Override

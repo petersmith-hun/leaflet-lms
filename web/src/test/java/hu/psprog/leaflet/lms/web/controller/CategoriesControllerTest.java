@@ -24,6 +24,9 @@ public class CategoriesControllerTest extends AbstractControllerTest {
     private static final Long CATEGORY_ID = 2L;
     private static final String CATEGORY_VIEW_PATH = "/categories/view/" + CATEGORY_ID;
 
+    private static final String FIELD_CATEGORY = "category";
+    private static final String PATH_CATEGORIES = "/categories";
+
     @Mock
     private CategoryFacade categoryFacade;
 
@@ -38,7 +41,7 @@ public class CategoriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(categoryFacade).getAllCategories();
-        verifyViewCreated("list");
+        verifyViewCreated(VIEW_LIST);
         verifyFieldsSet(CATEGORIES);
     }
 
@@ -50,8 +53,8 @@ public class CategoriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(categoryFacade).getCategory(CATEGORY_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("category");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_CATEGORY);
     }
 
     @Test
@@ -61,7 +64,7 @@ public class CategoriesControllerTest extends AbstractControllerTest {
         categoriesController.showCategoryCreateForm();
 
         // then
-        verifyViewCreated("edit_form");
+        verifyViewCreated(VIEW_EDIT_FORM);
     }
 
     @Test
@@ -88,8 +91,8 @@ public class CategoriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(categoryFacade).getCategory(CATEGORY_ID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("category");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_CATEGORY);
     }
 
     @Test
@@ -116,7 +119,7 @@ public class CategoriesControllerTest extends AbstractControllerTest {
         // then
         verify(categoryFacade).processDeleteCategory(CATEGORY_ID);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/categories");
+        verifyRedirectionCreated(PATH_CATEGORIES);
     }
 
     @Test

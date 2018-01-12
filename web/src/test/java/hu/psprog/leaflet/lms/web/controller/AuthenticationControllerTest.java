@@ -23,6 +23,13 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
 
     private static final String USERS = "users";
 
+    private static final String VIEW_LOGIN = "login";
+    private static final String VIEW_RECLAIM_DEMAND = "reclaim_demand";
+    private static final String VIEW_RECLAIM_CONFIRM = "reclaim_confirm";
+
+    private static final String PATH_PASSWORD_RESET = "/password-reset";
+    private static final String PATH_LOGIN = "/login";
+
     @Mock
     private UserFacade userFacade;
 
@@ -36,7 +43,7 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         authenticationController.showLoginForm();
 
         // then
-        verifyViewCreated("login");
+        verifyViewCreated(VIEW_LOGIN);
     }
 
     @Test
@@ -46,7 +53,7 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         authenticationController.showPasswordResetDemandForm();
 
         // then
-        verifyViewCreated("reclaim_demand");
+        verifyViewCreated(VIEW_RECLAIM_DEMAND);
     }
 
     @Test
@@ -56,7 +63,7 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         authenticationController.showPasswordResetConfirmationForm();
 
         // then
-        verifyViewCreated("reclaim_confirm");
+        verifyViewCreated(VIEW_RECLAIM_CONFIRM);
     }
 
     @Test
@@ -71,7 +78,7 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).demandPasswordReset(passwordResetDemandRequestModel);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/password-reset");
+        verifyRedirectionCreated(PATH_PASSWORD_RESET);
     }
 
     @Test
@@ -86,7 +93,7 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).confirmPasswordReset(userPasswordRequestModel, TOKEN);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/login");
+        verifyRedirectionCreated(PATH_LOGIN);
     }
 
     @Override

@@ -26,6 +26,15 @@ public class AccountControllerTest extends AbstractControllerTest {
 
     private static final String USERS = "users";
 
+    private static final String FIELD_USER = "user";
+
+    private static final String PATH_ROOT = "/";
+    private static final String PATH_LOGIN = "/login";
+
+    private static final String VIEW_PROFILE = "profile";
+    private static final String VIEW_PASSWORD = "password";
+    private static final String VIEW_DELETE = "delete";
+
     @Mock
     private UserFacade userFacade;
 
@@ -40,8 +49,8 @@ public class AccountControllerTest extends AbstractControllerTest {
 
         // then
         verify(userFacade).retrieveUserDetails(USER_ID);
-        verifyViewCreated("profile");
-        verifyFieldsSet("user");
+        verifyViewCreated(VIEW_PROFILE);
+        verifyFieldsSet(FIELD_USER);
     }
 
     @Test
@@ -56,7 +65,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).processUserProfileUpdate(USER_ID, updateProfileRequestModel);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/");
+        verifyRedirectionCreated(PATH_ROOT);
     }
 
     @Test
@@ -66,7 +75,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         accountController.showPasswordChangeForm();
 
         // then
-        verifyViewCreated("password");
+        verifyViewCreated(VIEW_PASSWORD);
     }
 
     @Test
@@ -82,7 +91,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         verify(userFacade).processPasswordChange(USER_ID, passwordChangeRequestModel);
         verifyUserLoggedOut();
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/login");
+        verifyRedirectionCreated(PATH_LOGIN);
     }
 
     @Test
@@ -92,7 +101,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         accountController.showDeleteAccountForm();
 
         // then
-        verifyViewCreated("delete");
+        verifyViewCreated(VIEW_DELETE);
     }
 
     @Test
@@ -108,7 +117,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         verify(userFacade).processAccountDeletion(USER_ID, password);
         verifyFlashMessageSet();
         verifyUserLoggedOut();
-        verifyRedirectionCreated("/login");
+        verifyRedirectionCreated(PATH_LOGIN);
     }
 
     @Override

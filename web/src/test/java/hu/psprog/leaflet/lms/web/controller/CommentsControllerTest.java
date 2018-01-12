@@ -33,6 +33,7 @@ public class CommentsControllerTest extends AbstractControllerTest {
     private static final Long COMMENT_ID = 3L;
     private static final String COMMENT_VIEW_PATH = "/comments/view/" + COMMENT_ID;
     private static final String DELETE_REDIRECTION_PATH = "/comments/" + ENTRY_ID;
+    private static final String FIELD_COMMENT = "comment";
 
     @Mock
     private CommentFacade commentFacade;
@@ -57,8 +58,8 @@ public class CommentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(commentFacade).getCommentsForEntry(eq(ENTRY_ID), eq(PAGE.get()), eq(LIMIT.get()), any(), any());
-        verifyViewCreated("list");
-        verifyFieldsSet("content", "pagination");
+        verifyViewCreated(VIEW_LIST);
+        verifyFieldsSet(FIELD_CONTENT, FIELD_PAGINATION);
     }
 
     @Test
@@ -69,8 +70,8 @@ public class CommentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(commentFacade).getComment(COMMENT_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("comment");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_COMMENT);
     }
 
     @Test
@@ -81,8 +82,8 @@ public class CommentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(commentFacade).getComment(COMMENT_ID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("comment");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_COMMENT);
     }
 
     @Test
@@ -108,8 +109,8 @@ public class CommentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(commentFacade).getComment(COMMENT_ID);
-        verifyViewCreated("delete_form");
-        verifyFieldsSet("comment");
+        verifyViewCreated(VIEW_DELETE_FORM);
+        verifyFieldsSet(FIELD_COMMENT);
     }
 
     @Test

@@ -24,6 +24,15 @@ public class UsersControllerTest extends AbstractControllerTest {
 
     private static final String USERS = "users";
 
+    private static final String FIELD_ROLES = "roles";
+    private static final String FIELD_USER = "user";
+    private static final String FIELD_CURRENT_ROLE = "currentRole";
+    private static final String FIELD_USERNAME = "username";
+
+    private static final String VIEW_CREATE = "create";
+    private static final String VIEW_CHANGE_ROLE = "change_role";
+    private static final String USERS_VIEW_PATH = "/users/view/" + USER_ID;
+
     @Mock
     private UserFacade userFacade;
 
@@ -38,7 +47,7 @@ public class UsersControllerTest extends AbstractControllerTest {
 
         // then
         verify(userFacade).listUsers();
-        verifyViewCreated("list");
+        verifyViewCreated(VIEW_LIST);
         verifyFieldsSet(USERS);
     }
 
@@ -50,8 +59,8 @@ public class UsersControllerTest extends AbstractControllerTest {
 
         // then
         verify(userFacade).getAvailableRoles();
-        verifyViewCreated("create");
-        verifyFieldsSet("roles");
+        verifyViewCreated(VIEW_CREATE);
+        verifyFieldsSet(FIELD_ROLES);
     }
 
     @Test
@@ -67,7 +76,7 @@ public class UsersControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).processUserCreation(userCreateRequestModel);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/users/view/" + USER_ID);
+        verifyRedirectionCreated(USERS_VIEW_PATH);
     }
 
     @Test
@@ -78,8 +87,8 @@ public class UsersControllerTest extends AbstractControllerTest {
 
         // then
         verify(userFacade).retrieveUserDetails(USER_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("user");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_USER);
     }
 
     @Test
@@ -94,8 +103,8 @@ public class UsersControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).retrieveUserDetails(USER_ID);
         verify(userFacade).getAvailableRoles();
-        verifyViewCreated("change_role");
-        verifyFieldsSet("roles", "currentRole", "username");
+        verifyViewCreated(VIEW_CHANGE_ROLE);
+        verifyFieldsSet(FIELD_ROLES, FIELD_CURRENT_ROLE, FIELD_USERNAME);
     }
 
     @Test
@@ -110,7 +119,7 @@ public class UsersControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).processUserRoleChange(USER_ID, newRole);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/users/view/" + USER_ID);
+        verifyRedirectionCreated(USERS_VIEW_PATH);
     }
 
     @Override

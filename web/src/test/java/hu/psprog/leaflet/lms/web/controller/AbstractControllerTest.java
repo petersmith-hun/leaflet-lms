@@ -30,6 +30,15 @@ public abstract class AbstractControllerTest {
     static final Optional<Integer> PAGE = Optional.of(1);
     static final Optional<Integer> LIMIT = Optional.of(10);
 
+    static final String VIEW_LIST = "list";
+    static final String VIEW_DETAILS = "details";
+    static final String VIEW_EDIT_FORM = "edit_form";
+    static final String VIEW_DELETE_FORM = "delete_form";
+
+    static final String FIELD_CONTENT = "content";
+    static final String FIELD_PAGINATION = "pagination";
+    static final String FIELD_SEO = "seo";
+
     private static final String VIEW_NAME_FORMAT = "view/%s/%s";
 
     @Mock

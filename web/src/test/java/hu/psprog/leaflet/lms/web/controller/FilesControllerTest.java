@@ -37,6 +37,17 @@ public class FilesControllerTest extends AbstractControllerTest {
     private static final String FILENAME = "image.jpg";
     private static final byte[] FILE_CONTENT = "content".getBytes();
 
+    private static final String FIELD_CURRENT_URL = "currentURL";
+    private static final String FIELD_UP_URL = "upURL";
+    private static final String FIELD_FILE = "file";
+    private static final String FIELD_ACCEPTABLE_MIME_TYPES = "acceptableMimeTypes";
+
+    private static final String VIEW_BROWSER = "browser";
+    private static final String VIEW_UPLOAD_FORM = "upload_form";
+    private static final String VIEW_DIR_CREATE_FORM = "dir_create_form";
+
+    private static final String PATH_FILES_BROWSE = "/files/browse";
+
     @Mock
     private FileFacade fileFacade;
 
@@ -57,8 +68,8 @@ public class FilesControllerTest extends AbstractControllerTest {
         verify(urlUtilities).extractSubPath(anyString(), anyString());
         verify(urlUtilities).normalize(anyString());
         verify(urlUtilities).getUpURL(anyString(), anyInt());
-        verifyViewCreated("browser");
-        verifyFieldsSet("browser", "currentURL", "upURL");
+        verifyViewCreated(VIEW_BROWSER);
+        verifyFieldsSet(VIEW_BROWSER, FIELD_CURRENT_URL, FIELD_UP_URL);
     }
 
     @Test
@@ -69,8 +80,8 @@ public class FilesControllerTest extends AbstractControllerTest {
 
         // then
         verify(fileFacade).getFileDetails(PATH_UUID);
-        verifyViewCreated("details");
-        verifyFieldsSet("file");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_FILE);
     }
 
     @Test
@@ -81,8 +92,8 @@ public class FilesControllerTest extends AbstractControllerTest {
 
         // then
         verify(fileFacade).getFileDetails(PATH_UUID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("file");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_FILE);
     }
 
     @Test
@@ -112,8 +123,8 @@ public class FilesControllerTest extends AbstractControllerTest {
         // then
         verify(fileFacade).getAcceptableMimeTypes(anyString());
         verify(urlUtilities).extractSubPath(anyString(), anyString());
-        verifyViewCreated("upload_form");
-        verifyFieldsSet("acceptableMimeTypes");
+        verifyViewCreated(VIEW_UPLOAD_FORM);
+        verifyFieldsSet(FIELD_ACCEPTABLE_MIME_TYPES);
     }
 
     @Test
@@ -139,7 +150,7 @@ public class FilesControllerTest extends AbstractControllerTest {
         filesController.showCreateDirectoryForm();
 
         // then
-        verifyViewCreated("dir_create_form");
+        verifyViewCreated(VIEW_DIR_CREATE_FORM);
     }
 
     @Test
@@ -154,7 +165,7 @@ public class FilesControllerTest extends AbstractControllerTest {
         // then
         verify(fileFacade).processCreateDirectory(directoryCreationRequestModel);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/files/browse");
+        verifyRedirectionCreated(PATH_FILES_BROWSE);
     }
 
     @Test
@@ -166,7 +177,7 @@ public class FilesControllerTest extends AbstractControllerTest {
         // then
         verify(fileFacade).processDeleteFile(PATH_UUID);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/files/browse");
+        verifyRedirectionCreated(PATH_FILES_BROWSE);
     }
 
     @Test

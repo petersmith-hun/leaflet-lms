@@ -23,6 +23,8 @@ public class TagsControllerTest extends AbstractControllerTest {
     private static final String TAGS = "tags";
     private static final long TAG_ID = 6L;
     private static final String TAG_VIEW_PATH = "/tags/view/" + TAG_ID;
+    private static final String FIELD_TAG = "tag";
+    private static final String PATH_TAGS = "/tags";
 
     @Mock
     private TagFacade tagFacade;
@@ -38,8 +40,8 @@ public class TagsControllerTest extends AbstractControllerTest {
 
         // then
         verify(tagFacade).getAllTags();
-        verifyViewCreated("list");
-        verifyFieldsSet("tags");
+        verifyViewCreated(VIEW_LIST);
+        verifyFieldsSet(TAGS);
     }
 
     @Test
@@ -50,8 +52,8 @@ public class TagsControllerTest extends AbstractControllerTest {
 
         // then
         verify(tagFacade).getTag(TAG_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("tag");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_TAG);
     }
 
     @Test
@@ -61,7 +63,7 @@ public class TagsControllerTest extends AbstractControllerTest {
         tagsController.showCreateTagForm();
 
         // then
-        verifyViewCreated("edit_form");
+        verifyViewCreated(VIEW_EDIT_FORM);
     }
 
     @Test
@@ -88,8 +90,8 @@ public class TagsControllerTest extends AbstractControllerTest {
 
         // then
         verify(tagFacade).getTag(TAG_ID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("tag");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_TAG);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class TagsControllerTest extends AbstractControllerTest {
         // then
         verify(tagFacade).processDeleteTag(TAG_ID);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/tags");
+        verifyRedirectionCreated(PATH_TAGS);
     }
 
     @Test

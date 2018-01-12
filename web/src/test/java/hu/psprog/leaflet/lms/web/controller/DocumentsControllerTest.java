@@ -28,6 +28,8 @@ public class DocumentsControllerTest extends AbstractControllerTest {
     private static final String DOCUMENTS = "documents";
     private static final long DOCUMENT_ID = 2L;
     private static final String DOCUMENT_VIEW_PATH = "/documents/view/" + DOCUMENT_ID;
+    private static final String FIELD_DOCUMENT = "document";
+    private static final String PATH_DOCUMENTS = "/documents";
 
     @Mock
     private DocumentFacade documentFacade;
@@ -43,7 +45,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(documentFacade).getAllDocuments();
-        verifyViewCreated("list");
+        verifyViewCreated(VIEW_LIST);
         verifyFieldsSet(DOCUMENTS);
     }
 
@@ -55,8 +57,8 @@ public class DocumentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(documentFacade).getDocument(DOCUMENT_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("document");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_DOCUMENT);
     }
 
     @Test
@@ -66,7 +68,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         documentsController.showCreateDocumentForm();
 
         // then
-        verifyViewCreated("edit_form");
+        verifyViewCreated(VIEW_EDIT_FORM);
     }
 
     @Test
@@ -94,8 +96,8 @@ public class DocumentsControllerTest extends AbstractControllerTest {
 
         // then
         verify(documentFacade).getDocument(DOCUMENT_ID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("document");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_DOCUMENT);
     }
 
     @Test
@@ -122,7 +124,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         // then
         verify(documentFacade).processDeleteDocument(DOCUMENT_ID);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/documents");
+        verifyRedirectionCreated(PATH_DOCUMENTS);
     }
     @Test
     public void shouldProcessChangeStatusWithEnabledStatusMessage() throws CommunicationFailureException {

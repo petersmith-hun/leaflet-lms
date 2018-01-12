@@ -34,6 +34,11 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String ENTRIES = "entries";
     private static final long ENTRY_ID = 4L;
     private static final String ENTRY_VIEW_PATH = "/entries/view/" + ENTRY_ID;
+    private static final String FIELD_TAG_SELECTOR = "tagSelector";
+    private static final String FIELD_CATEGORY_SELECTOR = "categorySelector";
+    private static final String FIELD_FILE_SELECTOR = "fileSelector";
+    private static final String FIELD_ENTRY_DATA = "entryData";
+    private static final String PATH_ENTRIES = "/entries";
 
     @Mock
     private EntryFacade entryFacade;
@@ -58,8 +63,8 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(entryFacade).getEntries(eq(PAGE.get()), eq(LIMIT.get()), any(), any());
-        verifyViewCreated("list");
-        verifyFieldsSet("content", "pagination");
+        verifyViewCreated(VIEW_LIST);
+        verifyFieldsSet(FIELD_CONTENT, FIELD_PAGINATION);
     }
 
     @Test
@@ -73,8 +78,8 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(entryFacade).getEntry(ENTRY_ID);
-        verifyViewCreated("details");
-        verifyFieldsSet("content", "seo");
+        verifyViewCreated(VIEW_DETAILS);
+        verifyFieldsSet(FIELD_CONTENT, FIELD_SEO);
     }
 
     @Test
@@ -88,8 +93,8 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(entryFacade).fillForm();
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("tagSelector", "categorySelector", "fileSelector");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR);
     }
 
     @Test
@@ -120,8 +125,8 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(entryFacade).fillForm(ENTRY_ID);
-        verifyViewCreated("edit_form");
-        verifyFieldsSet("tagSelector", "categorySelector", "fileSelector", "entryData");
+        verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_ENTRY_DATA);
     }
 
     @Test
@@ -178,7 +183,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).processDeletion(ENTRY_ID);
         verifyFlashMessageSet();
-        verifyRedirectionCreated("/entries");
+        verifyRedirectionCreated(PATH_ENTRIES);
     }
 
     @Override
