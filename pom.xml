@@ -6,7 +6,7 @@
 
     <groupId>hu.psprog.leaflet</groupId>
     <artifactId>lms</artifactId>
-    <version>0.12.1-dev</version>
+    <version>0.13.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -221,7 +221,12 @@
     </dependencies>
 
     <build>
-        <finalName>leaflet-lms</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
