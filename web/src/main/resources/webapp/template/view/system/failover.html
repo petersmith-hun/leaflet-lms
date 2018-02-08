@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <h2>CBFS status</h2>
+    <div style="padding-left: 20px;">
+        <p>CBFS is currently <span th:text="${status.status}">status</span></p>
+        <p>The last time CBFS started serving traffic was <span th:text="${status.lastCall != null} ? ${status.lastCall} : 'never'">last call date</span></p>
+        <p>The last time CBFS created a mirror was <span th:text="${status.lastMirroring != null} ? ${status.lastMirroring} : 'never'">last mirroring date</span></p>
+    </div>
+    <h3>Mirror status</h3>
+    <div style="padding-left: 20px;">
+        <p th:each="mirror : ${status.mirrorStatus}">
+            <span th:text="${mirror.mirrorType}">mirror ID</span><br />
+            <span th:text="${mirror.numberOfRecords} + ' records'">number of records</span>
+        </p>
+    </div>
+    <h3>Status entries</h3>
+    <div style="padding-left: 20px;">
+        <p th:each="statusEntry : ${status.statusEntryList}">
+            <span th:text="${statusEntry.created}">entry created at</span><br />
+            <span th:text="${statusEntry.status}">status</span>
+            <span th:if="${statusEntry.parameter != null}" th:text="' (' + ${statusEntry.parameter} + ')'"> (parameter info)</span>
+        </p>
+    </div>
+</section>
+</body>
+</html>

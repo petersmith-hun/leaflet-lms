@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
+import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 public class SystemConfigurationController extends BaseController {
 
     private static final String VIEW_SYSTEM_SEO_EDITOR_FORM = "view/system/seo_editor_form";
+    private static final String VIEW_SYSTEM_FAILOVER = "view/system/failover";
 
     private static final String PATH_SEO = "/seo";
+    private static final String PATH_FAILOVER = "/failover";
 
     static final String PATH_SYSTEM = "/system";
 
@@ -61,5 +64,19 @@ public class SystemConfigurationController extends BaseController {
 
         return modelAndViewFactory
                 .createRedirectionTo(PATH_SYSTEM + PATH_SEO);
+    }
+
+    /**
+     * Renders failover status page.
+     *
+     * @return populated {@link ModelAndView} object
+     * @throws FailoverCommunicationException on communication failure with CBFS
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_FAILOVER)
+    public ModelAndView showFailoverStatus() throws FailoverCommunicationException {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_FAILOVER)
+                .withAttribute("status", systemConfigurationFacade.getFailoverStatus())
+                .build();
     }
 }

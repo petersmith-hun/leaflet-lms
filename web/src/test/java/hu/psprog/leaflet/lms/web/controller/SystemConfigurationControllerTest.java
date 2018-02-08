@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
+import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,8 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String SYSTEM = "system";
     private static final String VIEW_SEO_EDITOR_FORM = "seo_editor_form";
     private static final String PATH_SYSTEM_SEO = "/system/seo";
+    private static final String VIEW_FAILOVER = "failover";
+    private static final String FIELD_STATUS = "status";
 
     @Mock
     private SystemConfigurationFacade systemConfigurationFacade;
@@ -52,6 +55,18 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         // then
         verify(systemConfigurationFacade).processUpdateSEOConfiguration(seoConfiguration);
         verifyRedirectionCreated(PATH_SYSTEM_SEO);
+    }
+
+    @Test
+    public void shouldShowFailoverStatus() throws FailoverCommunicationException {
+
+        // when
+        systemConfigurationController.showFailoverStatus();
+
+        // then
+        verifyViewCreated(VIEW_FAILOVER);
+        verifyFieldsSet(FIELD_STATUS);
+        verify(systemConfigurationFacade).getFailoverStatus();
     }
 
     @Override
