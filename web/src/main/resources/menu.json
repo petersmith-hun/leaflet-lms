@@ -12,6 +12,10 @@
         {
           "name": "Default SEO",
           "link": "/system/seo"
+        },
+        {
+          "name": "Failover status",
+          "link": "/system/failover"
         }
       ]
     },
