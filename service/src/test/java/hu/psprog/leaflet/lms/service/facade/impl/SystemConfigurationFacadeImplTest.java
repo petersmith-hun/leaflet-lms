@@ -4,9 +4,13 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.domain.system.failover.FailoverStatus;
 import hu.psprog.leaflet.lms.service.domain.system.failover.StatusResponse;
+import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
+import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
 import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
+import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
 import hu.psprog.leaflet.lms.service.facade.impl.client.failover.FailoverClient;
+import hu.psprog.leaflet.lms.service.facade.impl.client.tlp.TLPClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -31,6 +35,8 @@ public class SystemConfigurationFacadeImplTest {
     private static final StatusResponse FAILOVER_STATUS_RESPONSE = StatusResponse.getBuilder()
             .withStatus(FailoverStatus.STANDBY)
             .build();
+    private static final LogRequest LOG_REQUEST = new LogRequest();
+    private static final LogEventPage LOG_EVENT_PAGE_RESPONSE = LogEventPage.getBuilder().build();
 
     @Mock
     private SEOConfigurationDCPAdapter seoConfigurationDCPAdapter;
@@ -40,6 +46,9 @@ public class SystemConfigurationFacadeImplTest {
 
     @Mock
     private FailoverClient failoverClient;
+
+    @Mock
+    private TLPClient tlpClient;
 
     @InjectMocks
     private SystemConfigurationFacadeImpl systemConfigurationFacade;
@@ -86,5 +95,19 @@ public class SystemConfigurationFacadeImplTest {
 
         // then
         assertThat(result, equalTo(FAILOVER_STATUS_RESPONSE));
+    }
+
+    @Test
+    public void shouldGetLogs() throws TLPCommunicationException {
+
+        // given
+        given(tlpClient.getLogs(LOG_REQUEST)).willReturn(response);
+        given(response.readEntity(LogEventPage.class)).willReturn(LOG_EVENT_PAGE_RESPONSE);
+
+        // when
+        LogEventPage result = systemConfigurationFacade.getLogs(LOG_REQUEST);
+
+        // then
+        assertThat(result, equalTo(LOG_EVENT_PAGE_RESPONSE));
     }
 }
