@@ -2,7 +2,12 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
+import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
+import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
+import hu.psprog.leaflet.lms.service.domain.tlp.OrderBy;
+import hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection;
 import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
+import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +27,11 @@ public class SystemConfigurationController extends BaseController {
 
     private static final String VIEW_SYSTEM_SEO_EDITOR_FORM = "view/system/seo_editor_form";
     private static final String VIEW_SYSTEM_FAILOVER = "view/system/failover";
+    private static final String VIEW_SYSTEM_LOGS = "view/system/logs";
 
     private static final String PATH_SEO = "/seo";
     private static final String PATH_FAILOVER = "/failover";
+    private static final String PATH_LOGS = "/logs";
 
     static final String PATH_SYSTEM = "/system";
 
@@ -78,5 +85,29 @@ public class SystemConfigurationController extends BaseController {
         return modelAndViewFactory.createForView(VIEW_SYSTEM_FAILOVER)
                 .withAttribute("status", systemConfigurationFacade.getFailoverStatus())
                 .build();
+    }
+
+    /**
+     * Shows log filter form.
+     * If a query has already been sent via the form, applicable logs will be retrieved and listed.
+     *
+     * @param logRequest paging and filtering parameters (from query parameters) collected as {@link LogRequest} object
+     * @return populated {@link ModelAndView} object
+     * @throws TLPCommunicationException on communication failure with TLP
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_LOGS)
+    public ModelAndView showRetrievedLogs(LogRequest logRequest) throws TLPCommunicationException {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_LOGS)
+                .withAttribute("orderByOptions", OrderBy.values())
+                .withAttribute("orderDirectionOptions", OrderDirection.values())
+                .withAttribute("logs", getLogs(logRequest))
+                .build();
+    }
+
+    private LogEventPage getLogs(LogRequest logRequest) throws TLPCommunicationException {
+        return logRequest.isQueried()
+                ? systemConfigurationFacade.getLogs(logRequest)
+                : null;
     }
 }

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <h3>[PROTOTYPE TEMPLATE] Log management</h3>
+    <form method="get" th:action="@{''}">
+        <input type="hidden" name="queried" value="true" />
+        <div class="row">
+            <div class="col-sm-4 form-group">
+                <label for="limit">Limit</label>
+                <select class="form-control" id="limit" name="limit" th:with="limitList = ${ {'10', '20', '50', '100'} }">
+                    <option th:each="limitOption : ${limitList}"
+                            th:selected="${(#request.getParameter('limit') != null and #request.getParameter('limit') == limitOption)
+                                        or (#request.getParameter('limit') == null and limitOption == '20')}"
+                            th:value="${limitOption}"
+                            th:text="${limitOption}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-4 form-group">
+                <label for="orderBy">Order by</label>
+                <select class="form-control" id="orderBy" name="orderBy">
+                    <option th:each="by : ${orderByOptions}"
+                            th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderBy).valueOf(#request.getParameter('orderBy')))
+                                        or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderBy).TIMESTAMP)}"
+                            th:value="${by}"
+                            th:text="${by}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-4 form-group">
+                <label for="orderDirection">Order direction</label>
+                <select class="form-control" id="orderDirection" name="orderDirection">
+                    <option th:each="direction : ${orderDirectionOptions}"
+                            th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection).valueOf(#request.getParameter('orderDirection')))
+                                        or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection).DESC)}"
+                            th:value="${direction}"
+                            th:text="${direction}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3 form-group">
+                <label for="source">Source application</label>
+                <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs'} }">
+                    <option th:each="sourceOption : ${sourceList}"
+                            th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
+                            th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
+                            th:text="${sourceOption}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label for="level">Level</label>
+                <select class="form-control" id="level" name="level" th:with="levelList = ${ {'any', 'trace', 'debug', 'info', 'warn', 'error'} }">
+                    <option th:each="levelOption : ${levelList}"
+                            th:selected="${#request.getParameter('level') != null and #request.getParameter('level') == levelOption}"
+                            th:value="${levelOption == 'any'} ? null : ${levelOption}"
+                            th:text="${levelOption}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-sm-3 form-group">
+                <label for="from">From date</label>
+                <input class="form-control" type="text" id="from" name="from" placeholder="From date" th:value="${#request.getParameter('from')}" />
+            </div>
+            <div class="col-sm-3 form-group">
+                <label for="to">By date</label>
+                <input class="form-control" type="text" id="to" name="to" placeholder="By date" th:value="${#request.getParameter('to')}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="content">Content</label>
+            <input class="form-control" type="text" id="content" name="content" placeholder="Content" th:value="${#request.getParameter('content')}" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Query logs</button>
+        </div>
+    </form>
+    <div th:if="${logs != null}">
+        <p style="font-style: italic"><span th:text="${logs.entityCount}">0</span> results</p>
+        <div th:each="log : ${logs.entitiesOnPage}">
+            <span th:text="${log.timeStamp}">timestamp</span>
+            <span th:text="${log.level}">level</span>
+            <span th:text="${log.content}">content</span>
+            <pre style="white-space: pre-wrap;" th:if="${log.exception != null}" th:text="${log.exception.message} + ${log.exception.stackTrace}">exception</pre>
+        </div>
+        <div class="card-footer text-xs-center">
+            <ul class="pagination pagination-sm m-0" th:if="${logs.pageCount > 1}">
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, logs.pageCount)}">
+                    <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
+                                                    queried=true,
+                                                    page=__${pageNum}__,
+                                                    limit=__${#request.getParameter('limit')}__,
+                                                    orderBy=__${#request.getParameter('orderBy')}__,
+                                                    orderDirection=__${#request.getParameter('orderDirection')}__,
+                                                    source=__${#request.getParameter('source')}__,
+                                                    level=__${#request.getParameter('level')}__,
+                                                    content=__${#request.getParameter('content')}__,
+                                                    from=__${#request.getParameter('from')}__,
+                                                    to=__${#request.getParameter('to')}__)}">1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+</body>
+</html>
