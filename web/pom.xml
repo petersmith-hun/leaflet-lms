@@ -50,6 +50,10 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.psprog.leaflet</groupId>
+            <artifactId>tlp-appender</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
