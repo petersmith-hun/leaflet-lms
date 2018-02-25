@@ -6,7 +6,7 @@
 
     <groupId>hu.psprog.leaflet</groupId>
     <artifactId>lms</artifactId>
-    <version>0.13.0-dev</version>
+    <version>0.14.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -31,6 +31,7 @@
         <!-- leaflet internal dependency versions -->
         <leaflet.rest-api.version>1.2.1</leaflet.rest-api.version>
         <leaflet.bridge.version>1.7.2</leaflet.bridge.version>
+        <leaflet.tlp-appender.version>1.0.0</leaflet.tlp-appender.version>
 
         <!-- Spring versions -->
         <spring.boot.version>1.5.4.RELEASE</spring.boot.version>
@@ -74,6 +75,11 @@
                 <groupId>hu.psprog.leaflet</groupId>
                 <artifactId>leaflet-bridge</artifactId>
                 <version>${leaflet.bridge.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>tlp-appender</artifactId>
+                <version>${leaflet.tlp-appender.version}</version>
             </dependency>
 
             <!-- Spring Framework dependencies -->
