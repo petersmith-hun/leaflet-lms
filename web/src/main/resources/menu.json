@@ -16,6 +16,10 @@
         {
           "name": "Failover status",
           "link": "/system/failover"
+        },
+        {
+          "name": "Log management",
+          "link": "/system/logs"
         }
       ]
     },
