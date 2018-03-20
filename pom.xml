@@ -6,7 +6,7 @@
 
     <groupId>hu.psprog.leaflet</groupId>
     <artifactId>lms</artifactId>
-    <version>0.14.0-dev</version>
+    <version>0.15.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -29,8 +29,8 @@
         <java.version>1.8</java.version>
 
         <!-- leaflet internal dependency versions -->
-        <leaflet.rest-api.version>1.2.1</leaflet.rest-api.version>
-        <leaflet.bridge.version>1.7.2</leaflet.bridge.version>
+        <leaflet.rest-api.version>1.3.0</leaflet.rest-api.version>
+        <leaflet.bridge.version>1.8.0</leaflet.bridge.version>
         <leaflet.tlp-appender.version>1.0.0</leaflet.tlp-appender.version>
 
         <!-- Spring versions -->
