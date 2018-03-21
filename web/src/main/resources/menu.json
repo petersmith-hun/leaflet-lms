@@ -14,6 +14,10 @@
           "link": "/system/seo"
         },
         {
+          "name": "Front-end routes",
+          "link": "/system/routes"
+        },
+        {
           "name": "Failover status",
           "link": "/system/failover"
         },
@@ -65,7 +69,7 @@
         },
         {
           "name": "Grafana",
-          "link": "https://psprog.hu/grafana/"
+          "link": "https://monitoring.psprog.hu"
         }
       ]
     }

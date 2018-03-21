@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <h3>[PROTOTYPE TEMPLATE] Create / Edit route</h3>
+    <form method="post" th:action="@{''}">
+        <div class="form-group">
+            <label for="routeId">Route ID</label>
+            <input class="form-control" id="routeId" name="routeId" placeholder="Route ID" type="text" th:value="${route == null} ? null : ${route.routeId}" />
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" id="name" name="name" placeholder="Name" type="text" th:value="${route == null} ? null : ${route.name}" />
+        </div>
+        <div class="form-group">
+            <label for="url">Path</label>
+            <input class="form-control" id="url" name="url" placeholder="Path" type="text" th:value="${route == null} ? null : ${route.url}" />
+        </div>
+        <div class="form-group">
+            <label for="sequenceNumber">Sequence number</label>
+            <input class="form-control" id="sequenceNumber" name="sequenceNumber" placeholder="Sequence number" type="number" th:value="${route == null} ? null : ${route.sequenceNumber}" />
+        </div>
+        <div class="form-group">
+            <label for="type">Type</label>
+            <select class="form-control" name="type" id="type" th:with="types = ${ {'HEADER_MENU', 'FOOTER_MENU', 'STANDALONE', 'ENTRY_ROUTE_MASK', 'CATEGORY_ROUTE_MASK'} }">
+                <option th:each="type : ${types}"
+                        th:selected="${route != null and type == route.type}"
+                        th:value="${type}"
+                        th:text="${type}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</section>
+</body>
+</html>
