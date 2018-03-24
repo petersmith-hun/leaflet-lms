@@ -70,12 +70,16 @@
                         <argument>--spring.config.location=${spring.config.location}</argument>
                     </arguments>
                     <addResources>true</addResources>
+                    <executable>true</executable>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
