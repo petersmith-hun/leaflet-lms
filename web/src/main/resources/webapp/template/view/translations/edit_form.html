@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<body>
+<section class="main__content" layout:fragment="content">
+    <h3>[PROTOTYPE TEMPLATE] Create translation pack</h3>
+    <form method="post" th:action="@{''}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="packName">Pack name</label>
+            <input class="form-control" id="packName" name="packName" placeholder="Pack name" type="text" />
+        </div>
+        </div>
+        <div class="form-group">
+            <label for="locale">Language</label>
+            <select class="form-control" name="locale" id="locale" th:with="localeList = ${ {'hu_HU', 'en'} }">
+                <option th:each="locale : ${localeList}"
+                        th:value="${locale}"
+                        th:text="${locale}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="definitions">Definitions as CSV (separated with ';')</label>
+            <input class="form-control" name="definitions" id="definitions" type="file" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</section>
+</body>
+</html>

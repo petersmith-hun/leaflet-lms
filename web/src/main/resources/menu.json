@@ -18,6 +18,10 @@
           "link": "/system/routes"
         },
         {
+          "name": "Translation management",
+          "link": "/system/translations"
+        },
+        {
           "name": "Failover status",
           "link": "/system/failover"
         },
