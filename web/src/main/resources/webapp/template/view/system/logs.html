@@ -1,5 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<head>
+    <style type="text/css">
+        .log-details-wrapper {
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .log-details-wrapper:hover {
+            background-color: rgba(132,198,255,0.26);
+        }
+
+        .log-details-header {
+            padding-bottom: 2px;
+            padding-left: 10px;
+            margin-bottom: 2px;
+            border-bottom: 1px solid #a1a1a1;
+        }
+
+        .log-details-level {
+            font-weight: bold;
+        }
+
+        .log-details-source:before {
+            content: 'source: ';
+            font-size: small;
+            color: #bbbbbb;
+            margin-left: 5px;
+        }
+
+        .log-details-timestamp:before {
+            content: 'logged at: ';
+            font-size: small;
+            color: #bbbbbb;
+            margin-left: 5px;
+        }
+
+        .log-details-thread:before {
+            content: 'thread: ';
+            font-size: small;
+            color: #bbbbbb;
+            margin-left: 5px;
+        }
+
+        .log-details-logger:before {
+            content: 'logger: ';
+            font-size: small;
+            color: #bbbbbb;
+            margin-left: 5px;
+        }
+
+        .log-details-content {
+            padding: 3px 10px;
+            display: inline-block;
+        }
+
+        .log-details-exception {
+            white-space: pre-wrap;
+            font-size: smaller;
+            padding: 3px 10px;
+        }
+    </style>
+</head>
 <body>
 <section class="main__content" layout:fragment="content">
     <h3>[PROTOTYPE TEMPLATE] Log management</h3>
@@ -80,11 +142,16 @@
     </form>
     <div th:if="${logs != null}">
         <p style="font-style: italic"><span th:text="${logs.entityCount}">0</span> results</p>
-        <div th:each="log : ${logs.entitiesOnPage}">
-            <span th:text="${log.timeStamp}">timestamp</span>
-            <span th:text="${log.level}">level</span>
-            <span th:text="${log.content}">content</span>
-            <pre style="white-space: pre-wrap;" th:if="${log.exception != null}" th:text="${log.exception.message} + ${log.exception.stackTrace}">exception</pre>
+        <div class="log-details-wrapper" th:each="log : ${logs.entitiesOnPage}">
+            <div class="log-details-header">
+                <span class="log-details-level" th:text="${log.level}">level</span>
+                <span class="log-details-source" th:text="${log.source}">source</span>
+                <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
+                <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
+                <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
+            </div>
+            <span class="log-details-content" th:text="${log.content}">content</span>
+            <pre class="log-details-exception" th:if="${log.exception != null}" th:text="${log.exception.message} + ${log.exception.stackTrace}">exception</pre>
         </div>
         <div class="card-footer text-xs-center">
             <ul class="pagination pagination-sm m-0" th:if="${logs.pageCount > 1}">
