@@ -117,9 +117,11 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
         static TemporalDefinition build(String[] splitLine) {
 
             TemporalDefinition temporalDefinition = new TemporalDefinition();
-            if (Objects.nonNull(splitLine) && splitLine.length == 2) {
+            if (splitLine.length == 2) {
                 temporalDefinition.key = splitLine[0];
                 temporalDefinition.value = splitLine[1];
+            } else {
+                LOGGER.warn("Ignoring invalid definition [{}]", splitLine);
             }
 
             return temporalDefinition;

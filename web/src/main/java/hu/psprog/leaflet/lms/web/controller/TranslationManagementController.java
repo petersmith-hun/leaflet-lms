@@ -38,6 +38,11 @@ public class TranslationManagementController extends BaseController {
         this.translationManagementFacade = translationManagementFacade;
     }
 
+    /**
+     * Retrieves information of all existing translation packs.
+     *
+     * @return populated {@link ModelAndView}
+     */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listPacks() {
 
@@ -46,6 +51,12 @@ public class TranslationManagementController extends BaseController {
                 .build();
     }
 
+    /**
+     * Retrieves translation pack identified by given ID.
+     *
+     * @param packID ID of the pack to retrieve
+     * @return populated {@link ModelAndView}
+     */
     @RequestMapping(method = RequestMethod.GET, path = PATH_VIEW)
     public ModelAndView viewPackDetails(@PathVariable(PATH_VARIABLE_ID) UUID packID) {
 
@@ -54,6 +65,11 @@ public class TranslationManagementController extends BaseController {
                 .build();
     }
 
+    /**
+     * Renders pack creation form.
+     *
+     * @return populated {@link ModelAndView}
+     */
     @RequestMapping(method = RequestMethod.GET, path = PATH_CREATE)
     public ModelAndView showCreatePackForm() {
 
@@ -61,6 +77,13 @@ public class TranslationManagementController extends BaseController {
                 .build();
     }
 
+    /**
+     * Processes translation pack creation request.
+     *
+     * @param translationPackUploadRequestModel {@link TranslationPackUploadRequestModel} containing translation pack data
+     * @param redirectAttributes redirection attributes
+     * @return populated {@link ModelAndView} (redirection to created pack)
+     */
     @RequestMapping(method = RequestMethod.POST, path = PATH_CREATE)
     public ModelAndView processPackCreation(TranslationPackUploadRequestModel translationPackUploadRequestModel, RedirectAttributes redirectAttributes) {
 
@@ -70,6 +93,13 @@ public class TranslationManagementController extends BaseController {
         return modelAndViewFactory.createRedirectionTo(getRedirectionPath(packID));
     }
 
+    /**
+     * Processes translation pack status change request.
+     *
+     * @param packID ID of the translation pack to change status of
+     * @param redirectAttributes redirection attributes
+     * @return populated {@link ModelAndView} (redirection to modified pack)
+     */
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)
     public ModelAndView processStatusChange(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes) {
 
@@ -81,6 +111,13 @@ public class TranslationManagementController extends BaseController {
         return modelAndViewFactory.createRedirectionTo(getRedirectionPath(packID));
     }
 
+    /**
+     * Processes translation pack deletion request.
+     *
+     * @param packID ID of the translation pack to delete
+     * @param redirectAttributes redirection attributes
+     * @return populated {@link ModelAndView} (redirection to pack list)
+     */
     @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE)
     public ModelAndView processPackDeletion(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes) {
 
