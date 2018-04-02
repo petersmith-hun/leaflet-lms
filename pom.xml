@@ -84,6 +84,11 @@
             </dependency>
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>translation-client</artifactId>
+                <version>${leaflet.translation-adapter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
                 <artifactId>translation-message-source</artifactId>
                 <version>${leaflet.translation-adapter.version}</version>
             </dependency>
