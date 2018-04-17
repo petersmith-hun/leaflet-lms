@@ -1,16 +1,14 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.failover.api.client.FailoverClient;
+import hu.psprog.leaflet.failover.api.domain.StatusResponse;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
-import hu.psprog.leaflet.lms.service.domain.system.failover.StatusResponse;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
-import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
-import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
-import hu.psprog.leaflet.lms.service.facade.impl.client.failover.FailoverClient;
-import hu.psprog.leaflet.lms.service.facade.impl.client.tlp.TLPClient;
+import hu.psprog.leaflet.tlp.api.client.TLPClient;
+import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
+import hu.psprog.leaflet.tlp.api.domain.LogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,16 +42,12 @@ public class SystemConfigurationFacadeImpl implements SystemConfigurationFacade 
     }
 
     @Override
-    public StatusResponse getFailoverStatus() throws FailoverCommunicationException {
-        return failoverClient
-                .getFailoverStatus()
-                .readEntity(StatusResponse.class);
+    public StatusResponse getFailoverStatus() throws CommunicationFailureException {
+        return failoverClient.getFailoverStatus();
     }
 
     @Override
-    public LogEventPage getLogs(LogRequest logRequest) throws TLPCommunicationException {
-        return tlpClient
-                .getLogs(logRequest)
-                .readEntity(LogEventPage.class);
+    public LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException {
+        return tlpClient.getLogs(logRequest);
     }
 }

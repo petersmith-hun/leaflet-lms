@@ -2,13 +2,11 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
-import hu.psprog.leaflet.lms.service.domain.tlp.OrderBy;
-import hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection;
-import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
-import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
+import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
+import hu.psprog.leaflet.tlp.api.domain.LogRequest;
+import hu.psprog.leaflet.tlp.api.domain.OrderBy;
+import hu.psprog.leaflet.tlp.api.domain.OrderDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,10 +75,10 @@ public class SystemConfigurationController extends BaseController {
      * Renders failover status page.
      *
      * @return populated {@link ModelAndView} object
-     * @throws FailoverCommunicationException on communication failure with CBFS
+     * @throws CommunicationFailureException on communication failure with CBFS
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_FAILOVER)
-    public ModelAndView showFailoverStatus() throws FailoverCommunicationException {
+    public ModelAndView showFailoverStatus() throws CommunicationFailureException {
 
         return modelAndViewFactory.createForView(VIEW_SYSTEM_FAILOVER)
                 .withAttribute("status", systemConfigurationFacade.getFailoverStatus())
@@ -93,10 +91,10 @@ public class SystemConfigurationController extends BaseController {
      *
      * @param logRequest paging and filtering parameters (from query parameters) collected as {@link LogRequest} object
      * @return populated {@link ModelAndView} object
-     * @throws TLPCommunicationException on communication failure with TLP
+     * @throws CommunicationFailureException on communication failure with TLP
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_LOGS)
-    public ModelAndView showRetrievedLogs(LogRequest logRequest) throws TLPCommunicationException {
+    public ModelAndView showRetrievedLogs(LogRequest logRequest) throws CommunicationFailureException {
 
         return modelAndViewFactory.createForView(VIEW_SYSTEM_LOGS)
                 .withAttribute("orderByOptions", OrderBy.values())
@@ -105,7 +103,7 @@ public class SystemConfigurationController extends BaseController {
                 .build();
     }
 
-    private LogEventPage getLogs(LogRequest logRequest) throws TLPCommunicationException {
+    private LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException {
         return logRequest.isQueried()
                 ? systemConfigurationFacade.getLogs(logRequest)
                 : null;

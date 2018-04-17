@@ -3,7 +3,6 @@ package hu.psprog.leaflet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +25,10 @@ public class LeafletManagementSystemApplication {
     @Bean
     @Profile("production")
     public EmbeddedServletContainerCustomizer ajpContainerCustomizer(@Value("${tomcat.ajp.port}") int ajpPort) {
-        return new EmbeddedServletContainerCustomizer() {
-
-            @Override
-            public void customize(ConfigurableEmbeddedServletContainer configurableEmbeddedServletContainer) {
-                TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) configurableEmbeddedServletContainer;
-                tomcat.setProtocol(AJP_PROTOCOL);
-                tomcat.setPort(ajpPort);
-            }
+        return configurableEmbeddedServletContainer -> {
+            TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) configurableEmbeddedServletContainer;
+            tomcat.setProtocol(AJP_PROTOCOL);
+            tomcat.setPort(ajpPort);
         };
     }
 }

@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     private TranslationManagementController translationManagementController;
 
     @Test
-    public void shouldListPacks() {
+    public void shouldListPacks() throws CommunicationFailureException {
 
         // when
         translationManagementController.listPacks();
@@ -49,7 +50,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     }
 
     @Test
-    public void shouldViewPackDetails() {
+    public void shouldViewPackDetails() throws CommunicationFailureException {
 
         // when
         translationManagementController.viewPackDetails(PACK_ID);
@@ -71,7 +72,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     }
 
     @Test
-    public void shouldProcessPackCreation() {
+    public void shouldProcessPackCreation() throws CommunicationFailureException {
 
         // given
         given(translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL)).willReturn(PACK_ID);
@@ -85,7 +86,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     }
 
     @Test
-    public void shouldProcessStatusChangeWithEnabledStatusMessage() {
+    public void shouldProcessStatusChangeWithEnabledStatusMessage() throws CommunicationFailureException {
 
         // given
         given(translationManagementFacade.processChangePackStatus(PACK_ID)).willReturn(true);
@@ -99,7 +100,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     }
 
     @Test
-    public void shouldProcessStatusChangeWithDisabledStatusMessage() {
+    public void shouldProcessStatusChangeWithDisabledStatusMessage() throws CommunicationFailureException {
 
         // given
         given(translationManagementFacade.processChangePackStatus(PACK_ID)).willReturn(false);
@@ -113,7 +114,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     }
 
     @Test
-    public void shouldProcessPackDeletion() {
+    public void shouldProcessPackDeletion() throws CommunicationFailureException {
 
         // when
         translationManagementController.processPackDeletion(PACK_ID, redirectAttributes);

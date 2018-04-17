@@ -6,7 +6,7 @@
 
     <groupId>hu.psprog.leaflet</groupId>
     <artifactId>lms</artifactId>
-    <version>0.16.0-dev</version>
+    <version>1.0.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -29,10 +29,9 @@
         <java.version>1.8</java.version>
 
         <!-- leaflet internal dependency versions -->
-        <leaflet.rest-api.version>1.3.0</leaflet.rest-api.version>
-        <leaflet.bridge.version>1.8.0</leaflet.bridge.version>
+        <leaflet.rcp.version>1.0.0</leaflet.rcp.version>
         <leaflet.tlp-appender.version>1.0.0</leaflet.tlp-appender.version>
-        <leaflet.translation-adapter.version>1.0.0</leaflet.translation-adapter.version>
+        <leaflet.translation-adapter.version>2.0.0</leaflet.translation-adapter.version>
 
         <!-- Spring versions -->
         <spring.boot.version>1.5.4.RELEASE</spring.boot.version>
@@ -69,23 +68,14 @@
             <!-- leaflet internal dependencies -->
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
-                <artifactId>leaflet-rest-api</artifactId>
-                <version>${leaflet.rest-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.psprog.leaflet</groupId>
-                <artifactId>leaflet-bridge</artifactId>
-                <version>${leaflet.bridge.version}</version>
+                <artifactId>rcp-bundle</artifactId>
+                <version>${leaflet.rcp.version}</version>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
                 <artifactId>tlp-appender</artifactId>
                 <version>${leaflet.tlp-appender.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.psprog.leaflet</groupId>
-                <artifactId>translation-client</artifactId>
-                <version>${leaflet.translation-adapter.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
