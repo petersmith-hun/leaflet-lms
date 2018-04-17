@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <!-- Entries start-->
-    <section class="container-fluid">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="page-header">
-                    <h1>Home - Dashboard</h1>
-                    <hr>
-                </div>
-            </div>
-        </div>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>Dashboard</h1>
+        </section>
     </section>
-    <!-- Entries end-->
-</section>
+</th:block>
 </body>
 </html>

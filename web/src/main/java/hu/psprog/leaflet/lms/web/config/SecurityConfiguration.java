@@ -27,11 +27,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public static final String PATH_LOGIN = "/login";
 
-    @Autowired
-    private TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
+    private final TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
+
+    private final SessionExtensionFilter sessionExtensionFilter;
 
     @Autowired
-    private SessionExtensionFilter sessionExtensionFilter;
+    public SecurityConfiguration(SessionExtensionFilter sessionExtensionFilter, TokenRevokeLogoutHandler tokenRevokeLogoutHandler) {
+        this.sessionExtensionFilter = sessionExtensionFilter;
+        this.tokenRevokeLogoutHandler = tokenRevokeLogoutHandler;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -40,7 +44,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .ignoring()
                 .antMatchers("/css/**")
                 .antMatchers( "/fonts/**")
-                .antMatchers("/scripts/**");
+                .antMatchers("/js/**")
+                .antMatchers("/images/**");
     }
 
     @Override
