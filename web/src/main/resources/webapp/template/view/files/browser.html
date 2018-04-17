@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
+<th:block layout:fragment="content">
     <!-- Entries start-->
     <section class="container-fluid">
         <div class="row">
@@ -71,6 +73,6 @@
         </div>
     </section>
     <!-- Entries end-->
-</section>
+</th:block>
 </body>
 </html>

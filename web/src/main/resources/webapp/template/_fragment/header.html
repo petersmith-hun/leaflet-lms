@@ -1,0 +1,58 @@
+<header class="main-header"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org">
+    <a th:href="@{/}" href="#" class="logo">
+        <span class="logo-mini">
+            <span class="leaflet-first-part">LF</span><span class="leaflet-second-part">LT</span>
+        </span>
+        <span class="logo-lg">
+            <span class="leaflet-first-part">leaf</span><span class="leaflet-second-part">Let</span>
+        </span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <!-- Navbar Right Menu -->
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <!-- User Account: style can be found in dropdown.less -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img th:src="@{/images/default-50x50.gif}" class="user-image" alt="User Image">
+                        <span class="hidden-xs" sec:authentication="name"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- User image -->
+                        <li class="user-header">
+                            <img th:src="@{/images/default-50x50.gif}" class="img-circle" alt="User Image">
+                            <p>
+                                <th:block sec:authentication="name" />
+                                <small></small>
+                            </p>
+                        </li>
+                        <li class="user-body">
+                            <div class="row">
+                                <div class="col-xs-6 text-center">
+                                    <a href="#" th:href="@{/account/update-profile}">Profile</a>
+                                </div>
+                                <div class="col-xs-6 text-center">
+                                    <a href="#" th:href="@{/account/change-password}">Change password</a>
+                                </div>
+                            </div>
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-right">
+                                <form th:action="@{/logout}" th:method="post" action="#">
+                                    <button class="btn btn-default btn-flat" type="submit">Sign out</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>

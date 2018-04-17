@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="msapplication-TileColor" content="#90cb7e">
+        <title>Leaflet LMS</title>
+        <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/apple-touch-icon.png}">
+        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+        <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
+        <link rel="stylesheet" th:href="@{/css/app.css}" type="text/css" />
+    </head>
+    <body class="skin-green skin-green--leaflet sidebar-mini">
+        <div class="wrapper">
+            <div style="display: none; visibility: hidden; height: 0; width: 0; opacity: 0">
+                <svg id="leaflet-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148.18836 171.18995">
+                    <path d="M212.87009,107.76641l1.95236.001-.00862,76.72232-5.8638,3.38546-3.90471-.002.00637-75.59283Zm-24.74134,14.28442-.00638,75.59283,3.90472.002,5.8638-3.38547.00861-76.72232-1.95235-.001Zm-16.92295,9.77046-.00637,75.59283,3.90472.002,5.8638-3.38547.00861-76.72232-1.95236-.001Zm-16.92294,9.77047-.00637,75.59283,3.90471.002,5.8638-3.38546.00862-76.72232-1.95236-.001Zm-16.92295,9.77047-.00553,74.14825,2.50292,1.44312,1.401.00346,5.8638-3.38547.00861-76.72232-1.95236-.001Zm-16.88909,9.75092.4007,54.881,5.1468,2.97409,4.65108-.034-.4594-62.34966-1.92078.01462Zm-16.98218,9.80466-.18378,34.93353,7.1285,4.12019,2.62257.00893.23016-43.56845-1.97905-.00815Zm-16.906,9.7607-.04614,15.49421,7.44071,4.28968,2.30749.01032.07358-24.2987-1.9657-.00458ZM73.1458,188.43626,76.43365,190.34l2.58.24786.40553-4.18283-2.35573-.23067ZM71,174l1.42188-73.19922,68.14941-39.3457,66.47949,37.8291-66.56933,38.43359L100,118l-3.39648-.54492L140.501,142.3252l74.59277-43.06641-74.53613-42.415L69.417,97.917l-1.00488.58106.36328,81.78222Z"
+                          transform="translate(-67.91083 -56.26744)"/>
+                </svg>
+            </div>
+            <th:block layout:fragment="header">
+                <header layout:replace="_fragment/header"></header>
+            </th:block>
+
+            <th:block layout:fragment="sidebar">
+                <aside layout:replace="_fragment/sidebar"></aside>
+            </th:block>
+
+            <p th:if="${flash != null}" th:text="${flash}" style="color: #fff; background-color: #047800; font-weight: bold; padding: 10px;">Flash message</p>
+            <th:block layout:fragment="content"/>
+
+            <th:block layout:fragment="footer">
+                <footer layout:replace="_fragment/footer"></footer>
+            </th:block>
+        </div>
+        <script th:src="@{/js/app.js}"></script>
+    </body>
+</html>

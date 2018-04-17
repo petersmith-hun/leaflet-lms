@@ -1,29 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="_layout/default">
 <body>
-<section class="main__content" layout:fragment="content">
-    <h3>[PROTOTYPE TEMPLATE] SEO configuration</h3>
-    <form method="post" th:action="@{''}">
-        <div class="form-group">
-            <label for="pageTitle">Page title</label>
-            <input class="form-control" id="pageTitle" name="pageTitle" placeholder="Page title" type="text" th:value="${seo.pageTitle}" />
-        </div>
-        <div class="form-group">
-            <label for="metaTitle">SEO Title</label>
-            <input class="form-control" id="metaTitle" name="defaultTitle" placeholder="SEO Title" type="text" th:value="${seo.defaultTitle}" />
-        </div>
-        <div class="form-group">
-            <label for="metaDescription">SEO Description</label>
-            <input class="form-control" id="metaDescription" name="defaultDescription" placeholder="SEO Description" type="text" th:value="${seo.defaultDescription}" />
-        </div>
-        <div class="form-group">
-            <label for="metaKeywords">SEO Keywords</label>
-            <input class="form-control" id="metaKeywords" name="defaultKeywords" placeholder="SEO Keywords" type="text" th:value="${seo.defaultKeywords}" />
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">Save</button>
-        </div>
-    </form>
-</section>
+    <th:block layout:fragment="content">
+        <section class="content-wrapper">
+            <section class="content-header">
+                <h1>[PROTOTYPE TEMPLATE] SEO configuration</h1>
+            </section>
+            <form method="post" th:action="@{''}">
+                <div class="form-group">
+                    <label for="pageTitle">Page title</label>
+                    <input class="form-control" id="pageTitle" name="pageTitle" placeholder="Page title" type="text" th:value="${seo.pageTitle}" />
+                </div>
+                <div class="form-group">
+                    <label for="metaTitle">SEO Title</label>
+                    <input class="form-control" id="metaTitle" name="defaultTitle" placeholder="SEO Title" type="text" th:value="${seo.defaultTitle}" />
+                </div>
+                <div class="form-group">
+                    <label for="metaDescription">SEO Description</label>
+                    <input class="form-control" id="metaDescription" name="defaultDescription" placeholder="SEO Description" type="text" th:value="${seo.defaultDescription}" />
+                </div>
+                <div class="form-group">
+                    <label for="metaKeywords">SEO Keywords</label>
+                    <input class="form-control" id="metaKeywords" name="defaultKeywords" placeholder="SEO Keywords" type="text" th:value="${seo.defaultKeywords}" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </section>
+    </th:block>
 </body>
 </html>
