@@ -79,7 +79,7 @@
             </dependency>
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
-                <artifactId>translation-message-source</artifactId>
+                <artifactId>leaflet-translation-adapter</artifactId>
                 <version>${leaflet.translation-adapter.version}</version>
             </dependency>
 

@@ -83,8 +83,8 @@
                 <label for="orderBy">Order by</label>
                 <select class="form-control" id="orderBy" name="orderBy">
                     <option th:each="by : ${orderByOptions}"
-                            th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderBy).valueOf(#request.getParameter('orderBy')))
-                                        or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderBy).TIMESTAMP)}"
+                            th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).valueOf(#request.getParameter('orderBy')))
+                                        or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).TIMESTAMP)}"
                             th:value="${by}"
                             th:text="${by}">
                     </option>
@@ -94,8 +94,8 @@
                 <label for="orderDirection">Order direction</label>
                 <select class="form-control" id="orderDirection" name="orderDirection">
                     <option th:each="direction : ${orderDirectionOptions}"
-                            th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection).valueOf(#request.getParameter('orderDirection')))
-                                        or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.lms.service.domain.tlp.OrderDirection).DESC)}"
+                            th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).valueOf(#request.getParameter('orderDirection')))
+                                        or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).DESC)}"
                             th:value="${direction}"
                             th:text="${direction}">
                     </option>
