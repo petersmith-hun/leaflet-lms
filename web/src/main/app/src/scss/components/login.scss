@@ -1,0 +1,21 @@
+.page--login{
+  min-height: 100vh !important;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  .wrapper{
+    min-height: 100vh !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+  }
+  .login-box{
+    svg{
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2px;
+    }
+  }
+
+}

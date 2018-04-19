@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-tabs": "off",
+    "linebreak-style": ["error", "windows"],
+    "indent": ["error","tab"],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-plusplus": "off",
+    "no-restricted-syntax": "off"
+  }
+}

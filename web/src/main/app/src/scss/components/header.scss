@@ -1,0 +1,28 @@
+.skin-green{
+  &--leaflet{
+    .main-header{
+      .logo{
+        font-family: $fontSourceCodePro;
+        background-color: $colorGreenDark;
+        &:hover{
+          background-color: $colorGreenDarker;
+        }
+        .leaflet-first-part{
+          font-weight: 300;
+        }
+        .leaflet-second-part{
+          font-weight: 700;
+        }
+      }
+      .navbar{
+        background-color: $colorGreen;
+        .sidebar-toggle:hover{
+          background-color: $colorGreenDarker;
+        }
+      }
+      li.user-header{
+        background-color: $colorGreen;
+      }
+    }
+  }
+}
