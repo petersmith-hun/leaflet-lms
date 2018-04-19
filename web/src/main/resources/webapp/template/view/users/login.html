@@ -1,34 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/login}">
-    <body>
-        <!-- Login start-->
-        <main class="main-content" layout:fragment="content">
-            <div class="login-form">
-                <h1 class="login-form__header">Leaflet</h1>
-                <form class="login-form__form" method="post" th:action="@{/login}">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input class="form-control" id="email" name="email" placeholder="Email" type="email">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="_layout/default">
+<head>
+    <title>Login - Leaflet</title>
+</head>
+<body class="page--login" style="background-image: url('https://picsum.photos/1920/1080/?blur&random')">
+
+    <th:block layout:fragment="header" th:if="${false}"></th:block>
+
+    <th:block layout:fragment="sidebar" th:if="${false}"></th:block>
+
+    <th:block layout:fragment="content">
+        <div class="login-box">
+            <div class="login-logo">
+                <svg>
+                    <use xlink:href="#leaflet-logo" stroke="#fff"></use>
+                </svg>
+            </div>
+            <div class="login-box-body">
+                <form th:action="@{/login}" action="#" method="post">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" placeholder="Email" name="email">
+                        <i class="fa fa-user form-control-feedback"></i>
                     </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input class="form-control" id="password" name="password" placeholder="Password" type="password">
+                    <div class="form-group has-feedback">
+                        <input type="password" class="form-control" placeholder="Password" name="password">
+                        <span class="fa fa-lock form-control-feedback"></span>
                     </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-primary">Login</button>
-                                <a class="btn btn-link pull-right" th:href="@{/password-reset}">Forgot password?</a>
-                            </div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <a class="btn btn-link" th:href="@{/password-reset}">Forgot password?</a>
+                        </div>
+                        <div class="col-xs-4">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
                         </div>
                     </div>
                 </form>
-                <p class="login-form__credits text-muted">Copyright &copy;
-                    <time>2016</time> LFLT-AP
-                    <span class='version'>v0.0.1</span>
-                </p>
             </div>
-        </main>
-        <!-- Login end-->
-    </body>
+        </div>
+    </th:block>
+
+    <th:block layout:fragment="footer" th:if="${false}"></th:block>
+
+</body>
 </html>
