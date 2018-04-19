@@ -1,10 +1,10 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.translation.api.domain.TranslationPack;
 import hu.psprog.leaflet.translation.api.domain.TranslationPackCreationRequest;
 import hu.psprog.leaflet.translation.client.TranslationServiceClient;
-import hu.psprog.leaflet.translation.client.impl.exception.TranslationPackCreationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -70,7 +70,7 @@ public class TranslationManagementFacadeImplTest {
     private TranslationManagementFacadeImpl translationManagementFacade;
 
     @Test
-    public void shouldGetPacks() {
+    public void shouldGetPacks() throws CommunicationFailureException {
 
         // when
         translationManagementFacade.getPacks();
@@ -80,7 +80,7 @@ public class TranslationManagementFacadeImplTest {
     }
 
     @Test
-    public void shouldGetPack() {
+    public void shouldGetPack() throws CommunicationFailureException {
 
         // when
         translationManagementFacade.getPack(PACK_ID);
@@ -90,7 +90,7 @@ public class TranslationManagementFacadeImplTest {
     }
 
     @Test
-    public void shouldProcessCreatePack() {
+    public void shouldProcessCreatePack() throws CommunicationFailureException {
 
         // given
         TRANSLATION_PACK_UPLOAD_REQUEST_MODEL.setDefinitions(MOCK_MULTIPART_FILE);
@@ -108,8 +108,8 @@ public class TranslationManagementFacadeImplTest {
         assertThat(translationPackCreationRequest.getValue().getDefinitions(), equalTo(EXPECTED_DEFINITION_MAP));
     }
 
-    @Test(expected = TranslationPackCreationException.class)
-    public void shouldProcessCreatePackWithExceptionOnInvalidInputCSV() {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldProcessCreatePackWithExceptionOnInvalidInputCSV() throws CommunicationFailureException {
 
         // given
         TRANSLATION_PACK_UPLOAD_REQUEST_MODEL.setDefinitions(INVALID_MOCK_MULTIPART_FILE);
@@ -121,8 +121,8 @@ public class TranslationManagementFacadeImplTest {
         // exception expected
     }
 
-    @Test(expected = TranslationPackCreationException.class)
-    public void shouldProcessCreatePackWithExceptionOnInputCSVReadFailure() throws IOException {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldProcessCreatePackWithExceptionOnInputCSVReadFailure() throws IOException, CommunicationFailureException {
 
         // given
         doThrow(IOException.class).when(multipartFile).getInputStream();
@@ -137,7 +137,7 @@ public class TranslationManagementFacadeImplTest {
     }
 
     @Test
-    public void shouldProcessDeletePack() {
+    public void shouldProcessDeletePack() throws CommunicationFailureException {
 
         // when
         translationManagementFacade.processDeletePack(PACK_ID);
@@ -147,7 +147,7 @@ public class TranslationManagementFacadeImplTest {
     }
 
     @Test
-    public void shouldProcessChangePackStatusWithEnabledResult() {
+    public void shouldProcessChangePackStatusWithEnabledResult() throws CommunicationFailureException {
 
         // given
         given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getPackBuilder().withEnabled(true).build());
@@ -160,7 +160,7 @@ public class TranslationManagementFacadeImplTest {
     }
 
     @Test
-    public void shouldProcessChangePackStatusWithDisabledResult() {
+    public void shouldProcessChangePackStatusWithDisabledResult() throws CommunicationFailureException {
 
         // given
         given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getPackBuilder().withEnabled(false).build());

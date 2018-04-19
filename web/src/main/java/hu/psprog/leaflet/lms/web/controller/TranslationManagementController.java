@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,10 @@ public class TranslationManagementController extends BaseController {
      * Retrieves information of all existing translation packs.
      *
      * @return populated {@link ModelAndView}
+     * @throws CommunicationFailureException when LMS fails to reach TMS
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView listPacks() {
+    public ModelAndView listPacks() throws CommunicationFailureException {
 
         return modelAndViewFactory.createForView(VIEW_TRANSLATIONS_LIST)
                 .withAttribute("packs", translationManagementFacade.getPacks())
@@ -56,9 +58,10 @@ public class TranslationManagementController extends BaseController {
      *
      * @param packID ID of the pack to retrieve
      * @return populated {@link ModelAndView}
+     * @throws CommunicationFailureException when LMS fails to reach TMS
      */
     @RequestMapping(method = RequestMethod.GET, path = PATH_VIEW)
-    public ModelAndView viewPackDetails(@PathVariable(PATH_VARIABLE_ID) UUID packID) {
+    public ModelAndView viewPackDetails(@PathVariable(PATH_VARIABLE_ID) UUID packID) throws CommunicationFailureException {
 
         return modelAndViewFactory.createForView(VIEW_TRANSLATIONS_DETAILS)
                 .withAttribute("pack", translationManagementFacade.getPack(packID))
@@ -83,9 +86,11 @@ public class TranslationManagementController extends BaseController {
      * @param translationPackUploadRequestModel {@link TranslationPackUploadRequestModel} containing translation pack data
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} (redirection to created pack)
+     * @throws CommunicationFailureException when LMS fails to reach TMS
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_CREATE)
-    public ModelAndView processPackCreation(TranslationPackUploadRequestModel translationPackUploadRequestModel, RedirectAttributes redirectAttributes) {
+    public ModelAndView processPackCreation(TranslationPackUploadRequestModel translationPackUploadRequestModel, RedirectAttributes redirectAttributes)
+            throws CommunicationFailureException {
 
         UUID packID = translationManagementFacade.processCreatePack(translationPackUploadRequestModel);
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TRANSLATION_PACK_SUCCESSFULLY_CREATED);
@@ -99,9 +104,11 @@ public class TranslationManagementController extends BaseController {
      * @param packID ID of the translation pack to change status of
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} (redirection to modified pack)
+     * @throws CommunicationFailureException when LMS fails to reach TMS
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)
-    public ModelAndView processStatusChange(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes) {
+    public ModelAndView processStatusChange(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes)
+            throws CommunicationFailureException {
 
         String status = translationManagementFacade.processChangePackStatus(packID)
                 ? "enabled"
@@ -117,9 +124,11 @@ public class TranslationManagementController extends BaseController {
      * @param packID ID of the translation pack to delete
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} (redirection to pack list)
+     * @throws CommunicationFailureException when LMS fails to reach TMS
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE)
-    public ModelAndView processPackDeletion(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes) {
+    public ModelAndView processPackDeletion(@PathVariable(PATH_VARIABLE_ID) UUID packID, RedirectAttributes redirectAttributes)
+            throws CommunicationFailureException {
 
         translationManagementFacade.processDeletePack(packID);
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TRANSLATION_PACK_SUCCESSFULLY_DELETED);

@@ -1,12 +1,12 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
 import hu.psprog.leaflet.translation.api.domain.TranslationPack;
 import hu.psprog.leaflet.translation.api.domain.TranslationPackCreationRequest;
 import hu.psprog.leaflet.translation.api.domain.TranslationPackMetaInfo;
 import hu.psprog.leaflet.translation.client.TranslationServiceClient;
-import hu.psprog.leaflet.translation.client.impl.exception.TranslationPackCreationException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,17 +45,17 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
     }
 
     @Override
-    public List<TranslationPackMetaInfo> getPacks() {
+    public List<TranslationPackMetaInfo> getPacks() throws CommunicationFailureException {
         return translationServiceClient.listStoredPacks();
     }
 
     @Override
-    public TranslationPack getPack(UUID packID) {
+    public TranslationPack getPack(UUID packID) throws CommunicationFailureException {
         return translationServiceClient.getPackByID(packID);
     }
 
     @Override
-    public UUID processCreatePack(TranslationPackUploadRequestModel translationPackUploadRequestModel) {
+    public UUID processCreatePack(TranslationPackUploadRequestModel translationPackUploadRequestModel) throws CommunicationFailureException {
 
         TranslationPackCreationRequest translationPackCreationRequest = new TranslationPackCreationRequest();
         translationPackCreationRequest.setPackName(translationPackUploadRequestModel.getPackName());
@@ -62,7 +63,7 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
         translationPackCreationRequest.setDefinitions(extractDefinitions(translationPackUploadRequestModel));
 
         if (translationPackCreationRequest.getDefinitions().isEmpty()) {
-            throw new TranslationPackCreationException("Translation pack definitions cannot be empty");
+            throw new IllegalArgumentException("Translation pack definitions cannot be empty");
         }
 
         return Optional.ofNullable(translationServiceClient.createTranslationPack(translationPackCreationRequest))
@@ -71,12 +72,12 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
     }
 
     @Override
-    public void processDeletePack(UUID packID) {
+    public void processDeletePack(UUID packID) throws CommunicationFailureException {
         translationServiceClient.deleteTranslationPack(packID);
     }
 
     @Override
-    public boolean processChangePackStatus(UUID packID) {
+    public boolean processChangePackStatus(UUID packID) throws CommunicationFailureException {
         return translationServiceClient.changePackStatus(packID).isEnabled();
     }
 
@@ -90,7 +91,7 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
                     .collect(Collectors.toMap(TemporalDefinition::getKey, TemporalDefinition::getValue));
         } catch (IOException exc) {
             LOGGER.error(FAILED_TO_READ_INPUT_CSV, exc);
-            throw new TranslationPackCreationException(FAILED_TO_READ_INPUT_CSV);
+            throw new IllegalArgumentException(FAILED_TO_READ_INPUT_CSV);
         }
     }
 
@@ -121,7 +122,7 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
                 temporalDefinition.key = splitLine[0];
                 temporalDefinition.value = splitLine[1];
             } else {
-                LOGGER.warn("Ignoring invalid definition [{}]", splitLine);
+                LOGGER.warn("Ignoring invalid definition [{}]", Arrays.toString(splitLine));
             }
 
             return temporalDefinition;

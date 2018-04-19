@@ -1,23 +1,19 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.failover.api.client.FailoverClient;
+import hu.psprog.leaflet.failover.api.domain.FailoverStatus;
+import hu.psprog.leaflet.failover.api.domain.StatusResponse;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
-import hu.psprog.leaflet.lms.service.domain.system.failover.FailoverStatus;
-import hu.psprog.leaflet.lms.service.domain.system.failover.StatusResponse;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
-import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
-import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
-import hu.psprog.leaflet.lms.service.facade.impl.client.failover.FailoverClient;
-import hu.psprog.leaflet.lms.service.facade.impl.client.tlp.TLPClient;
+import hu.psprog.leaflet.tlp.api.client.TLPClient;
+import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
+import hu.psprog.leaflet.tlp.api.domain.LogRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import javax.ws.rs.core.Response;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,9 +36,6 @@ public class SystemConfigurationFacadeImplTest {
 
     @Mock
     private SEOConfigurationDCPAdapter seoConfigurationDCPAdapter;
-
-    @Mock
-    private Response response;
 
     @Mock
     private FailoverClient failoverClient;
@@ -84,11 +77,10 @@ public class SystemConfigurationFacadeImplTest {
     }
 
     @Test
-    public void shouldGetFailoverStatus() throws FailoverCommunicationException {
+    public void shouldGetFailoverStatus() throws CommunicationFailureException {
 
         // given
-        given(failoverClient.getFailoverStatus()).willReturn(response);
-        given(response.readEntity(StatusResponse.class)).willReturn(FAILOVER_STATUS_RESPONSE);
+        given(failoverClient.getFailoverStatus()).willReturn(FAILOVER_STATUS_RESPONSE);
 
         // when
         StatusResponse result = systemConfigurationFacade.getFailoverStatus();
@@ -98,11 +90,10 @@ public class SystemConfigurationFacadeImplTest {
     }
 
     @Test
-    public void shouldGetLogs() throws TLPCommunicationException {
+    public void shouldGetLogs() throws CommunicationFailureException {
 
         // given
-        given(tlpClient.getLogs(LOG_REQUEST)).willReturn(response);
-        given(response.readEntity(LogEventPage.class)).willReturn(LOG_EVENT_PAGE_RESPONSE);
+        given(tlpClient.getLogs(LOG_REQUEST)).willReturn(LOG_EVENT_PAGE_RESPONSE);
 
         // when
         LogEventPage result = systemConfigurationFacade.getLogs(LOG_REQUEST);

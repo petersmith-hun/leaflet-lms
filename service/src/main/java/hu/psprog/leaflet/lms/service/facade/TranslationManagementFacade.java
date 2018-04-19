@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade;
 
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.translation.api.domain.TranslationPack;
 import hu.psprog.leaflet.translation.api.domain.TranslationPackMetaInfo;
@@ -19,7 +20,7 @@ public interface TranslationManagementFacade {
      *
      * @return List of {@link TranslationPackMetaInfo}
      */
-    List<TranslationPackMetaInfo> getPacks();
+    List<TranslationPackMetaInfo> getPacks() throws CommunicationFailureException;
 
     /**
      * Retrieves translation pack identified by given ID.
@@ -27,7 +28,7 @@ public interface TranslationManagementFacade {
      * @param packID ID of the pack to retrieve
      * @return identified translation pack as {@link TranslationPack}
      */
-    TranslationPack getPack(UUID packID);
+    TranslationPack getPack(UUID packID) throws CommunicationFailureException;
 
     /**
      * Processes translation pack creation request.
@@ -35,14 +36,14 @@ public interface TranslationManagementFacade {
      * @param translationPackUploadRequestModel {@link TranslationPackUploadRequestModel} containing translation pack data
      * @return ID of created translation pack
      */
-    UUID processCreatePack(TranslationPackUploadRequestModel translationPackUploadRequestModel);
+    UUID processCreatePack(TranslationPackUploadRequestModel translationPackUploadRequestModel) throws CommunicationFailureException;
 
     /**
      * Processes translation pack deletion request.
      *
      * @param packID ID of the translation pack to delete
      */
-    void processDeletePack(UUID packID);
+    void processDeletePack(UUID packID) throws CommunicationFailureException;
 
     /**
      * Processes translation pack status change request.
@@ -50,5 +51,5 @@ public interface TranslationManagementFacade {
      * @param packID ID of the translation pack to change status of
      * @return current status as boolean, {@code true} if enabled, {@code false} otherwise
      */
-    boolean processChangePackStatus(UUID packID);
+    boolean processChangePackStatus(UUID packID) throws CommunicationFailureException;
 }

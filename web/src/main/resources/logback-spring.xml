@@ -13,7 +13,7 @@
 
     <!-- prepare TLP properties -->
     <springProperty name="tlp.enabled" source="tlp.enabled" />
-    <springProperty name="tlp.host" source="tlp.host" />
+    <springProperty name="tlp.host" source="bridge.clients.tlp.host-url" />
     <springProperty name="tlp.appID" source="tlp.app-id" />
 
     <!-- configure TLP appender -->

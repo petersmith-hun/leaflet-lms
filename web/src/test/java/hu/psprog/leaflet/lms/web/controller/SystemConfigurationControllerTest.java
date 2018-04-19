@@ -2,10 +2,8 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
-import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
-import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
+import hu.psprog.leaflet.tlp.api.domain.LogRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -67,7 +65,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldShowFailoverStatus() throws FailoverCommunicationException {
+    public void shouldShowFailoverStatus() throws CommunicationFailureException {
 
         // when
         systemConfigurationController.showFailoverStatus();
@@ -79,7 +77,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldShowLogQueryForm() throws TLPCommunicationException {
+    public void shouldShowLogQueryForm() throws CommunicationFailureException {
 
         // when
         systemConfigurationController.showRetrievedLogs(new LogRequest());
@@ -91,7 +89,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldShowLogQueryFormWithRetrievedLogs() throws TLPCommunicationException {
+    public void shouldShowLogQueryFormWithRetrievedLogs() throws CommunicationFailureException {
 
         // given
         LogRequest logRequest = new LogRequest();

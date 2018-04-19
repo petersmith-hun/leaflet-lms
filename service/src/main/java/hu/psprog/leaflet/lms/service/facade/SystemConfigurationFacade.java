@@ -1,12 +1,10 @@
 package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.failover.api.domain.StatusResponse;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
-import hu.psprog.leaflet.lms.service.domain.system.failover.StatusResponse;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogEventPage;
-import hu.psprog.leaflet.lms.service.domain.tlp.LogRequest;
-import hu.psprog.leaflet.lms.service.exception.FailoverCommunicationException;
-import hu.psprog.leaflet.lms.service.exception.TLPCommunicationException;
+import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
+import hu.psprog.leaflet.tlp.api.domain.LogRequest;
 
 /**
  * System configuration facade.
@@ -36,16 +34,16 @@ public interface SystemConfigurationFacade {
      * Calls CBFS status endpoint for retrieving failover status information.
      *
      * @return failover status information as {@link StatusResponse}
-     * @throws FailoverCommunicationException if LMS fails to reach CBFS
+     * @throws CommunicationFailureException if LMS fails to reach CBFS
      */
-    StatusResponse getFailoverStatus() throws FailoverCommunicationException;
+    StatusResponse getFailoverStatus() throws CommunicationFailureException;
 
     /**
      * Calls TLP logs endpoint for retrieving stored logs.
      *
      * @param logRequest log retrieval paging and filtering settings as {@link LogRequest} object
      * @return response of TLP application containing paged list of logs
-     * @throws TLPCommunicationException if LMS fails to reach TLP
+     * @throws CommunicationFailureException if LMS fails to reach TLP
      */
-    LogEventPage getLogs(LogRequest logRequest) throws TLPCommunicationException;
+    LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException;
 }

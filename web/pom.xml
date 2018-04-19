@@ -56,7 +56,7 @@
         </dependency>
         <dependency>
             <groupId>hu.psprog.leaflet</groupId>
-            <artifactId>translation-message-source</artifactId>
+            <artifactId>leaflet-translation-adapter</artifactId>
         </dependency>
     </dependencies>
 

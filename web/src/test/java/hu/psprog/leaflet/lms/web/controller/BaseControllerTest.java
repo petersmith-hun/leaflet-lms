@@ -1,8 +1,8 @@
 package hu.psprog.leaflet.lms.web.controller;
 
-import hu.psprog.leaflet.api.rest.response.common.ErrorMessageDataModel;
-import hu.psprog.leaflet.api.rest.response.common.ValidationErrorMessageDataModel;
-import hu.psprog.leaflet.api.rest.response.common.ValidationErrorMessageListDataModel;
+import hu.psprog.leaflet.bridge.client.domain.error.ErrorMessageResponse;
+import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageListResponse;
+import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageResponse;
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ResourceNotFoundException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.ws.rs.core.Response;
-
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -36,7 +35,7 @@ public class BaseControllerTest {
     private static final String VALIDATION_FAILURE = "Validation failure.";
     private static final String VALIDATION_ERROR_PAGE = "view/error/validation";
     private static final String DEFAULT_HANDLER = "Default handler";
-    private static final ValidationErrorMessageDataModel INVALID_VALUE = ValidationErrorMessageDataModel.getExtendedBuilder()
+    private static final ValidationErrorMessageResponse INVALID_VALUE = ValidationErrorMessageResponse.getExtendedBuilder()
             .withField("field-1")
             .withMessage("Invalid value")
             .build();
@@ -97,14 +96,14 @@ public class BaseControllerTest {
 
     private void prepareErrorMessage() {
         given(response.getStatus()).willReturn(404);
-        given(response.readEntity(ErrorMessageDataModel.class)).willReturn(ErrorMessageDataModel.getBuilder()
+        given(response.readEntity(ErrorMessageResponse.class)).willReturn(ErrorMessageResponse.getBuilder()
                 .withMessage(ERROR_MESSAGE)
                 .build());
     }
 
     private void prepareValidationErrorMessage() {
-        given(response.readEntity(ValidationErrorMessageListDataModel.class)).willReturn(ValidationErrorMessageListDataModel.getBuilder()
-                .withItem(INVALID_VALUE)
+        given(response.readEntity(ValidationErrorMessageListResponse.class)).willReturn(ValidationErrorMessageListResponse.getBuilder()
+                .withValidation(Collections.singletonList(INVALID_VALUE))
                 .build());
     }
 }
