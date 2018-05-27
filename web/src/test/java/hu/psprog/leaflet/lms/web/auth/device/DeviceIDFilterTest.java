@@ -28,7 +28,9 @@ import static org.mockito.Mockito.verify;
 public class DeviceIDFilterTest {
 
     private static final String DEVICE_ID_HEADER = "X-Device-ID";
+    private static final String CLIENT_ID_HEADER = "X-Client-ID";
     private static final UUID DEVICE_ID = UUID.randomUUID();
+    private static final UUID CLIENT_ID = UUID.randomUUID();
 
     @Mock
     private DeviceIDGenerator deviceIDGenerator;
@@ -54,12 +56,14 @@ public class DeviceIDFilterTest {
 
         // given
         given(deviceIDGenerator.getID()).willReturn(DEVICE_ID);
+        deviceIDFilter.setClientId(CLIENT_ID);
 
         // when
         deviceIDFilter.doFilter(mockHttpServletRequest, response, filterChain);
 
         // then
         assertThat(mockHttpServletRequest.getAttribute(DEVICE_ID_HEADER), equalTo(DEVICE_ID));
+        assertThat(mockHttpServletRequest.getAttribute(CLIENT_ID_HEADER), equalTo(CLIENT_ID));
         verify(filterChain).doFilter(mockHttpServletRequest, response);
     }
 }
