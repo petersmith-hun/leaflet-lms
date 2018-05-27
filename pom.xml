@@ -32,6 +32,7 @@
         <leaflet.rcp.version>1.0.0</leaflet.rcp.version>
         <leaflet.tlp-appender.version>1.0.0</leaflet.tlp-appender.version>
         <leaflet.translation-adapter.version>2.0.0</leaflet.translation-adapter.version>
+        <leaflet.bridge.version>2.1.0</leaflet.bridge.version>
 
         <!-- Spring versions -->
         <spring.boot.version>1.5.4.RELEASE</spring.boot.version>
@@ -81,6 +82,11 @@
                 <groupId>hu.psprog.leaflet</groupId>
                 <artifactId>leaflet-translation-adapter</artifactId>
                 <version>${leaflet.translation-adapter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>leaflet-bridge</artifactId>
+                <version>${leaflet.bridge.version}</version>
             </dependency>
 
             <!-- Spring Framework dependencies -->
