@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <h3>[PROTOTYPE TEMPLATE] Delete user account</h3>
-    <p>To delete your account please provide your current password as confirmation. <span style="color: #ff0000; font-weight: bold;">This operation cannot be undone!</span></p>
-    <form method="post" th:action="@{''}">
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input class="form-control" id="password" name="password" placeholder="Password" type="password" />
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">I delete my account</button>
-        </div>
-    </form>
-</section>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>[PROTOTYPE TEMPLATE] Delete user account</h1>
+        </section>
+        <p>To delete your account please provide your current password as confirmation. <span style="color: #ff0000; font-weight: bold;">This operation cannot be undone!</span></p>
+        <form method="post" th:action="@{''}">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input class="form-control" id="password" name="password" placeholder="Password" type="password" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">I delete my account</button>
+            </div>
+        </form>
+    </section>
+</th:block>
 </body>
 </html>
