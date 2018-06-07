@@ -11,16 +11,22 @@ import '../img/mstile-150x150.png';
 import './vendor'
 
 // components
-import Logo from './components/logo';
+import Logo from './components/Logo';
+import Select from './components/Select';
+import Editor from './components/Editor';
 
 class App {
 	constructor(){
-		this.logo = new Logo;
+		this.logo = new Logo();
+		this.select = new Select();
+		this.editor = new Editor();
 	}
 
 	init(){
 		this.logo.init();
+		this.select.init();
+		this.editor.init();
 	}
 }
 
-(new App).init();
+(new App()).init();

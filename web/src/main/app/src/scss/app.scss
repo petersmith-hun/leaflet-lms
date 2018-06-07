@@ -62,9 +62,14 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~admin-lte/dist/css/AdminLTE";
 @import "~admin-lte/dist/css/skins/skin-green";
 
+// Choices js
+$choices-button-icon-path: "~choices.js/assets/icons";
+@import "~choices.js/assets/styles/scss/choices";
+
 // App
 // base
 @import "base/variables";
 // components
 @import "components/header";
 @import "components/login";
+@import "components/select";

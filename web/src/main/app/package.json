@@ -13,6 +13,7 @@
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.4.0",
     "babel-preset-latest": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
@@ -43,7 +44,8 @@
     "admin-lte": "^2.4.3",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
-    "calmdown": "^0.5.5",
+    "calmdown": "^0.5.8",
+    "choices.js": "^3.0.4",
     "jquery": "^3.3.1",
     "vivus": "^0.4.3"
   }
