@@ -18,7 +18,7 @@ public class ModifyEntryRequestToEntryCreateRequestModelConverter implements Con
 
         EntryCreateRequestModel createRequestModel = new EntryCreateRequestModel();
         createRequestModel.setCategoryID(source.getCategoryID());
-        createRequestModel.setContent(source.getContent());
+        createRequestModel.setContent(source.getGeneratedContent());
         createRequestModel.setEnabled(source.isEnabled());
         createRequestModel.setLink(source.getLink());
         createRequestModel.setLocale(source.getLocale());

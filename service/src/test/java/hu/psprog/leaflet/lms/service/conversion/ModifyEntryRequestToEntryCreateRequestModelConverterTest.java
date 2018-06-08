@@ -45,7 +45,7 @@ public class ModifyEntryRequestToEntryCreateRequestModelConverterTest {
         // given
         ModifyEntryRequest request = new ModifyEntryRequest();
         request.setCategoryID(CATEGORY_ID);
-        request.setContent(CONTENT);
+        request.setGeneratedContent(CONTENT);
         request.setEnabled(IS_ENABLED);
         request.setLink(LINK);
         request.setLocale(LOCALE);

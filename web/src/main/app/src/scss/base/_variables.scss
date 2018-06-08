@@ -1,0 +1,11 @@
+// Colors
+$colorGreen: #90cb7e;
+$colorGreenDark: darken($colorGreen,10%);
+$colorGreenDarker: darken($colorGreen,15%);
+$colorGreenLight: lighten($colorGreen,10%);
+$colorGreenLighter: lighten($colorGreen,15%);
+$colorBlue: #3c8dbc;
+$colorRed: #d73925;
+
+// Fonts
+$fontSourceCodePro: 'Source Code Pro', monospace;

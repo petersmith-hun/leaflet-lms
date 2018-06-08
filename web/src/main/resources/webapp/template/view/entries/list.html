@@ -4,100 +4,87 @@
       layout:decorate="~{_layout/default}">
 <body>
 <th:block layout:fragment="content">
-    <!-- Entries start-->
-    <section class="container-fluid">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="page-header">
-                    <h1>Entries</h1>
-                    <hr>
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>Entries</h1>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a class="btn btn-primary" th:href="@{/entries/create}" href="#">New entry</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-xs-9">
-                                <p class="form-control-static m-0">Table of entries</p>
-                            </div>
-                            <div class="col-xs-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">Table of entries</h3>
+                            <div class="box-tools">
                                 <input class="form-control pull-right" type="text" placeholder="Search">
                             </div>
                         </div>
-                    </div>
-                    <div class="card-block">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                <tr>
-                                    <th>
-                                        <input type="checkbox" name="check-all">
-                                    </th>
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Created at</th>
-                                    <th>Modified at</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="entry,stat: ${content.entries}">
-                                    <td>
-                                        <input type="checkbox" name="entity-0">
-                                    </td>
-                                    <td th:text="${stat.index + 1}">0</td>
-                                    <td th:text="${entry.title}">Test Title</td>
-                                    <td th:text="${entry.user.username}">Test Author</td>
-                                    <td th:text="${entry.created}">2016.12.09. 12:00</td>
-                                    <td th:text="${entry.lastModified}">2016.12.09. 12:00</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-xs-center">
-                        <ul class="pagination pagination-sm m-0" th:if="${pagination.pageCount > 1}">
-                            <li class="page-item" th:if="${pagination.hasPrevious}">
-                                <a class="page-link" href="#" th:href="@{/entries/{page}(
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Created at</th>
+                                        <th>Modified at</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="entry,stat: ${content.entries}">
+                                        <td th:text="${stat.index + 1}">0</td>
+                                        <td th:text="${entry.title}">Test Title</td>
+                                        <td th:text="${entry.user.username}">Test Author</td>
+                                        <td th:text="${entry.created}">2016.12.09. 12:00</td>
+                                        <td th:text="${entry.lastModified}">2016.12.09. 12:00</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="box-footer text-center">
+                                <ul class="pagination pagination-sm" th:if="${pagination.pageCount > 1}">
+                                    <li class="page-item" th:if="${pagination.hasPrevious}">
+                                        <a class="page-link" href="#" th:href="@{/entries/{page}(
                                                     page=__${pagination.pageNumber - 1}__,
                                                     limit=__${@entryPaginationHelper.getLimit(#request)}__,
                                                     orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
                                                     orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">
-                                    <i class="fa fa-angle-left"></i>
-                                </a>
-                            </li>
-                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
-                                <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/entries/{page}(
+                                            <i class="fa fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
+                                        <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/entries/{page}(
                                                     page=__${pageNum}__,
                                                     limit=__${@entryPaginationHelper.getLimit(#request)}__,
                                                     orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
                                                     orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">1</a>
-                            </li>
-                            <li class="page-item" th:if="${pagination.hasNext}">
-                                <a class="page-link" href="#" th:href="@{/entries/{page}(
+                                    </li>
+                                    <li class="page-item" th:if="${pagination.hasNext}">
+                                        <a class="page-link" href="#" th:href="@{/entries/{page}(
                                                     page=__${pagination.pageNumber + 1}__,
                                                     limit=__${@entryPaginationHelper.getLimit(#request)}__,
                                                     orderBy=__${@entryPaginationHelper.mapOrderBy(#request)}__,
                                                     orderDirection=__${@entryPaginationHelper.mapOrderDirection(#request)}__)}">
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </li>
-                        </ul>
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 flex-lg-unordered flex-xs-first">
-                <div class="card">
-                    <div class="card-block">
-                        <a class="btn btn-primary" th:href="@{/entries/create}" href="#">New entry</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
     </section>
-    <!-- Entries end-->
 </th:block>
 </body>
 </html>

@@ -39,7 +39,7 @@ public class ModifyEntryRequest implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String content;
+    private String generatedContent;
 
     @NotNull
     @NotEmpty
@@ -73,8 +73,8 @@ public class ModifyEntryRequest implements Serializable {
         this.prologue = prologue;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setGeneratedContent(String generatedContent) {
+        this.generatedContent = generatedContent;
     }
 
     public void setRawContent(String rawContent) {
@@ -133,8 +133,8 @@ public class ModifyEntryRequest implements Serializable {
         return prologue;
     }
 
-    public String getContent() {
-        return content;
+    public String getGeneratedContent() {
+        return generatedContent;
     }
 
     public String getRawContent() {
@@ -196,7 +196,7 @@ public class ModifyEntryRequest implements Serializable {
                 .append(title, that.title)
                 .append(link, that.link)
                 .append(prologue, that.prologue)
-                .append(content, that.content)
+                .append(generatedContent, that.generatedContent)
                 .append(rawContent, that.rawContent)
                 .append(categoryID, that.categoryID)
                 .append(locale, that.locale)
@@ -216,7 +216,7 @@ public class ModifyEntryRequest implements Serializable {
                 .append(title)
                 .append(link)
                 .append(prologue)
-                .append(content)
+                .append(generatedContent)
                 .append(rawContent)
                 .append(categoryID)
                 .append(locale)
@@ -237,7 +237,7 @@ public class ModifyEntryRequest implements Serializable {
                 .append("title", title)
                 .append("link", link)
                 .append("prologue", prologue)
-                .append("content", content)
+                .append("generatedContent", generatedContent)
                 .append("rawContent", rawContent)
                 .append("categoryID", categoryID)
                 .append("locale", locale)
