@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <p>[todo populate]</p>
-    <form method="post" th:action="@{/system/translations/status/{id}(id=__${#request.getAttribute('id')}__)}">
-        <input type="submit" value="Change status" />
-    </form>
-    <form method="post" th:action="@{/system/translations/delete/{id}(id=__${#request.getAttribute('id')}__)}">
-        <input type="submit" value="Delete translation pack" />
-    </form>
-</section>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>[todo populate]</h1>
+        </section>
+        <form method="post" th:action="@{/system/translations/status/{id}(id=__${#request.getAttribute('id')}__)}">
+            <input type="submit" value="Change status" />
+        </form>
+        <form method="post" th:action="@{/system/translations/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+            <input type="submit" value="Delete translation pack" />
+        </form>
+    </section>
+</th:block>
 </body>
 </html>

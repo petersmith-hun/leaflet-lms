@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <h3>Change role of user <span th:text="${username}">username</span></h3>
-    <form method="post" th:action="@{''}">
-        <div class="form-group">
-            <label for="role">Role</label>
-            <select class="form-control" name="role" id="role">
-                <option th:each="role : ${roles}"
-                        th:selected="${T(hu.psprog.leaflet.lms.service.domain.role.AvailableRole).valueOf(currentRole) == T(hu.psprog.leaflet.lms.service.domain.role.AvailableRole).valueOf(role)}"
-                        th:value="${role}"
-                        th:text="${role}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">Save</button>
-        </div>
-    </form>
-</section>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>Change role of user <span th:text="${username}">username</span></h1>
+        </section>
+        <form method="post" th:action="@{''}">
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" name="role" id="role">
+                    <option th:each="role : ${roles}"
+                            th:selected="${T(hu.psprog.leaflet.lms.service.domain.role.AvailableRole).valueOf(currentRole) == T(hu.psprog.leaflet.lms.service.domain.role.AvailableRole).valueOf(role)}"
+                            th:value="${role}"
+                            th:text="${role}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </section>
+</th:block>
 </body>
 </html>

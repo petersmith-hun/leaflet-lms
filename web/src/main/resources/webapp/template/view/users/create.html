@@ -1,47 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <h3>[PROTOTYPE TEMPLATE] Create user</h3>
-    <form method="post" th:action="@{''}">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input class="form-control" id="username" name="username" placeholder="Username" type="text" />
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input class="form-control" id="email" name="email" placeholder="Email" type="text" />
-        </div>
-        <div class="form-group">
-            <label for="password">Password (temporal)</label>
-            <input class="form-control" id="password" name="password" placeholder="Password (temporal)" type="password" />
-        </div>
-        <div class="form-group">
-            <label for="password_confirmation">Password confirmation</label>
-            <input class="form-control" id="password_confirmation" name="passwordConfirmation" placeholder="Password confirmation" type="password" />
-        </div>
-        <div class="form-group">
-            <label for="role">Role</label>
-            <select class="form-control" name="role" id="role">
-                <option th:each="role : ${roles}"
-                        th:value="${role}"
-                        th:text="${role}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="locale">Language</label>
-            <select class="form-control" name="defaultLocale" id="locale" th:with="localeList = ${ {'HU', 'EN'} }">
-                <option th:each="locale : ${localeList}"
-                        th:value="${locale}"
-                        th:text="${locale}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">Save</button>
-        </div>
-    </form>
-</section>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>[PROTOTYPE TEMPLATE] Create user</h1>
+        </section>
+        <form method="post" th:action="@{''}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input class="form-control" id="username" name="username" placeholder="Username" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" name="email" placeholder="Email" type="text" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password (temporal)</label>
+                <input class="form-control" id="password" name="password" placeholder="Password (temporal)" type="password" />
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation">Password confirmation</label>
+                <input class="form-control" id="password_confirmation" name="passwordConfirmation" placeholder="Password confirmation" type="password" />
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" name="role" id="role">
+                    <option th:each="role : ${roles}"
+                            th:value="${role}"
+                            th:text="${role}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="locale">Language</label>
+                <select class="form-control" name="defaultLocale" id="locale" th:with="localeList = ${ {'HU', 'EN'} }">
+                    <option th:each="locale : ${localeList}"
+                            th:value="${locale}"
+                            th:text="${locale}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </section>
+</th:block>
 </body>
 </html>

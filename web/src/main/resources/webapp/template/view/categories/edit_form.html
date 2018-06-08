@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
-<section class="main__content" layout:fragment="content">
-    <h3>[PROTOTYPE TEMPLATE] Create / Edit category</h3>
-    <form method="post" th:action="@{''}">
-        <div class="form-group">
-            <label for="title">Title</label>
-            <input class="form-control" id="title" name="title" placeholder="Title" type="text" th:value="${category == null} ? null : ${category.title}" />
-        </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <input class="form-control" id="description" name="description" placeholder="Description" type="text" th:value="${category == null} ? null : ${category.description}" />
-        </div>
-        <div class="form-group">
-            <button class="btn btn-primary">Save</button>
-        </div>
-    </form>
-</section>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>[PROTOTYPE TEMPLATE] Create / Edit category</h1>
+        </section>
+        <form method="post" th:action="@{''}">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input class="form-control" id="title" name="title" placeholder="Title" type="text" th:value="${category == null} ? null : ${category.title}" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input class="form-control" id="description" name="description" placeholder="Description" type="text" th:value="${category == null} ? null : ${category.description}" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </section>
+</th:block>
 </body>
 </html>

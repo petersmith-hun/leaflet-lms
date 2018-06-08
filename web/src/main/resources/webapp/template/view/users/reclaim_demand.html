@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/login}">
-<body>
-<!-- Login start-->
-<main class="main-content" layout:fragment="content">
-    <div class="login-form">
-        <h1 class="login-form__header">Leaflet</h1>
-        <form class="login-form__form" method="post" th:action="@{/password-reset}">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input class="form-control" id="email" name="email" placeholder="Email" type="email">
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <button class="btn btn-primary">Request password reset</button>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<body class="page--login" style="background-image: url('https://picsum.photos/1920/1080/?blur&random')">
+    <th:block layout:fragment="header" th:if="${false}"></th:block>
+    <th:block layout:fragment="sidebar" th:if="${false}"></th:block>
+    <th:block layout:fragment="content">
+        <div class="login-form">
+            <h1 class="login-form__header">Leaflet</h1>
+            <form class="login-form__form" method="post" th:action="@{/password-reset}">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input class="form-control" id="email" name="email" placeholder="Email" type="email">
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button class="btn btn-primary">Request password reset</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
-        <p class="login-form__credits text-muted">Copyright &copy;
-            <time>2016</time> LFLT-AP
-            <span class='version'>v0.0.1</span>
-        </p>
-    </div>
-</main>
-<!-- Login end-->
+            </form>
+            <p class="login-form__credits text-muted">Copyright &copy;
+                <time>2016</time> LFLT-AP
+                <span class='version'>v0.0.1</span>
+            </p>
+        </div>
+    </th:block>
 </body>
 </html>

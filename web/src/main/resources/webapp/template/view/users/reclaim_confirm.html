@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/login}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <body>
 <!-- Login start-->
-<main class="main-content" layout:fragment="content">
+<body class="page--login" style="background-image: url('https://picsum.photos/1920/1080/?blur&random')">
+
+<th:block layout:fragment="header" th:if="${false}"></th:block>
+
+<th:block layout:fragment="sidebar" th:if="${false}"></th:block>
+
+<th:block layout:fragment="content">
     <div class="login-form">
         <h1 class="login-form__header">Leaflet</h1>
         <form class="login-form__form" method="post" th:action="@{''}">
@@ -27,7 +33,7 @@
             <span class='version'>v0.0.1</span>
         </p>
     </div>
-</main>
+</th:block>
 <!-- Login end-->
 </body>
 </html>
