@@ -13,8 +13,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>hu.psprog.leaflet</groupId>
+            <artifactId>bridge-spring-integration</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
