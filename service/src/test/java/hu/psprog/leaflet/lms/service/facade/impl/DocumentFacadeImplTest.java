@@ -152,7 +152,7 @@ public class DocumentFacadeImplTest {
     private DocumentCreateRequestModel prepareDocumentCreateRequestModel() {
 
         DocumentCreateRequestModel documentCreateRequestModel = new DocumentCreateRequestModel();
-        documentCreateRequestModel.setContent(CONTENT);
+        documentCreateRequestModel.setRawContent(CONTENT);
 
         return documentCreateRequestModel;
     }
@@ -166,7 +166,7 @@ public class DocumentFacadeImplTest {
     private EditDocumentDataModel prepareEditDocumentDataModel() {
         return EditDocumentDataModel.getExtendedBuilder()
                 .withId(DOCUMENT_ID)
-                .withContent(CONTENT)
+                .withRawContent(CONTENT)
                 .withEnabled(true)
                 .build();
     }
