@@ -23,7 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class ModifyEntryRequestToEntryCreateRequestModelConverterTest {
 
     private static final long CATEGORY_ID = 2L;
-    private static final String CONTENT = "content";
     private static final boolean IS_ENABLED = true;
     private static final String LINK = "entry-link-1";
     private static final Locale LOCALE = Locale.ENGLISH;
@@ -45,7 +44,6 @@ public class ModifyEntryRequestToEntryCreateRequestModelConverterTest {
         // given
         ModifyEntryRequest request = new ModifyEntryRequest();
         request.setCategoryID(CATEGORY_ID);
-        request.setGeneratedContent(CONTENT);
         request.setEnabled(IS_ENABLED);
         request.setLink(LINK);
         request.setLocale(LOCALE);
@@ -64,7 +62,6 @@ public class ModifyEntryRequestToEntryCreateRequestModelConverterTest {
         // then
         assertThat(result, notNullValue());
         assertThat(result.getCategoryID(), equalTo(CATEGORY_ID));
-        assertThat(result.getContent(), equalTo(CONTENT));
         assertThat(result.isEnabled(), equalTo(IS_ENABLED));
         assertThat(result.getLink(), equalTo(LINK));
         assertThat(result.getLocale(), equalTo(LOCALE));
