@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -61,6 +63,21 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
         // then
         verify(systemConfigurationFacade).processUpdateSEOConfiguration(seoConfiguration);
+        verifyRedirectionCreated(PATH_SYSTEM_SEO);
+    }
+
+    @Test
+    public void shouldProcessSEOConfigurationChangeHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        SEOConfiguration seoConfiguration = SEOConfiguration.getBuilder().build();
+        doThrow(new ValidationFailureException(response)).when(systemConfigurationFacade).processUpdateSEOConfiguration(seoConfiguration);
+
+        // when
+        systemConfigurationController.processSEOConfigurationChange(seoConfiguration, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(seoConfiguration);
         verifyRedirectionCreated(PATH_SYSTEM_SEO);
     }
 

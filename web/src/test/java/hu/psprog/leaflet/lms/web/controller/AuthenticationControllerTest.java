@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static hu.psprog.leaflet.lms.web.auth.mock.MockedJWTUserSecurityContextFactory.TOKEN;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -82,6 +84,21 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessPasswordResetDemandHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        PasswordResetDemandRequestModel passwordResetDemandRequestModel = new PasswordResetDemandRequestModel();
+        doThrow(new ValidationFailureException(response)).when(userFacade).demandPasswordReset(passwordResetDemandRequestModel);
+
+        // when
+        authenticationController.processPasswordResetDemand(passwordResetDemandRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(passwordResetDemandRequestModel);
+        verifyRedirectionCreated(PATH_PASSWORD_RESET);
+    }
+
+    @Test
     public void shouldProcessPasswordResetConfirmation() throws CommunicationFailureException {
 
         // given
@@ -94,6 +111,21 @@ public class AuthenticationControllerTest extends AbstractControllerTest {
         verify(userFacade).confirmPasswordReset(userPasswordRequestModel, TOKEN);
         verifyFlashMessageSet();
         verifyRedirectionCreated(PATH_LOGIN);
+    }
+
+    @Test
+    public void shouldProcessPasswordResetConfirmationHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        UserPasswordRequestModel userPasswordRequestModel = new UserPasswordRequestModel();
+        doThrow(new ValidationFailureException(response)).when(userFacade).confirmPasswordReset(userPasswordRequestModel, TOKEN);
+
+        // when
+        authenticationController.processPasswordResetConfirmation(userPasswordRequestModel, TOKEN, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(userPasswordRequestModel);
+        verifyRedirectionCreated(PATH_PASSWORD_RESET + "/" + TOKEN);
     }
 
     @Override

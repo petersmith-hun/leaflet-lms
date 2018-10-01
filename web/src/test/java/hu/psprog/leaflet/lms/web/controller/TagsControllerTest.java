@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.tag.TagCreateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.TagFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -25,6 +27,7 @@ public class TagsControllerTest extends AbstractControllerTest {
     private static final String TAG_VIEW_PATH = "/tags/view/" + TAG_ID;
     private static final String FIELD_TAG = "tag";
     private static final String PATH_TAGS = "/tags";
+    private static final String PATH_TAGS_CREATE = PATH_TAGS + "/create";
 
     @Mock
     private TagFacade tagFacade;
@@ -83,6 +86,21 @@ public class TagsControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessCreateTagHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        TagCreateRequestModel tagCreateRequestModel = new TagCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(tagFacade).processCreateTag(tagCreateRequestModel);
+
+        // when
+        tagsController.processCreateTag(tagCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(tagCreateRequestModel);
+        verifyRedirectionCreated(PATH_TAGS_CREATE);
+    }
+
+    @Test
     public void shouldShowEditTagForm() throws CommunicationFailureException {
 
         // when
@@ -106,6 +124,21 @@ public class TagsControllerTest extends AbstractControllerTest {
         // then
         verify(tagFacade).processEditTag(TAG_ID, tagCreateRequestModel);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(TAG_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessEditTagHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        TagCreateRequestModel tagCreateRequestModel = new TagCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(tagFacade).processEditTag(TAG_ID, tagCreateRequestModel);
+
+        // when
+        tagsController.processEditTag(TAG_ID, tagCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(tagCreateRequestModel);
         verifyRedirectionCreated(TAG_VIEW_PATH);
     }
 
