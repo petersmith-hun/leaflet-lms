@@ -128,11 +128,12 @@ public class FilesController extends BaseController {
                                                 RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        fileFacade.processUpdateFileMetaInfo(pathUUID, updateFileMetaInfoRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_META_INFORMATION_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            fileFacade.processUpdateFileMetaInfo(pathUUID, updateFileMetaInfoRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_META_INFORMATION_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(pathUUID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(pathUUID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, updateFileMetaInfoRequestModel, getRedirectionPath(pathUUID)));
     }
 
     /**
@@ -164,11 +165,12 @@ public class FilesController extends BaseController {
     public ModelAndView processFileUpload(@ModelAttribute FileUploadRequestModel fileUploadRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        UUID fileID = fileFacade.processFileUpload(fileUploadRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_SUCCESSFULLY_UPLOADED);
+        return handleValidationFailure(() -> {
+            UUID fileID = fileFacade.processFileUpload(fileUploadRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_SUCCESSFULLY_UPLOADED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(fileID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(fileID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, fileUploadRequestModel, PATH_FILES + "/upload"));
     }
 
     /**
@@ -197,11 +199,12 @@ public class FilesController extends BaseController {
                                                RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        fileFacade.processCreateDirectory(directoryCreationRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DIRECTORY_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            fileFacade.processCreateDirectory(directoryCreationRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DIRECTORY_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(PATH_FILES + PATH_BROWSE_ROOT);
+            return modelAndViewFactory.createRedirectionTo(PATH_FILES + PATH_BROWSE_ROOT);
+        }, validationFailureRedirectionSupplier(redirectAttributes, directoryCreationRequestModel, PATH_FILES + "/directory/create"));
     }
 
     /**

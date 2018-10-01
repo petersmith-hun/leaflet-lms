@@ -1,5 +1,7 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor;
+import hu.psprog.leaflet.lms.web.interceptor.ModelAndViewDebuggerInterceptor;
 import hu.psprog.leaflet.lms.web.menu.interceptor.SystemMenuInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Spring Web MVC configuration.
@@ -34,10 +37,18 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     private SystemMenuInterceptor systemMenuInterceptor;
 
+    @Autowired
+    private GeneralStatusSetterInterceptor generalStatusSetterInterceptor;
+
+    @Autowired
+    private Optional<ModelAndViewDebuggerInterceptor> modelAndViewDebuggerInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
+        modelAndViewDebuggerInterceptor.ifPresent(registry::addInterceptor);
         registry.addInterceptor(systemMenuInterceptor);
+        registry.addInterceptor(generalStatusSetterInterceptor);
     }
 
     @Override

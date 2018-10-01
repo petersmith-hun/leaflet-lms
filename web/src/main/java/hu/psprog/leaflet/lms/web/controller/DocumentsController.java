@@ -32,6 +32,7 @@ public class DocumentsController extends BaseController {
     private static final String DOCUMENT_STATUS_SUCCESSFULLY_CHANGED = "Document status successfully changed to %s";
 
     static final String PATH_DOCUMENTS = "/documents";
+    private static final String PATH_CREATE_DOCUMENT = PATH_DOCUMENTS + PATH_CREATE;
 
     private DocumentFacade documentFacade;
 
@@ -96,12 +97,13 @@ public class DocumentsController extends BaseController {
     public ModelAndView processCreateDocument(@ModelAttribute DocumentCreateRequestModel documentCreateRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        documentCreateRequestModel.setUserID(currentUserID());
-        Long createdDocumentID = documentFacade.processCreateDocument(documentCreateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DOCUMENT_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            documentCreateRequestModel.setUserID(currentUserID());
+            Long createdDocumentID = documentFacade.processCreateDocument(documentCreateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DOCUMENT_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(createdDocumentID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdDocumentID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, documentCreateRequestModel, PATH_CREATE_DOCUMENT));
     }
 
     /**
@@ -134,11 +136,12 @@ public class DocumentsController extends BaseController {
                                             @ModelAttribute DocumentUpdateRequestModel documentUpdateRequestModel,
                                             RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
-        documentFacade.processEditDocument(documentID, documentUpdateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DOCUMENT_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            documentFacade.processEditDocument(documentID, documentUpdateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DOCUMENT_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(documentID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(documentID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, documentUpdateRequestModel, getRedirectionPath(documentID)));
     }
 
     /**

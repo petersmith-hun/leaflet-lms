@@ -133,11 +133,12 @@ public class CommentsController extends BaseController {
                                            RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        commentFacade.processEditComment(commentID, commentUpdateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, COMMENT_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            commentFacade.processEditComment(commentID, commentUpdateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, COMMENT_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(commentID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(commentID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, commentUpdateRequestModel, getRedirectionPath(commentID)));
     }
 
     /**

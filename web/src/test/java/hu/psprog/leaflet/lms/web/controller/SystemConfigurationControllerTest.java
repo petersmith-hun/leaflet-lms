@@ -57,7 +57,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         SEOConfiguration seoConfiguration = SEOConfiguration.getBuilder().build();
 
         // when
-        systemConfigurationController.processSEOConfigurationChange(seoConfiguration);
+        systemConfigurationController.processSEOConfigurationChange(seoConfiguration, redirectAttributes);
 
         // then
         verify(systemConfigurationFacade).processUpdateSEOConfiguration(seoConfiguration);

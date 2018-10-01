@@ -35,6 +35,7 @@ public class UsersController extends BaseController {
     private static final String PATH_CHANGE_ROLE = PATH_EDIT + "/role";
 
     static final String PATH_USERS = "/users";
+    private static final String PATH_CREATE_USER = PATH_USERS + PATH_CREATE;
 
     private UserFacade userFacade;
 
@@ -83,12 +84,14 @@ public class UsersController extends BaseController {
     public ModelAndView processUserCreation(@ModelAttribute UserCreateRequestModel userCreateRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        Long createdID = userFacade.processUserCreation(userCreateRequestModel);
-        String viewPath = PATH_USERS + replaceIDInViewPath(createdID);
+        return handleValidationFailure(() -> {
+            Long createdID = userFacade.processUserCreation(userCreateRequestModel);
+            String viewPath = PATH_USERS + replaceIDInViewPath(createdID);
 
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, USER_SUCCESSFULLY_CREATED);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, USER_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory.createRedirectionTo(viewPath);
+            return modelAndViewFactory.createRedirectionTo(viewPath);
+        }, validationFailureRedirectionSupplier(redirectAttributes, userCreateRequestModel, PATH_CREATE_USER));
     }
 
     /**

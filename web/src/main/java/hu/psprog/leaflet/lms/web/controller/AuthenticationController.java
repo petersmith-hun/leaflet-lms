@@ -88,11 +88,12 @@ public class AuthenticationController extends BaseController {
                                                    RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        userFacade.demandPasswordReset(passwordResetDemandRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, SUCCESSFUL_PASSWORD_RESET_REQUEST);
+        return handleValidationFailure(() -> {
+            userFacade.demandPasswordReset(passwordResetDemandRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, SUCCESSFUL_PASSWORD_RESET_REQUEST);
 
-        return modelAndViewFactory
-                .createRedirectionTo(PATH_PASSWORD_RESET_DEMAND);
+            return modelAndViewFactory.createRedirectionTo(PATH_PASSWORD_RESET_DEMAND);
+        }, validationFailureRedirectionSupplier(redirectAttributes, passwordResetDemandRequestModel, PATH_PASSWORD_RESET_DEMAND));
     }
 
     /**
@@ -108,10 +109,11 @@ public class AuthenticationController extends BaseController {
                                                          @PathVariable(PATH_VARIABLE_TOKEN) String token, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        userFacade.confirmPasswordReset(userPasswordRequestModel, token);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, SUCCESSFUL_PASSWORD_RESET);
+        return handleValidationFailure(() -> {
+            userFacade.confirmPasswordReset(userPasswordRequestModel, token);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, SUCCESSFUL_PASSWORD_RESET);
 
-        return modelAndViewFactory
-                .createRedirectionTo(PATH_LOGIN);
+            return modelAndViewFactory.createRedirectionTo(PATH_LOGIN);
+        }, validationFailureRedirectionSupplier(redirectAttributes, userPasswordRequestModel, PATH_PASSWORD_RESET_DEMAND + "/" + token));
     }
 }
