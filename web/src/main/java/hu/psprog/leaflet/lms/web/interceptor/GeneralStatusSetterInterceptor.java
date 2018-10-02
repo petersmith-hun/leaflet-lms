@@ -15,8 +15,8 @@ import java.util.Optional;
  * Interceptor implementation to set general status flag in {@link ModelAndView}.
  * Behavior:
  *  - If the currently generated view is a redirection, status won't be set.
- *  - If validation were are registered on flash scope, or response status is BAD_REQUEST, general status will be VALIDATION_FAILURE.
- *  - Upon any other 4xx and 5xx response statuses will cause the general status to be set to ERROR.
+ *  - If validation failures were registered on flash scope, or response status is BAD_REQUEST, general status will be VALIDATION_FAILURE.
+ *  - Any other 4xx and 5xx response statuses will cause the general status to be set to ERROR.
  *  - Otherwise general status is OK.
  *
  * @author Peter Smith

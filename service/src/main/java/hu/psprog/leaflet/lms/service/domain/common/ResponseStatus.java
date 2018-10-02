@@ -9,7 +9,7 @@ package hu.psprog.leaflet.lms.service.domain.common;
 public enum ResponseStatus {
 
     /**
-     * No processing errors, generated ModelAndView is represents successful request processing.
+     * No processing errors, generated ModelAndView represents successful request processing.
      */
     OK,
 
