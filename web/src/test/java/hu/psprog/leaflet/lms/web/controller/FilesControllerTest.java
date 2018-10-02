@@ -4,6 +4,7 @@ import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
 import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -47,6 +49,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     private static final String VIEW_DIR_CREATE_FORM = "dir_create_form";
 
     private static final String PATH_FILES_BROWSE = "/files/browse";
+    private static final String SERVLET_PATH = "/servlet/path";
 
     @Mock
     private FileFacade fileFacade;
@@ -112,6 +115,21 @@ public class FilesControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessEditFileMetaInfoHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = new UpdateFileMetaInfoRequestModel();
+        doThrow(new ValidationFailureException(response)).when(fileFacade).processUpdateFileMetaInfo(PATH_UUID, updateFileMetaInfoRequestModel);
+
+        // when
+        filesController.processEditFileMetaInfo(PATH_UUID, updateFileMetaInfoRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(updateFileMetaInfoRequestModel);
+        verifyRedirectionCreated(FILE_VIEW_PATH);
+    }
+
+    @Test
     public void shouldShowFileUploadForm() throws CommunicationFailureException {
 
         // given
@@ -135,12 +153,28 @@ public class FilesControllerTest extends AbstractControllerTest {
         given(fileFacade.processFileUpload(fileUploadRequestModel)).willReturn(PATH_UUID);
 
         // when
-        filesController.processFileUpload(fileUploadRequestModel, redirectAttributes);
+        filesController.processFileUpload(fileUploadRequestModel, redirectAttributes, request);
 
         // then
         verify(fileFacade).processFileUpload(fileUploadRequestModel);
         verifyFlashMessageSet();
         verifyRedirectionCreated(FILE_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessFileUploadHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        FileUploadRequestModel fileUploadRequestModel = new FileUploadRequestModel();
+        doThrow(new ValidationFailureException(response)).when(fileFacade).processFileUpload(fileUploadRequestModel);
+        given(request.getServletPath()).willReturn(SERVLET_PATH);
+
+        // when
+        filesController.processFileUpload(fileUploadRequestModel, redirectAttributes, request);
+
+        // then
+        verifyValidationViolationInfoSet(fileUploadRequestModel);
+        verifyRedirectionCreated(SERVLET_PATH);
     }
 
     @Test
@@ -160,12 +194,28 @@ public class FilesControllerTest extends AbstractControllerTest {
         DirectoryCreationRequestModel directoryCreationRequestModel = new DirectoryCreationRequestModel();
 
         // when
-        filesController.processCreateDirectory(directoryCreationRequestModel, redirectAttributes);
+        filesController.processCreateDirectory(directoryCreationRequestModel, redirectAttributes, request);
 
         // then
         verify(fileFacade).processCreateDirectory(directoryCreationRequestModel);
         verifyFlashMessageSet();
         verifyRedirectionCreated(PATH_FILES_BROWSE);
+    }
+
+    @Test
+    public void shouldProcessCreateDirectoryHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        DirectoryCreationRequestModel directoryCreationRequestModel = new DirectoryCreationRequestModel();
+        doThrow(new ValidationFailureException(response)).when(fileFacade).processCreateDirectory(directoryCreationRequestModel);
+        given(request.getServletPath()).willReturn(SERVLET_PATH);
+
+        // when
+        filesController.processCreateDirectory(directoryCreationRequestModel, redirectAttributes, request);
+
+        // then
+        verifyValidationViolationInfoSet(directoryCreationRequestModel);
+        verifyRedirectionCreated(SERVLET_PATH);
     }
 
     @Test

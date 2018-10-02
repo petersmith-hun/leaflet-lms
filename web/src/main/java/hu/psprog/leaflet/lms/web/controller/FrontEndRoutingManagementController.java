@@ -31,6 +31,7 @@ public class FrontEndRoutingManagementController extends BaseController {
     private static final String ROUTE_SUCCESSFULLY_DELETED = "Route successfully deleted";
 
     static final String PATH_SYSTEM_ROUTES = "/system/routes";
+    private static final String PATH_CREATE_ROUTE = PATH_SYSTEM_ROUTES + PATH_CREATE;
 
     private FrontEndRoutingSupportFacade frontEndRoutingSupportFacade;
 
@@ -67,10 +68,12 @@ public class FrontEndRoutingManagementController extends BaseController {
                                              RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        Long createdID = frontEndRoutingSupportFacade.processCreateRoute(frontEndRouteUpdateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ROUTE_SUCCESSFULLY_SAVED);
+        return handleValidationFailure(() -> {
+            Long createdID = frontEndRoutingSupportFacade.processCreateRoute(frontEndRouteUpdateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ROUTE_SUCCESSFULLY_SAVED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, frontEndRouteUpdateRequestModel, PATH_CREATE_ROUTE));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = PATH_EDIT)
@@ -87,10 +90,12 @@ public class FrontEndRoutingManagementController extends BaseController {
                                             RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        frontEndRoutingSupportFacade.processEditRoute(routeID, frontEndRouteUpdateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ROUTE_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            frontEndRoutingSupportFacade.processEditRoute(routeID, frontEndRouteUpdateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ROUTE_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(routeID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(routeID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, frontEndRouteUpdateRequestModel, getRedirectionPath(routeID)));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)

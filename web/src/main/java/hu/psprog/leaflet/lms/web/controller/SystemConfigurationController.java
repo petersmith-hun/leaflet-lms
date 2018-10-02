@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * System configuration management controller for LMS.
@@ -32,6 +33,7 @@ public class SystemConfigurationController extends BaseController {
     private static final String PATH_LOGS = "/logs";
 
     static final String PATH_SYSTEM = "/system";
+    private static final String PATH_EDIT_SEO = PATH_SYSTEM + PATH_SEO;
 
     private SystemConfigurationFacade systemConfigurationFacade;
 
@@ -59,16 +61,18 @@ public class SystemConfigurationController extends BaseController {
      * Processes SEO configuration change request.
      *
      * @param seoConfiguration update SEO values
+     * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} object (redirection to the SEO configuration form)
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_SEO)
-    public ModelAndView processSEOConfigurationChange(@ModelAttribute SEOConfiguration seoConfiguration) throws CommunicationFailureException {
+    public ModelAndView processSEOConfigurationChange(@ModelAttribute SEOConfiguration seoConfiguration, RedirectAttributes redirectAttributes)
+            throws CommunicationFailureException {
 
-        systemConfigurationFacade.processUpdateSEOConfiguration(seoConfiguration);
-
-        return modelAndViewFactory
-                .createRedirectionTo(PATH_SYSTEM + PATH_SEO);
+        return handleValidationFailure(() -> {
+            systemConfigurationFacade.processUpdateSEOConfiguration(seoConfiguration);
+            return modelAndViewFactory.createRedirectionTo(PATH_EDIT_SEO);
+        }, validationFailureRedirectionSupplier(redirectAttributes, seoConfiguration, PATH_EDIT_SEO));
     }
 
     /**

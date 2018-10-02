@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -32,6 +34,7 @@ public class UsersControllerTest extends AbstractControllerTest {
     private static final String VIEW_CREATE = "create";
     private static final String VIEW_CHANGE_ROLE = "change_role";
     private static final String USERS_VIEW_PATH = "/users/view/" + USER_ID;
+    private static final String PATH_USERS_CREATE = "/users/create";
 
     @Mock
     private UserFacade userFacade;
@@ -77,6 +80,21 @@ public class UsersControllerTest extends AbstractControllerTest {
         verify(userFacade).processUserCreation(userCreateRequestModel);
         verifyFlashMessageSet();
         verifyRedirectionCreated(USERS_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessUserCreationHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        UserCreateRequestModel userCreateRequestModel = new UserCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(userFacade).processUserCreation(userCreateRequestModel);
+
+        // when
+        usersController.processUserCreation(userCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(userCreateRequestModel);
+        verifyRedirectionCreated(PATH_USERS_CREATE);
     }
 
     @Test

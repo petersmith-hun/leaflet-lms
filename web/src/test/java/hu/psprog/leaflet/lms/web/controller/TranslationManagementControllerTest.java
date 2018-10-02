@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.UUID;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -30,6 +32,7 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     private static final String FIELD_PACK = "pack";
     private static final String PATH_TRANSLATIONS = "/system/translations";
     private static final String PATH_TRANSLATIONS_VIEW = "/system/translations/view/" + PACK_ID;
+    private static final String PATH_TRANSLATIONS_CREATE = PATH_TRANSLATIONS + "/create";
 
     @Mock
     private TranslationManagementFacade translationManagementFacade;
@@ -83,6 +86,21 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
         // when
         verifyFlashMessageSet();
         verifyRedirectionCreated(PATH_TRANSLATIONS_VIEW);
+    }
+
+    @Test
+    public void shouldProcessPackCreationHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        given(translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL)).willReturn(PACK_ID);
+        doThrow(new ValidationFailureException(response)).when(translationManagementFacade).processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL);
+
+        // when
+        translationManagementController.processPackCreation(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL, redirectAttributes);
+
+        // when
+        verifyValidationViolationInfoSet(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL);
+        verifyRedirectionCreated(PATH_TRANSLATIONS_CREATE);
     }
 
     @Test

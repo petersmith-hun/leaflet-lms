@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.category.CategoryCreateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -26,6 +28,7 @@ public class CategoriesControllerTest extends AbstractControllerTest {
 
     private static final String FIELD_CATEGORY = "category";
     private static final String PATH_CATEGORIES = "/categories";
+    private static final String PATH_CATEGORIES_CREATE = PATH_CATEGORIES + "/create";
 
     @Mock
     private CategoryFacade categoryFacade;
@@ -84,6 +87,21 @@ public class CategoriesControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessCreateCategoryHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        CategoryCreateRequestModel categoryCreateRequestModel = new CategoryCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(categoryFacade).processCreateCategory(categoryCreateRequestModel);
+
+        // when
+        categoriesController.processCreateCategory(categoryCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(categoryCreateRequestModel);
+        verifyRedirectionCreated(PATH_CATEGORIES_CREATE);
+    }
+
+    @Test
     public void shouldShowCategoryEditForm() throws CommunicationFailureException {
 
         // when
@@ -107,6 +125,21 @@ public class CategoriesControllerTest extends AbstractControllerTest {
         // then
         verify(categoryFacade).processEditCategory(CATEGORY_ID, categoryCreateRequestModel);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(CATEGORY_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessCategoryEditHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        CategoryCreateRequestModel categoryCreateRequestModel = new CategoryCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(categoryFacade).processEditCategory(CATEGORY_ID, categoryCreateRequestModel);
+
+        // when
+        categoriesController.processCategoryEdit(CATEGORY_ID, categoryCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(categoryCreateRequestModel);
         verifyRedirectionCreated(CATEGORY_VIEW_PATH);
     }
 

@@ -5,6 +5,7 @@ import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.CommentPaginationHelper;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -98,6 +100,21 @@ public class CommentsControllerTest extends AbstractControllerTest {
         // then
         verify(commentFacade).processEditComment(COMMENT_ID, commentUpdateRequestModel);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(COMMENT_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessEditCommentHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        CommentUpdateRequestModel commentUpdateRequestModel = new CommentUpdateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(commentFacade).processEditComment(COMMENT_ID, commentUpdateRequestModel);
+
+        // when
+        commentsController.processEditComment(COMMENT_ID, commentUpdateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(commentUpdateRequestModel);
         verifyRedirectionCreated(COMMENT_VIEW_PATH);
     }
 

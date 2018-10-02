@@ -128,11 +128,12 @@ public class FilesController extends BaseController {
                                                 RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        fileFacade.processUpdateFileMetaInfo(pathUUID, updateFileMetaInfoRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_META_INFORMATION_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            fileFacade.processUpdateFileMetaInfo(pathUUID, updateFileMetaInfoRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_META_INFORMATION_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(pathUUID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(pathUUID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, updateFileMetaInfoRequestModel, getRedirectionPath(pathUUID)));
     }
 
     /**
@@ -157,18 +158,20 @@ public class FilesController extends BaseController {
      *
      * @param fileUploadRequestModel file data
      * @param redirectAttributes redirection attributes
+     * @param request {@link HttpServletRequest} instance
      * @return populated {@link ModelAndView} object - redirection to the view file details page
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_UPLOAD)
-    public ModelAndView processFileUpload(@ModelAttribute FileUploadRequestModel fileUploadRequestModel, RedirectAttributes redirectAttributes)
+    public ModelAndView processFileUpload(@ModelAttribute FileUploadRequestModel fileUploadRequestModel, RedirectAttributes redirectAttributes, HttpServletRequest request)
             throws CommunicationFailureException {
 
-        UUID fileID = fileFacade.processFileUpload(fileUploadRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_SUCCESSFULLY_UPLOADED);
+        return handleValidationFailure(() -> {
+            UUID fileID = fileFacade.processFileUpload(fileUploadRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, FILE_SUCCESSFULLY_UPLOADED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(fileID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(fileID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, fileUploadRequestModel, request.getServletPath()));
     }
 
     /**
@@ -189,19 +192,21 @@ public class FilesController extends BaseController {
      *
      * @param directoryCreationRequestModel directory data
      * @param redirectAttributes redirection attributes
+     * @param request {@link HttpServletRequest} instance
      * @return populated {@link ModelAndView} object - redirection to the file browser
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_DIRECTORY_CREATE)
     public ModelAndView processCreateDirectory(@ModelAttribute DirectoryCreationRequestModel directoryCreationRequestModel,
-                                               RedirectAttributes redirectAttributes)
+                                               RedirectAttributes redirectAttributes, HttpServletRequest request)
             throws CommunicationFailureException {
 
-        fileFacade.processCreateDirectory(directoryCreationRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DIRECTORY_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            fileFacade.processCreateDirectory(directoryCreationRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, DIRECTORY_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory
-                .createRedirectionTo(PATH_FILES + PATH_BROWSE_ROOT);
+            return modelAndViewFactory.createRedirectionTo(PATH_FILES + PATH_BROWSE_ROOT);
+        }, validationFailureRedirectionSupplier(redirectAttributes, directoryCreationRequestModel, request.getServletPath()));
     }
 
     /**

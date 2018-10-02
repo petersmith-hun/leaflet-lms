@@ -31,6 +31,7 @@ public class TagsController extends BaseController {
     private static final String TAG_STATUS_SUCCESSFULLY_UPDATED = "Tag status successfully updated to %s";
 
     static final String PATH_TAGS = "/tags";
+    private static final String PATH_CREATE_TAG = PATH_TAGS + PATH_CREATE;
 
     private TagFacade tagFacade;
 
@@ -96,10 +97,12 @@ public class TagsController extends BaseController {
                                          RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        Long createdID = tagFacade.processCreateTag(tagCreateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TAG_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            Long createdID = tagFacade.processCreateTag(tagCreateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TAG_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, tagCreateRequestModel, PATH_CREATE_TAG));
     }
 
     /**
@@ -133,10 +136,12 @@ public class TagsController extends BaseController {
                                        RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        tagFacade.processEditTag(tagID, tagCreateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TAG_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            tagFacade.processEditTag(tagID, tagCreateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TAG_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(tagID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(tagID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, tagCreateRequestModel, getRedirectionPath(tagID)));
     }
 
     /**

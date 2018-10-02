@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.document.DocumentCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.document.DocumentUpdateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.DocumentFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -30,6 +32,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
     private static final String DOCUMENT_VIEW_PATH = "/documents/view/" + DOCUMENT_ID;
     private static final String FIELD_DOCUMENT = "document";
     private static final String PATH_DOCUMENTS = "/documents";
+    private static final String PATH_DOCUMENTS_CREATE = PATH_DOCUMENTS + "/create";
 
     @Mock
     private DocumentFacade documentFacade;
@@ -89,6 +92,22 @@ public class DocumentsControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessCreateDocumentHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        DocumentCreateRequestModel documentCreateRequestModel = new DocumentCreateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(documentFacade).processCreateDocument(documentCreateRequestModel);
+
+        // when
+        documentsController.processCreateDocument(documentCreateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(documentCreateRequestModel);
+        verifyRedirectionCreated(PATH_DOCUMENTS_CREATE);
+    }
+
+
+    @Test
     public void shouldShowEditDocumentForm() throws CommunicationFailureException {
 
         // when
@@ -112,6 +131,21 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         // then
         verify(documentFacade).processEditDocument(DOCUMENT_ID, documentUpdateRequestModel);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(DOCUMENT_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessEditDocumentHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        DocumentUpdateRequestModel documentUpdateRequestModel = new DocumentUpdateRequestModel();
+        doThrow(new ValidationFailureException(response)).when(documentFacade).processEditDocument(DOCUMENT_ID, documentUpdateRequestModel);
+
+        // when
+        documentsController.processEditDocument(DOCUMENT_ID, documentUpdateRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(documentUpdateRequestModel);
         verifyRedirectionCreated(DOCUMENT_VIEW_PATH);
     }
 

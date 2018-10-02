@@ -4,6 +4,8 @@ import hu.psprog.leaflet.api.rest.request.user.PasswordChangeRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,6 +28,8 @@ import static hu.psprog.leaflet.lms.web.config.SecurityConfiguration.PATH_LOGIN;
 @RequestMapping(AccountController.PATH_ACCOUNT)
 public class AccountController extends BaseController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
+
     private static final String VIEW_USERS_PROFILE = "view/users/profile";
     private static final String VIEW_USERS_PASSWORD = "view/users/password";
     private static final String VIEW_USERS_DELETE = "view/users/delete";
@@ -41,6 +45,8 @@ public class AccountController extends BaseController {
     private static final String MODEL_ATTRIBUTE_PASSWORD = "password";
 
     static final String PATH_ACCOUNT = "/account";
+    private static final String PATH_ACCOUNT_UPDATE_PROFILE = PATH_ACCOUNT + PATH_UPDATE_PROFILE;
+    private static final String PATH_ACCOUNT_CHANGE_PASSWORD = PATH_ACCOUNT + PATH_CHANGE_PASSWORD;
 
     private UserFacade userFacade;
 
@@ -75,10 +81,12 @@ public class AccountController extends BaseController {
     public ModelAndView processUpdateProfile(@ModelAttribute UpdateProfileRequestModel updateProfileRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        userFacade.processUserProfileUpdate(currentUserID(), updateProfileRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_ACCOUNT_HAS_SUCCESSFULLY_BEEN_UPDATED);
+        return handleValidationFailure(() -> {
+            userFacade.processUserProfileUpdate(currentUserID(), updateProfileRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_ACCOUNT_HAS_SUCCESSFULLY_BEEN_UPDATED);
 
-        return modelAndViewFactory.createRedirectionTo(PATH_HOME);
+            return modelAndViewFactory.createRedirectionTo(PATH_HOME);
+        }, validationFailureRedirectionSupplier(redirectAttributes, updateProfileRequestModel, PATH_ACCOUNT_UPDATE_PROFILE));
     }
 
     /**
@@ -104,13 +112,19 @@ public class AccountController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, path = PATH_CHANGE_PASSWORD)
     public ModelAndView processPasswordChange(@ModelAttribute PasswordChangeRequestModel passwordChangeRequestModel,
                                               RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest)
-            throws CommunicationFailureException, ServletException {
+            throws CommunicationFailureException {
 
-        userFacade.processPasswordChange(currentUserID(), passwordChangeRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_PASSWORD_HAS_BEEN_CHANGED_PLEASE_RE_LOGIN);
-        httpServletRequest.logout();
+        return handleValidationFailure(() -> {
+            userFacade.processPasswordChange(currentUserID(), passwordChangeRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_PASSWORD_HAS_BEEN_CHANGED_PLEASE_RE_LOGIN);
+            try {
+                httpServletRequest.logout();
+            } catch (ServletException e) {
+                LOGGER.warn("Logout failed after password change", e);
+            }
 
-        return modelAndViewFactory.createRedirectionTo(PATH_LOGIN);
+            return modelAndViewFactory.createRedirectionTo(PATH_LOGIN);
+        }, validationFailureRedirectionSupplier(redirectAttributes, passwordChangeRequestModel, PATH_ACCOUNT_CHANGE_PASSWORD));
     }
 
     /**
