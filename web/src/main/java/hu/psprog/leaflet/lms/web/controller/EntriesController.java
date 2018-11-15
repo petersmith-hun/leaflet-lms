@@ -90,11 +90,13 @@ public class EntriesController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, path = PATH_VIEW)
     public ModelAndView viewEntry(@PathVariable(PATH_VARIABLE_ID) Long entryID) throws CommunicationFailureException {
 
-        WrapperBodyDataModel<EditEntryDataModel> response = entryFacade.getEntry(entryID);
+        EntryFormContent response = entryFacade.fillForm(entryID);
 
         return modelAndViewFactory.createForView(VIEW_ENTRY_DETAILS)
-                .withAttribute("content", response.getBody())
-                .withAttribute("seo", response.getSeo())
+                .withAttribute("tagSelector", response.getExistingTags())
+                .withAttribute("categorySelector", response.getExistingCategories())
+                .withAttribute("fileSelector", response.getExistingFiles())
+                .withAttribute("entryData", response.getEntryData())
                 .build();
     }
 
@@ -205,7 +207,7 @@ public class EntriesController extends BaseController {
      * @return populated {@link ModelAndView} object - redirecting to the view entry page
      * @throws CommunicationFailureException on Bridge communication failure
      */
-    @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE)
+    @RequestMapping(method = RequestMethod.DELETE, path = PATH_DELETE)
     public ModelAndView processDeletion(@PathVariable(PATH_VARIABLE_ID) Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
         entryFacade.processDeletion(id);
