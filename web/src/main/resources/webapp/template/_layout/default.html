@@ -27,8 +27,7 @@
             <th:block layout:fragment="sidebar">
                 <aside layout:replace="~{_fragment/sidebar}"></aside>
             </th:block>
-
-            <p th:if="${flash != null}" th:text="${flash}" style="color: #fff; background-color: #047800; font-weight: bold; padding: 10px;">Flash message</p>
+            
             <th:block layout:fragment="content"/>
 
             <th:block layout:fragment="footer">

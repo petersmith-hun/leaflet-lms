@@ -5,7 +5,6 @@ const webpack = require('webpack');
 // Webpack plugins
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const SpritePlugin = require('svg-sprite-loader/plugin');
 
 // Get the environment
 const isProduction = process.env.NODE_ENV === 'production';
@@ -24,8 +23,8 @@ const baseConfig = {
 
 	// Where we want to generate the bundle file
 	output:{
-		path: path.resolve(__dirname, '../resources/webapp/resources/'),
-		filename: './js/app.js'
+		path: path.resolve(__dirname, '../resources/webapp/resources/js'),
+		filename: './app.js'
 	},
 
 	// Modules
@@ -60,29 +59,6 @@ const baseConfig = {
 					use: ['css-loader', 'postcss-loader']
 				})
 			},
-			// Fonts
-			{
-				test: /\.(ttf|otf|eot|svg|woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?)$/,
-				exclude: path.resolve('./src/svg'),
-				use: 'file-loader?name=./fonts/[name].[ext]'
-			},
-			// SVG Sprite
-			{
-				test: /\.svg$/,
-				include: path.resolve('./src/svg'),
-				use: [
-					{
-						loader: 'svg-sprite-loader',
-						options: {
-							extract: true,
-							spriteFilename: './sprite/all.svg'
-						}
-					},
-					{
-						loader: 'image-webpack-loader'
-					}
-				]
-			},
 			// Images
 			{
 				test: /\.(jp(e)?g|png|gif)$/,
@@ -91,22 +67,26 @@ const baseConfig = {
 						loader: 'file-loader',
 						options: {
 							name: '[name].[ext]',
-							outputPath: './images/'
+							outputPath: '../images/'
 						}
 					},
 					{
 						loader: 'image-webpack-loader'
 					}
 				]
-			}
+			},
+			// Fonts
+			{
+				test: /\.(ttf|otf|eot|svg|woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?)$/,
+				use: 'file-loader?name=../fonts/[name].[ext]'
+			},
 		]
 	},
 
 	// Plugins
 	plugins:[
-		new ExtractTextPlugin('./css/app.css'),
+		new ExtractTextPlugin('../css/app.css'),
 		new CleanWebpackPlugin(['resources/*'], {root: __dirname + '/../resources/webapp/' } ),
-		new SpritePlugin(),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
 			jQuery: 'jquery',

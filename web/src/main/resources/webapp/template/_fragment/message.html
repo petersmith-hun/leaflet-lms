@@ -1,0 +1,7 @@
+<th:block th:if="${message != null}" th:fragment="message(message)"
+          xmlns:th="http://www.thymeleaf.org">
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <th:block th:text="${message}"/>
+    </div>
+</th:block>
