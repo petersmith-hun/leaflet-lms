@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.routing.FrontEndRouteUpdateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FrontEndRoutingSupportFacade;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -27,6 +29,7 @@ public class FrontEndRoutingManagementControllerTest extends AbstractControllerT
     private static final String ROUTES_PATH = "/system/routes";
     private static final String FIELD_ROUTES = "routes";
     private static final String FIELD_ROUTE = "route";
+    private static final String PATH_ROUTE_CREATE = ROUTES_PATH + "/create";
 
     @Mock
     private FrontEndRoutingSupportFacade frontEndRoutingSupportFacade;
@@ -83,6 +86,20 @@ public class FrontEndRoutingManagementControllerTest extends AbstractControllerT
     }
 
     @Test
+    public void shouldProcessRouteCreationHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        doThrow(new ValidationFailureException(response)).when(frontEndRoutingSupportFacade).processCreateRoute(FRONT_END_ROUTE_UPDATE_REQUEST_MODEL);
+
+        // when
+        frontEndRoutingManagementController.processRouteCreation(FRONT_END_ROUTE_UPDATE_REQUEST_MODEL, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(FRONT_END_ROUTE_UPDATE_REQUEST_MODEL);
+        verifyRedirectionCreated(PATH_ROUTE_CREATE);
+    }
+
+    @Test
     public void shouldShowEditRouteForm() throws CommunicationFailureException {
 
         // when
@@ -103,6 +120,20 @@ public class FrontEndRoutingManagementControllerTest extends AbstractControllerT
         // then
         verify(frontEndRoutingSupportFacade).processEditRoute(ROUTE_ID, FRONT_END_ROUTE_UPDATE_REQUEST_MODEL);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(ROUTE_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessRouteEditingHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        doThrow(new ValidationFailureException(response)).when(frontEndRoutingSupportFacade).processEditRoute(ROUTE_ID, FRONT_END_ROUTE_UPDATE_REQUEST_MODEL);
+
+        // when
+        frontEndRoutingManagementController.processRouteEditing(ROUTE_ID, FRONT_END_ROUTE_UPDATE_REQUEST_MODEL, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(FRONT_END_ROUTE_UPDATE_REQUEST_MODEL);
         verifyRedirectionCreated(ROUTE_VIEW_PATH);
     }
 

@@ -31,6 +31,7 @@ public class TranslationManagementController extends BaseController {
     private static final String TRANSLATION_PACK_SUCCESSFULLY_DELETED = "Translation pack successfully deleted";
 
     static final String PATH_SYSTEM_TRANSLATIONS = "/system/translations";
+    private static final String PATH_CREATE_TRANSLATION_PACK = PATH_SYSTEM_TRANSLATIONS + PATH_CREATE;
 
     private TranslationManagementFacade translationManagementFacade;
 
@@ -92,10 +93,12 @@ public class TranslationManagementController extends BaseController {
     public ModelAndView processPackCreation(TranslationPackUploadRequestModel translationPackUploadRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        UUID packID = translationManagementFacade.processCreatePack(translationPackUploadRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TRANSLATION_PACK_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            UUID packID = translationManagementFacade.processCreatePack(translationPackUploadRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, TRANSLATION_PACK_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(packID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(packID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, translationPackUploadRequestModel, PATH_CREATE_TRANSLATION_PACK));
     }
 
     /**

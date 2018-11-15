@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.user.PasswordChangeRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.servlet.ServletException;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -34,6 +36,8 @@ public class AccountControllerTest extends AbstractControllerTest {
     private static final String VIEW_PROFILE = "profile";
     private static final String VIEW_PASSWORD = "password";
     private static final String VIEW_DELETE = "delete";
+    private static final String PATH_ACCOUNT_UPDATE_PROFILE = "/account/update-profile";
+    private static final String PATH_ACCOUNT_CHANGE_PASSWORD = "/account/change-password";
 
     @Mock
     private UserFacade userFacade;
@@ -69,6 +73,21 @@ public class AccountControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessUpdateProfileHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        UpdateProfileRequestModel updateProfileRequestModel = new UpdateProfileRequestModel();
+        doThrow(new ValidationFailureException(response)).when(userFacade).processUserProfileUpdate(USER_ID, updateProfileRequestModel);
+
+        // when
+        accountController.processUpdateProfile(updateProfileRequestModel, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(updateProfileRequestModel);
+        verifyRedirectionCreated(PATH_ACCOUNT_UPDATE_PROFILE);
+    }
+
+    @Test
     public void shouldShowPasswordChangeForm() {
 
         // when
@@ -92,6 +111,21 @@ public class AccountControllerTest extends AbstractControllerTest {
         verifyUserLoggedOut();
         verifyFlashMessageSet();
         verifyRedirectionCreated(PATH_LOGIN);
+    }
+
+    @Test
+    public void shouldProcessPasswordChangeHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        PasswordChangeRequestModel passwordChangeRequestModel = new PasswordChangeRequestModel();
+        doThrow(new ValidationFailureException(response)).when(userFacade).processPasswordChange(USER_ID, passwordChangeRequestModel);
+
+        // when
+        accountController.processPasswordChange(passwordChangeRequestModel, redirectAttributes, request);
+
+        // then
+        verifyValidationViolationInfoSet(passwordChangeRequestModel);
+        verifyRedirectionCreated(PATH_ACCOUNT_CHANGE_PASSWORD);
     }
 
     @Test

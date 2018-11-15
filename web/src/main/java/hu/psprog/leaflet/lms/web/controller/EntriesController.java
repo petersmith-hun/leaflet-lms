@@ -44,6 +44,7 @@ public class EntriesController extends BaseController {
     private static final String ENTRY_SUCCESSFULLY_DELETED = "Entry successfully deleted.";
 
     static final String PATH_ENTRIES = "/entries";
+    private static final String PATH_CREATE_ENTRY = PATH_ENTRIES + PATH_CREATE;
 
     private EntryFacade entryFacade;
     private EntryPaginationHelper paginationHelper;
@@ -130,14 +131,16 @@ public class EntriesController extends BaseController {
     public ModelAndView processEntryCreation(@ModelAttribute ModifyEntryRequest modifyEntryRequest, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        modifyEntryRequest.setUserID(currentUserID());
+        return handleValidationFailure(() -> {
+            modifyEntryRequest.setUserID(currentUserID());
 
-        Long createdID = entryFacade.processCreateEntry(modifyEntryRequest);
-        String viewPath = PATH_ENTRIES + replaceIDInViewPath(createdID);
+            Long createdID = entryFacade.processCreateEntry(modifyEntryRequest);
+            String viewPath = PATH_ENTRIES + replaceIDInViewPath(createdID);
 
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_SAVED);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_SAVED);
 
-        return modelAndViewFactory.createRedirectionTo(viewPath);
+            return modelAndViewFactory.createRedirectionTo(viewPath);
+        }, validationFailureRedirectionSupplier(redirectAttributes, modifyEntryRequest, PATH_CREATE_ENTRY));
     }
 
     /**
@@ -173,11 +176,13 @@ public class EntriesController extends BaseController {
     public ModelAndView processEntryEditing(@PathVariable(PATH_VARIABLE_ID) Long id, @ModelAttribute ModifyEntryRequest modifyEntryRequest, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        entryFacade.processEditEntry(id, modifyEntryRequest);
+        return handleValidationFailure(() -> {
+            entryFacade.processEditEntry(id, modifyEntryRequest);
 
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_SAVED);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, ENTRY_SUCCESSFULLY_SAVED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
+        }, validationFailureRedirectionSupplier(redirectAttributes, modifyEntryRequest, getRedirectionPath(id)));
     }
 
     /**

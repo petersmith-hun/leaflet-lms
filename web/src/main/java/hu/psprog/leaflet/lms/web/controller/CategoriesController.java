@@ -31,6 +31,7 @@ public class CategoriesController extends BaseController {
     private static final String CATEGORY_STATUS_SUCCESSFULLY_CHANGED = "Category status successfully changed to %s";
 
     static final String PATH_CATEGORIES = "/categories";
+    private static final String PATH_CREATE_CATEGORY = PATH_CATEGORIES + PATH_CREATE;
 
     private CategoryFacade categoryFacade;
 
@@ -95,10 +96,12 @@ public class CategoriesController extends BaseController {
     public ModelAndView processCreateCategory(@ModelAttribute CategoryCreateRequestModel categoryCreateRequestModel, RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        Long createdCategoryID = categoryFacade.processCreateCategory(categoryCreateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, CATEGORY_SUCCESSFULLY_CREATED);
+        return handleValidationFailure(() -> {
+            Long createdCategoryID = categoryFacade.processCreateCategory(categoryCreateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, CATEGORY_SUCCESSFULLY_CREATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdCategoryID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(createdCategoryID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, categoryCreateRequestModel, PATH_CREATE_CATEGORY));
     }
 
     /**
@@ -132,10 +135,12 @@ public class CategoriesController extends BaseController {
                                             RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
-        categoryFacade.processEditCategory(categoryID, categoryCreateRequestModel);
-        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, CATEGORY_SUCCESSFULLY_UPDATED);
+        return handleValidationFailure(() -> {
+            categoryFacade.processEditCategory(categoryID, categoryCreateRequestModel);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, CATEGORY_SUCCESSFULLY_UPDATED);
 
-        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(categoryID));
+            return modelAndViewFactory.createRedirectionTo(getRedirectionPath(categoryID));
+        }, validationFailureRedirectionSupplier(redirectAttributes, categoryCreateRequestModel, getRedirectionPath(categoryID)));
     }
 
     /**

@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
@@ -20,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -39,6 +41,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_FILE_SELECTOR = "fileSelector";
     private static final String FIELD_ENTRY_DATA = "entryData";
     private static final String PATH_ENTRIES = "/entries";
+    private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
 
     @Mock
     private EntryFacade entryFacade;
@@ -115,6 +118,21 @@ public class EntriesControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldProcessEntryCreationHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        ModifyEntryRequest modifyEntryRequest = new ModifyEntryRequest();
+        doThrow(new ValidationFailureException(response)).when(entryFacade).processCreateEntry(modifyEntryRequest);
+
+        // when
+        entriesController.processEntryCreation(modifyEntryRequest, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(modifyEntryRequest);
+        verifyRedirectionCreated(PATH_ENTRIES_CREATE);
+    }
+
+    @Test
     public void shouldShowEditEntryForm() throws CommunicationFailureException {
 
         // given
@@ -141,6 +159,21 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).processEditEntry(ENTRY_ID, modifyEntryRequest);
         verifyFlashMessageSet();
+        verifyRedirectionCreated(ENTRY_VIEW_PATH);
+    }
+
+    @Test
+    public void shouldProcessEditEntryHandleValidationFailure() throws CommunicationFailureException {
+
+        // given
+        ModifyEntryRequest modifyEntryRequest = new ModifyEntryRequest();
+        doThrow(new ValidationFailureException(response)).when(entryFacade).processEditEntry(ENTRY_ID, modifyEntryRequest);
+
+        // when
+        entriesController.processEntryEditing(ENTRY_ID, modifyEntryRequest, redirectAttributes);
+
+        // then
+        verifyValidationViolationInfoSet(modifyEntryRequest);
         verifyRedirectionCreated(ENTRY_VIEW_PATH);
     }
 

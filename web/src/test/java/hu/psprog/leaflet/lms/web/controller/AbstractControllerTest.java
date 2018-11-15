@@ -1,5 +1,7 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageListResponse;
+import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageResponse;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -9,10 +11,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static hu.psprog.leaflet.lms.web.controller.BaseController.FLASH_MESSAGE;
+import static hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor.VALIDATION_FAILED_ATTRIBUTE;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.contains;
@@ -40,12 +47,31 @@ public abstract class AbstractControllerTest {
     static final String FIELD_SEO = "seo";
 
     private static final String VIEW_NAME_FORMAT = "view/%s/%s";
+    private static final String INVALID_FIELD_NAME = "field-1";
+    private static final String INVALID_FIELD_VIOLATION = "field restriction violated";
+    private static final ValidationErrorMessageListResponse VALIDATION_ERROR_MESSAGE_LIST_RESPONSE = ValidationErrorMessageListResponse.getBuilder()
+            .withValidation(Collections.singletonList(ValidationErrorMessageResponse.getExtendedBuilder()
+                    .withField(INVALID_FIELD_NAME)
+                    .withMessage(INVALID_FIELD_VIOLATION)
+                    .build()))
+            .build();
+    private static final Map<String, String> VALIDATION_RESULTS_MAP = new HashMap<>();
+    private static final String SUBMITTED_FORM_VALUES = "submittedFormValues";
+    private static final String VALIDATION_FAILED_MESSAGE = "Validation failed - please see violations";
+    private static final String VALIDATION_RESULTS_ATTRIBUTE = "validationResults";
+
+    static {
+        VALIDATION_RESULTS_MAP.put(INVALID_FIELD_NAME, INVALID_FIELD_VIOLATION);
+    }
 
     @Mock
     HttpServletRequest request;
 
     @Mock
     RedirectAttributes redirectAttributes;
+
+    @Mock
+    Response response;
 
     @Mock
     private ModelAndViewFactory modelAndViewFactory;
@@ -56,12 +82,15 @@ public abstract class AbstractControllerTest {
     @Mock
     private ModelAndView modelAndView;
 
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         given(modelAndViewFactory.createForView(anyString())).willReturn(modelAndViewWrapper);
+        given(modelAndViewFactory.createRedirectionTo(anyString())).willReturn(modelAndView);
         given(modelAndViewWrapper.withAttribute(anyString(), anyString())).willReturn(modelAndViewWrapper);
         given(modelAndViewWrapper.build()).willReturn(modelAndView);
+        given(response.readEntity(ValidationErrorMessageListResponse.class)).willReturn(VALIDATION_ERROR_MESSAGE_LIST_RESPONSE);
     }
 
     void verifyViewCreated(String name) {
@@ -91,6 +120,13 @@ public abstract class AbstractControllerTest {
 
     void verifyUserLoggedOut() throws ServletException {
         verify(request).logout();
+    }
+
+    void verifyValidationViolationInfoSet(Object formContent) {
+        verify(redirectAttributes).addFlashAttribute(FLASH_MESSAGE, VALIDATION_FAILED_MESSAGE);
+        verify(redirectAttributes).addFlashAttribute(SUBMITTED_FORM_VALUES, formContent);
+        verify(redirectAttributes).addFlashAttribute(VALIDATION_RESULTS_ATTRIBUTE, VALIDATION_RESULTS_MAP);
+        verify(redirectAttributes).addFlashAttribute(VALIDATION_FAILED_ATTRIBUTE, true);
     }
 
     abstract String controllerViewGroup();
