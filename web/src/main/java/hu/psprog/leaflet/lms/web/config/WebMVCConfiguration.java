@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -29,7 +29,7 @@ import java.util.Optional;
  */
 @Configuration
 @EnableWebMvc
-public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
+public class WebMVCConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private WebAppResources webAppResources;
@@ -45,7 +45,6 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        super.addInterceptors(registry);
         modelAndViewDebuggerInterceptor.ifPresent(registry::addInterceptor);
         registry.addInterceptor(systemMenuInterceptor);
         registry.addInterceptor(generalStatusSetterInterceptor);
@@ -55,16 +54,15 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         webAppResources.getResources()
-                .forEach((resourceHandler, resourceLocation) -> registry
-                        .addResourceHandler(resourceHandler)
-                        .addResourceLocations(resourceLocation));
+                .forEach(resource -> registry
+                        .addResourceHandler(resource.getHandler())
+                        .addResourceLocations(resource.getLocation()));
     }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(byteArrayHttpMessageConverter());
         converters.add(resourceHttpMessageConverter());
-        super.configureMessageConverters(converters);
     }
 
     @Bean
@@ -95,16 +93,38 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter {
 
     @Component
     @ConfigurationProperties(prefix = "webapp")
-    class WebAppResources {
+    public class WebAppResources {
 
-        private Map<String, String> resources;
+        private List<WebAppResource> resources = new ArrayList<>();
 
-        public Map<String, String> getResources() {
+        public List<WebAppResource> getResources() {
             return resources;
         }
 
-        public void setResources(Map<String, String> resources) {
+        public void setResources(List<WebAppResource> resources) {
             this.resources = resources;
+        }
+    }
+
+    public static class WebAppResource {
+
+        private String handler;
+        private String location;
+
+        public String getHandler() {
+            return handler;
+        }
+
+        public void setHandler(String handler) {
+            this.handler = handler;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
     }
 }
