@@ -60,7 +60,7 @@ public class DefaultErrorController implements ErrorController {
         modelAndView.addObject(MESSAGE, extractShortErrorMessage(errorAttributes));
         modelAndView.setStatus(extractStatus(errorAttributes));
 
-        LOGGER.error("Unknown error occurred while processing request:\n{}", extractTraceErrorMessage(errorAttributes));
+        LOGGER.error("Unknown error occurred while processing request on path {}:\n{}", request.getServletPath(), extractTraceErrorMessage(errorAttributes));
 
         return modelAndView;
     }
