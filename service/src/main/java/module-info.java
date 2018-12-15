@@ -18,6 +18,7 @@ open module leaflet.app.lms.service {
     requires org.apache.commons.collections4;
     requires org.apache.commons.io;
     requires org.apache.commons.lang3;
+    requires org.jvnet.mimepull;
     requires slf4j.api;
     requires spring.beans;
     requires spring.context;
