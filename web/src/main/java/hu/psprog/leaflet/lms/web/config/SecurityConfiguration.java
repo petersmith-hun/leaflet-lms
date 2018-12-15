@@ -21,6 +21,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
+    private static final String DEFAULT_SUCCESS_URL = "/";
     private static final String USERNAME_PARAMETER = "email";
     private static final String ROLE_ADMIN = "ADMIN";
     private static final String ROLE_EDITOR = "EDITOR";
@@ -28,24 +29,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static final String PATH_LOGIN = "/login";
 
     private final TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
-
     private final SessionExtensionFilter sessionExtensionFilter;
+    private final WebAppResources webAppResources;
 
     @Autowired
-    public SecurityConfiguration(SessionExtensionFilter sessionExtensionFilter, TokenRevokeLogoutHandler tokenRevokeLogoutHandler) {
+    public SecurityConfiguration(SessionExtensionFilter sessionExtensionFilter, TokenRevokeLogoutHandler tokenRevokeLogoutHandler, WebAppResources webAppResources) {
         this.sessionExtensionFilter = sessionExtensionFilter;
         this.tokenRevokeLogoutHandler = tokenRevokeLogoutHandler;
+        this.webAppResources = webAppResources;
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
 
-        web
-            .ignoring()
-                .antMatchers("/css/**")
-                .antMatchers( "/fonts/**")
-                .antMatchers("/js/**")
-                .antMatchers("/images/**");
+        webAppResources.getResources().stream()
+                .map(WebAppResources.WebAppResource::getHandler)
+                .forEach(web.ignoring()::antMatchers);
     }
 
     @Override
@@ -65,6 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage(PATH_LOGIN)
                 .failureForwardUrl(PATH_LOGIN)
                 .usernameParameter(USERNAME_PARAMETER)
+                .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
                 .and()
 
             .logout()

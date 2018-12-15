@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Peter Smith
  */
 @Component
-@Profile({"development", "debug"})
+@Profile({"debug"})
 public class ModelAndViewDebuggerInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelAndViewDebuggerInterceptor.class);
