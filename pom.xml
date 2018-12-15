@@ -38,7 +38,6 @@
         <spring.boot.version>2.1.0.RELEASE</spring.boot.version>
         <spring.framework.version>5.1.2.RELEASE</spring.framework.version>
         <spring.security.version>5.1.1.RELEASE</spring.security.version>
-        <javax.servlet.api.version>4.0.1</javax.servlet.api.version>
 
         <!-- other version -->
         <logback.version>1.2.3</logback.version>
@@ -50,6 +49,7 @@
         <commons.collections.version>4.2</commons.collections.version>
         <commons.io.version>2.6</commons.io.version>
         <hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
+        <jackson.version>2.9.7</jackson.version>
 
         <!-- test framework versions -->
         <junit.params.version>1.0.5</junit.params.version>
@@ -62,17 +62,33 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm z</maven.build.timestamp.format>
         <skip.nodeBuild>false</skip.nodeBuild>
+        <spring.config.location>web/src/main/resources/application.yml</spring.config.location>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
             <!-- leaflet internal dependencies -->
+            <!-- RCP bundle POM causes NPE during compilation with Maven Compiler v3.8.0 -->
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
-                <artifactId>rcp-bundle</artifactId>
+                <artifactId>backend-rest-client</artifactId>
                 <version>${leaflet.rcp.version}</version>
-                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>failover-rest-client</artifactId>
+                <version>${leaflet.rcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>tlp-rest-client</artifactId>
+                <version>${leaflet.rcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>tms-rest-client</artifactId>
+                <version>${leaflet.rcp.version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.psprog.leaflet</groupId>
@@ -134,14 +150,6 @@
                 <version>${thymeleaf.extras.version}</version>
             </dependency>
 
-            <!-- Servlet dependencies -->
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet.api.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
             <!-- logging -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -200,6 +208,11 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -265,6 +278,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>${argLine.surefire}</argLine>
+                    <forkCount>0</forkCount>
                 </configuration>
             </plugin>
             <plugin>
