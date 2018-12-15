@@ -26,7 +26,7 @@ import java.io.IOException;
 import static hu.psprog.leaflet.lms.web.auth.mock.MockedJWTUserSecurityContextFactory.EMAIL_ADDRESS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;

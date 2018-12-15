@@ -20,10 +20,11 @@ import java.util.Optional;
 
 import static hu.psprog.leaflet.lms.web.controller.BaseController.FLASH_MESSAGE;
 import static hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor.VALIDATION_FAILED_ATTRIBUTE;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -88,7 +89,7 @@ public abstract class AbstractControllerTest {
         MockitoAnnotations.initMocks(this);
         given(modelAndViewFactory.createForView(anyString())).willReturn(modelAndViewWrapper);
         given(modelAndViewFactory.createRedirectionTo(anyString())).willReturn(modelAndView);
-        given(modelAndViewWrapper.withAttribute(anyString(), anyString())).willReturn(modelAndViewWrapper);
+        given(modelAndViewWrapper.withAttribute(anyString(), nullable(Object.class))).willReturn(modelAndViewWrapper);
         given(modelAndViewWrapper.build()).willReturn(modelAndView);
         given(response.readEntity(ValidationErrorMessageListResponse.class)).willReturn(VALIDATION_ERROR_MESSAGE_LIST_RESPONSE);
     }
@@ -103,7 +104,7 @@ public abstract class AbstractControllerTest {
 
     void verifyFieldsSet(String... fieldName) {
         Arrays.stream(fieldName)
-                .forEach(field -> verify(modelAndViewWrapper).withAttribute(eq(field), anyString()));
+                .forEach(field -> verify(modelAndViewWrapper).withAttribute(eq(field), nullable(Object.class)));
     }
 
     void verifyFlashMessageSet() {

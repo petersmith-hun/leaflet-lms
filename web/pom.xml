@@ -91,6 +91,7 @@
                 <version>1.6</version>
                 <configuration>
                     <installDirectory>node</installDirectory>
+                    <skip>${skip.nodeBuild}</skip>
                 </configuration>
                 <executions>
                     <execution>

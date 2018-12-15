@@ -61,6 +61,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm z</maven.build.timestamp.format>
+        <skip.nodeBuild>false</skip.nodeBuild>
     </properties>
 
     <dependencyManagement>

@@ -3,7 +3,7 @@ package hu.psprog.leaflet.lms.web.factory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.servlet.ModelAndView;
 
 import static org.hamcrest.CoreMatchers.equalTo;
