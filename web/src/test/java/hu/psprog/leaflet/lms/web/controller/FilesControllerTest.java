@@ -19,9 +19,9 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -50,6 +50,8 @@ public class FilesControllerTest extends AbstractControllerTest {
 
     private static final String PATH_FILES_BROWSE = "/files/browse";
     private static final String SERVLET_PATH = "/servlet/path";
+    private static final String PATTERN_FILE_BROWSER_ROOT_PATH = "/files/browse/**";
+    private static final String EXTRACTED_SUB_PATH = "/sub/path";
 
     @Mock
     private FileFacade fileFacade;
@@ -62,6 +64,10 @@ public class FilesControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldListFiles() throws CommunicationFailureException {
+
+        // given
+        given(request.getServletPath()).willReturn(SERVLET_PATH);
+        given(urlUtilities.extractSubPath(PATTERN_FILE_BROWSER_ROOT_PATH, SERVLET_PATH)).willReturn(EXTRACTED_SUB_PATH);
 
         // when
         filesController.listFiles(request);
@@ -133,6 +139,8 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldShowFileUploadForm() throws CommunicationFailureException {
 
         // given
+        given(request.getServletPath()).willReturn(SERVLET_PATH);
+        given(urlUtilities.extractSubPath(PATTERN_FILE_BROWSER_ROOT_PATH, SERVLET_PATH)).willReturn(EXTRACTED_SUB_PATH);
         given(fileFacade.getAcceptableMimeTypes(anyString())).willReturn(Collections.emptyList());
 
         // when

@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.filter.OrderedRequestContextFilter;
+import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
