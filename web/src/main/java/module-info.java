@@ -7,6 +7,7 @@ open module leaflet.app.lms.web {
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tms.api;
     requires leaflet.component.tlp.appender;
+    requires leaflet.component.tms.adapter;
 
     requires java.compiler;
     requires com.fasterxml.jackson.databind;
