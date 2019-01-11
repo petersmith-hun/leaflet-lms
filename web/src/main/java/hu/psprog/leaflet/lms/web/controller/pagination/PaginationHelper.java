@@ -40,17 +40,6 @@ public abstract class PaginationHelper<T extends Enum> {
     }
 
     /**
-     * Extracts "order direction" field from request object.
-     * Defaults to {@code pagination.default.order-direction}
-     *
-     * @param request {@link HttpServletRequest} object
-     * @return order direction
-     */
-    public OrderDirection mapOrderDirection(HttpServletRequest request) {
-        return mapOrderDirection(getFromRequest(request, PARAMETER_ORDER_DIRECTION, Function.identity()));
-    }
-
-    /**
      * Extracts "order direction" field.
      * Defaults to {@code pagination.default.order-direction}
      *
@@ -66,17 +55,6 @@ public abstract class PaginationHelper<T extends Enum> {
     }
 
     /**
-     * Extracts current limit from request object.
-     * Defaults to {@code pagination.default.limit}
-     *
-     * @param request {@link HttpServletRequest} object
-     * @return limit value
-     */
-    public Integer getLimit(HttpServletRequest request) {
-        return getLimit(getFromRequest(request, PARAMETER_LIMIT, Integer::valueOf));
-    }
-
-    /**
      * Extracts current limit.
      * Defaults to {@code pagination.default.limit}
      *
@@ -85,17 +63,6 @@ public abstract class PaginationHelper<T extends Enum> {
      */
     public Integer getLimit(Optional<Integer> optionalLimit) {
         return optionalLimit.orElse(paginationDefaults.getLimit());
-    }
-
-    /**
-     * Extracts "order by" field for specific type of entities.
-     * Implementation should default to {@code pagination.default.order-by}.
-     *
-     * @param request {@link HttpServletRequest} object
-     * @return enum value to order by
-     */
-    public T mapOrderBy(HttpServletRequest request) {
-        return mapOrderBy(getFromRequest(request, PARAMETER_ORDER_BY, Function.identity()));
     }
 
     /**
@@ -116,7 +83,19 @@ public abstract class PaginationHelper<T extends Enum> {
         return paginationDefaults.getOrderBy();
     }
 
-    private <R> Optional<R> getFromRequest(HttpServletRequest request, String parameter, Function<String, R> valueMapper) {
+    Integer getLimit(HttpServletRequest request) {
+        return getLimit(getFromRequest(request, PARAMETER_LIMIT, Integer::valueOf));
+    }
+
+    String mapOrderBy(HttpServletRequest request) {
+        return mapOrderBy(getFromRequest(request, PARAMETER_ORDER_BY, Function.identity())).name();
+    }
+
+    String mapOrderDirection(HttpServletRequest request) {
+        return mapOrderDirection(getFromRequest(request, PARAMETER_ORDER_DIRECTION, Function.identity())).name();
+    }
+
+    <R> Optional<R> getFromRequest(HttpServletRequest request, String parameter, Function<String, R> valueMapper) {
         return Optional.ofNullable(request.getParameter(parameter))
                 .map(valueMapper);
     }

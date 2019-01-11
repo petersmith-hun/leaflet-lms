@@ -43,10 +43,10 @@ public class CommentPaginationHelperTest extends PaginationHelperBaseTest {
         request.setParameter(PARAMETER_ORDER_BY, orderBy);
 
         // when
-        OrderBy.Comment result = commentPaginationHelper.mapOrderBy(request);
+        String result = commentPaginationHelper.mapOrderBy(request);
 
         // then
-        assertThat(result, equalTo(expected));
+        assertThat(result, equalTo(expected.name()));
     }
 
     @Test
@@ -56,10 +56,10 @@ public class CommentPaginationHelperTest extends PaginationHelperBaseTest {
         request.removeAllParameters();
 
         // when
-        OrderBy.Comment result = commentPaginationHelper.mapOrderBy(request);
+        String result = commentPaginationHelper.mapOrderBy(request);
 
         // then
-        assertThat(result, equalTo(OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)));
+        assertThat(result, equalTo(DEFAULT_ORDER_BY));
     }
 
     public static class OrderByMappingParameterProvider {

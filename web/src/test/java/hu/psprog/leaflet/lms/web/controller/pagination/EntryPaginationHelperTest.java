@@ -1,7 +1,10 @@
 package hu.psprog.leaflet.lms.web.controller.pagination;
 
+import hu.psprog.leaflet.api.rest.response.common.PaginationDataModel;
+import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
+import hu.psprog.leaflet.lms.web.controller.pagination.model.PaginationAttributes;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -14,6 +17,7 @@ import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.P
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_BY;
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_DIRECTION;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -23,6 +27,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @RunWith(JUnitParamsRunner.class)
 public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
+
+    private static final int PAGE_COUNT = 3;
+    private static final int PAGE_NUMBER = 2;
+    private static final boolean HAS_NEXT = true;
+    private static final boolean HAS_PREVIOUS = true;
+    private static final WrapperBodyDataModel<?> WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder()
+            .withPagination(PaginationDataModel.getBuilder()
+                    .withPageCount(PAGE_COUNT)
+                    .withPageNumber(PAGE_NUMBER)
+                    .withHasNext(HAS_NEXT)
+                    .withHasPrevious(HAS_PREVIOUS)
+                    .build())
+            .build();
+    private static final String LIMIT = "20";
+    private static final String ORDER_BY = "TITLE";
+    private static final String ORDER_DIRECTION = "ASC";
 
     @InjectMocks
     private EntryPaginationHelper entryPaginationHelper;
@@ -46,10 +66,10 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         request.setParameter(PARAMETER_ORDER_BY, orderBy);
 
         // when
-        OrderBy.Entry result = entryPaginationHelper.mapOrderBy(request);
+        String result = entryPaginationHelper.mapOrderBy(request);
 
         // then
-        assertThat(result, equalTo(expected));
+        assertThat(result, equalTo(expected.name()));
     }
 
     @Test
@@ -59,10 +79,10 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         request.removeAllParameters();
 
         // when
-        OrderBy.Entry result = entryPaginationHelper.mapOrderBy(request);
+        String result = entryPaginationHelper.mapOrderBy(request);
 
         // then
-        assertThat(result, equalTo(OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)));
+        assertThat(result, equalTo(DEFAULT_ORDER_BY));
     }
 
     @Test
@@ -95,10 +115,10 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         request.setParameter(PARAMETER_ORDER_DIRECTION, direction);
 
         // when
-        OrderDirection result = entryPaginationHelper.mapOrderDirection(request);
+        String result = entryPaginationHelper.mapOrderDirection(request);
 
         // then
-        assertThat(result, equalTo(expected));
+        assertThat(result, equalTo(expected.name()));
     }
 
     @Test
@@ -108,10 +128,10 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         request.removeAllParameters();
 
         // when
-        OrderDirection result = entryPaginationHelper.mapOrderDirection(request);
+        String result = entryPaginationHelper.mapOrderDirection(request);
 
         // then
-        assertThat(result, equalTo(DEFAULT_ORDER_DIRECTION));
+        assertThat(result, equalTo(DEFAULT_ORDER_DIRECTION.name()));
     }
 
     @Test
@@ -150,6 +170,28 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
 
         // then
         assertThat(result, equalTo(DEFAULT_LIMIT));
+    }
+
+    @Test
+    public void shouldExtractPaginationAttributes() {
+
+        // given
+        request.setParameter("limit", LIMIT);
+        request.setParameter("orderBy", ORDER_BY);
+        request.setParameter("orderDirection", ORDER_DIRECTION);
+
+        // when
+        PaginationAttributes result = entryPaginationHelper.extractPaginationAttributes(WRAPPER_BODY_DATA_MODEL, request);
+
+        // then
+        assertThat(result, notNullValue());
+        assertThat(result.getLimit(), equalTo(Integer.valueOf(LIMIT)));
+        assertThat(result.getOrderBy(), equalTo(ORDER_BY));
+        assertThat(result.getOrderDirection(), equalTo(ORDER_DIRECTION));
+        assertThat(result.getPageCount(), equalTo(PAGE_COUNT));
+        assertThat(result.getPageNumber(), equalTo(PAGE_NUMBER));
+        assertThat(result.isHasNext(), equalTo(HAS_NEXT));
+        assertThat(result.isHasPrevious(), equalTo(HAS_PREVIOUS));
     }
 
     public static class PageNumberParameterProvider {

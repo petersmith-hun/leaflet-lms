@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,12 +37,16 @@ public class CommentsControllerTest extends AbstractControllerTest {
     private static final String COMMENT_VIEW_PATH = "/comments/view/" + COMMENT_ID;
     private static final String DELETE_REDIRECTION_PATH = "/comments/" + ENTRY_ID;
     private static final String FIELD_COMMENT = "comment";
+    private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
 
     @Mock
     private CommentFacade commentFacade;
 
     @Mock
     private CommentPaginationHelper commentPaginationHelper;
+
+    @Mock
+    private HttpServletRequest request;
 
     @InjectMocks
     private CommentsController commentsController;
@@ -53,13 +58,14 @@ public class CommentsControllerTest extends AbstractControllerTest {
         given(commentPaginationHelper.extractPage(PAGE)).willReturn(PAGE.get());
         given(commentPaginationHelper.getLimit(LIMIT)).willReturn(LIMIT.get());
         given(commentFacade.getCommentsForEntry(eq(ENTRY_ID), eq(PAGE.get()), eq(LIMIT.get()), any(), any()))
-                .willReturn(WrapperBodyDataModel.getBuilder().build());
+                .willReturn(WRAPPER_BODY_DATA_MODEL);
 
         // when
-        commentsController.listCommentsForEntry(ENTRY_ID, PAGE, LIMIT, Optional.empty(), Optional.empty());
+        commentsController.listCommentsForEntry(ENTRY_ID, PAGE, LIMIT, Optional.empty(), Optional.empty(), request);
 
         // then
         verify(commentFacade).getCommentsForEntry(eq(ENTRY_ID), eq(PAGE.get()), eq(LIMIT.get()), any(), any());
+        verify(commentPaginationHelper).extractPaginationAttributes(WRAPPER_BODY_DATA_MODEL, request);
         verifyViewCreated(VIEW_LIST);
         verifyFieldsSet(FIELD_CONTENT, FIELD_PAGINATION);
     }
