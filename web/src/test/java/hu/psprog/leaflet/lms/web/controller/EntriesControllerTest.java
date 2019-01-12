@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -42,12 +43,16 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_ENTRY_DATA = "entryData";
     private static final String PATH_ENTRIES = "/entries";
     private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
+    private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
 
     @Mock
     private EntryFacade entryFacade;
 
     @Mock
     private EntryPaginationHelper entryPaginationHelper;
+
+    @Mock
+    private HttpServletRequest request;
 
     @InjectMocks
     private EntriesController entriesController;
@@ -59,13 +64,14 @@ public class EntriesControllerTest extends AbstractControllerTest {
         given(entryPaginationHelper.extractPage(PAGE)).willReturn(PAGE.get());
         given(entryPaginationHelper.getLimit(LIMIT)).willReturn(LIMIT.get());
         given(entryFacade.getEntries(eq(PAGE.get()), eq(LIMIT.get()), any(), any()))
-                .willReturn(WrapperBodyDataModel.getBuilder().build());
+                .willReturn(WRAPPER_BODY_DATA_MODEL);
 
         // when
-        entriesController.listEntries(PAGE, LIMIT, Optional.empty(), Optional.empty());
+        entriesController.listEntries(PAGE, LIMIT, Optional.empty(), Optional.empty(), request);
 
         // then
         verify(entryFacade).getEntries(eq(PAGE.get()), eq(LIMIT.get()), any(), any());
+        verify(entryPaginationHelper).extractPaginationAttributes(WRAPPER_BODY_DATA_MODEL, request);
         verifyViewCreated(VIEW_LIST);
         verifyFieldsSet(FIELD_CONTENT, FIELD_PAGINATION);
     }
@@ -74,7 +80,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
     public void shouldViewEntry() throws CommunicationFailureException {
 
         // given
-        given(entryFacade.getEntry(ENTRY_ID)).willReturn(WrapperBodyDataModel.getBuilder().build());
+        given(entryFacade.getEntry(ENTRY_ID)).willReturn(WRAPPER_BODY_DATA_MODEL);
 
         // when
         entriesController.viewEntry(ENTRY_ID);

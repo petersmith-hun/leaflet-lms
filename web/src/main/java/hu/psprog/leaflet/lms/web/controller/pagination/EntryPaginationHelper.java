@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * @author Peter Smith
  */
 @Component
-public class EntryPaginationHelper extends PaginationHelper<OrderBy.Entry> {
+public class EntryPaginationHelper extends AbstractStandardPaginationHelper<OrderBy.Entry> {
 
     @Override
     public OrderBy.Entry mapOrderBy(Optional<String> optionalOrderBy) {

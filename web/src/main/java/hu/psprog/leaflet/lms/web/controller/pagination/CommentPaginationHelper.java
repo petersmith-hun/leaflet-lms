@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * @author Peter Smith
  */
 @Component
-public class CommentPaginationHelper extends PaginationHelper<OrderBy.Comment> {
+public class CommentPaginationHelper extends AbstractStandardPaginationHelper<OrderBy.Comment> {
 
     @Override
     public OrderBy.Comment mapOrderBy(Optional<String> optionalOrderBy) {

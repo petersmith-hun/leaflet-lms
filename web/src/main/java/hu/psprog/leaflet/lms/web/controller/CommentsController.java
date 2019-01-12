@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_LIMIT;
@@ -65,6 +66,7 @@ public class CommentsController extends BaseController {
      * @param limit number of entries on one page
      * @param orderBy order by {@link OrderBy.Comment} options
      * @param orderDirection order direction (ASC|DESC)
+     * @param request {@link HttpServletRequest} object
      * @return populated {@link ModelAndView} object
      * @throws CommunicationFailureException on Bridge communication failure
      */
@@ -73,7 +75,8 @@ public class CommentsController extends BaseController {
                                              @PathVariable(value = PARAMETER_PAGE, required = false) Optional<Integer> page,
                                              @RequestParam(value = PARAMETER_LIMIT, required = false) Optional<Integer> limit,
                                              @RequestParam(value = PARAMETER_ORDER_BY, required = false) Optional<String> orderBy,
-                                             @RequestParam(value = PARAMETER_ORDER_DIRECTION, required = false) Optional<String> orderDirection)
+                                             @RequestParam(value = PARAMETER_ORDER_DIRECTION, required = false) Optional<String> orderDirection,
+                                             HttpServletRequest request)
             throws CommunicationFailureException {
 
         WrapperBodyDataModel<CommentListDataModel> result = commentFacade.getCommentsForEntry(entryID, paginationHelper.extractPage(page),
@@ -82,7 +85,7 @@ public class CommentsController extends BaseController {
         return modelAndViewFactory
                 .createForView(VIEW_COMMENTS_LIST)
                 .withAttribute("content", result.getBody())
-                .withAttribute("pagination", result.getPagination())
+                .withAttribute("pagination", paginationHelper.extractPaginationAttributes(result, request))
                 .build();
     }
 
