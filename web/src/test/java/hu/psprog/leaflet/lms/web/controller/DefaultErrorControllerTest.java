@@ -6,22 +6,21 @@ import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 
 /**
  * Unit tests for {@link DefaultErrorController}.
@@ -122,6 +121,6 @@ public class DefaultErrorControllerTest {
     }
 
     private BDDMockito.BDDMyOngoingStubbing<Map<String, Object>> getErrorAttributesMock() {
-        return given(errorAttributes.getErrorAttributes(any(RequestAttributes.class), eq(true)));
+        return given(errorAttributes.getErrorAttributes(any(WebRequest.class), eq(true)));
     }
 }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>lms</artifactId>
         <groupId>hu.psprog.leaflet</groupId>
-        <version>1.0.0-dev</version>
+        <version>1.1.0-dev</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -36,19 +36,15 @@
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf-spring4</artifactId>
+            <artifactId>thymeleaf-spring5</artifactId>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity4</artifactId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.psprog.leaflet</groupId>
@@ -78,9 +74,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
+                        <id>repackage</id>
                         <configuration>
                             <classifier>exec</classifier>
                         </configuration>
@@ -93,6 +87,7 @@
                 <version>1.6</version>
                 <configuration>
                     <installDirectory>node</installDirectory>
+                    <skip>${skip.nodeBuild}</skip>
                 </configuration>
                 <executions>
                     <execution>

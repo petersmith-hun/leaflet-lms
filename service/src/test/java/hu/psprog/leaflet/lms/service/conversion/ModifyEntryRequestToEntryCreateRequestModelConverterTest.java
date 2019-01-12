@@ -6,7 +6,7 @@ import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Locale;
 

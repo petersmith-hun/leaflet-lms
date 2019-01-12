@@ -162,14 +162,14 @@
                         <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
                                                         queried=true,
                                                         page=__${pageNum}__,
-                                                        limit=__${#request.getParameter('limit')}__,
-                                                        orderBy=__${#request.getParameter('orderBy')}__,
-                                                        orderDirection=__${#request.getParameter('orderDirection')}__,
-                                                        source=__${#request.getParameter('source')}__,
-                                                        level=__${#request.getParameter('level')}__,
-                                                        content=__${#request.getParameter('content')}__,
-                                                        from=__${#request.getParameter('from')}__,
-                                                        to=__${#request.getParameter('to')}__)}">1</a>
+                                                        limit=__${pagination.limit}__,
+                                                        orderBy=__${pagination.orderBy}__,
+                                                        orderDirection=__${pagination.orderDirection}__,
+                                                        source=__${pagination.source}__,
+                                                        level=__${pagination.level}__,
+                                                        content=__${pagination.content}__,
+                                                        from=__${pagination.from}__,
+                                                        to=__${pagination.to}__)}">1</a>
                     </li>
                 </ul>
             </div>
