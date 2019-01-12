@@ -102,7 +102,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <nodeVersion>v9.6.1</nodeVersion>
+                            <nodeVersion>v11.4.0</nodeVersion>
                         </configuration>
                     </execution>
                     <execution>
