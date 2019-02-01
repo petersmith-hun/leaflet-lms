@@ -1,0 +1,13 @@
+<th:block th:fragment="sort(url,name,pageNum,orderBy,pagination)"
+          xmlns:th="http://www.thymeleaf.org">
+    <a th:href="@{${url}(
+        page=__${pageNum}__,
+        limit=__${pagination.limit}__,
+        orderBy=__${orderBy}__,
+        orderDirection=__${pagination.orderDirection.equals('ASC') ? 'DESC' : 'ASC'}__)}">
+        <th:block th:text="${name}"/>
+        <i th:if="${pagination.orderBy == null || !pagination.orderBy.contains(orderBy)}" class="fa fa-sort"></i>
+        <i th:if="${pagination.orderBy.contains(orderBy) && pagination.orderDirection.equals('ASC')}" class="fa fa-sort-asc"></i>
+        <i th:if="${pagination.orderBy.contains(orderBy) && pagination.orderDirection.equals('DESC')}" class="fa fa-sort-desc"></i>
+    </a>
+</th:block>

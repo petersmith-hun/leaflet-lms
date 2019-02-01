@@ -11,7 +11,7 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})" />
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
                 </div>
             </div>
             <div class="row">
@@ -37,9 +37,25 @@
                                 <table class="table table-bordered table-striped table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Title</th>
+                                        <th>
+                                            <th:block th:replace="
+                                            _fragment/sort :: sort(
+                                                ${'/entries/{page}'},
+                                                ${'Title'},
+                                                ${pageNum},
+                                                ${'TITLE'},
+                                                ${pagination})" />
+                                        </th>
                                         <th>Author</th>
-                                        <th>Created at</th>
+                                        <th>
+                                            <th:block th:replace="
+                                            _fragment/sort :: sort(
+                                                ${'/entries/{page}'},
+                                                ${'Created at'},
+                                                ${pageNum},
+                                                ${'CREATED'},
+                                                ${pagination})" />
+                                        </th>
                                         <th>Modified at</th>
                                         <th></th>
                                     </tr>
@@ -47,7 +63,8 @@
                                     <tbody>
                                     <tr th:each="entry: ${content.entries}">
                                         <td>
-                                            <a th:href="@{/entries/view/{id}(id=${entry.id})}" th:text="${entry.title}"></a>
+                                            <a th:href="@{/entries/view/{id}(id=${entry.id})}"
+                                               th:text="${entry.title}"></a>
                                         </td>
                                         <td th:text="${entry.user.username}"></td>
                                         <td th:text="${entry.created}"></td>
@@ -58,7 +75,9 @@
                                                    href="#" class="btn btn-sm btn-info">
                                                     <i class="fa fa-pencil"></i> Edit
                                                 </a>
-                                                <form class="display-inline-block" th:action="@{/entries/delete/{id}(id=${entry.id})}" th:method="delete">
+                                                <form class="display-inline-block"
+                                                      th:action="@{/entries/delete/{id}(id=${entry.id})}"
+                                                      th:method="delete">
                                                     <button class="btn btn-sm btn-danger" type="submit"
                                                             onclick="return confirm('Are you sure to delete this entry?')">
                                                         <i class="fa fa-trash"></i> Delete
@@ -86,7 +105,8 @@
                                             <i class="fa fa-angle-left"></i>
                                         </a>
                                     </li>
-                                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
+                                    <li class="page-item"
+                                        th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
                                         <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/entries/{page}(
                                                     page=__${pageNum}__,
                                                     limit=__${pagination.limit}__,
