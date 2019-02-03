@@ -1,0 +1,8 @@
+.box-footer--table-control{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  & > .pagination{
+    margin: 0 auto;
+  }
+}

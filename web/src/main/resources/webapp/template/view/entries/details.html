@@ -1,14 +1,130 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/default}">
-    <body>
-        <section class="main__content" layout:fragment="content">
-            <p>[todo populate]</p>
-            <form method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}">
-                <input type="submit" value="Change status" />
-            </form>
-            <form method="post" th:action="@{/entries/delete/{id}(id=__${#request.getAttribute('id')}__)}">
-                <input type="submit" value="Delete entry" />
-            </form>
-        </section>
-    </body>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{_layout/default}">
+<body>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <div class="content-header">
+            <h1>Create / Edit entry</h1>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">Entry</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <p class="form-control-static"
+                                   th:text="${entryData == null} ? null : ${entryData.body.title}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Link</label>
+                                <p class="form-control-static"
+                                   th:text="${entryData == null} ? null : ${entryData.body.link}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Prologue</label>
+                                <p class="form-control-static"
+                                   th:text="${entryData == null} ? null : ${entryData.body.prologue}"></p>
+                            </div>
+                            <div class="calmdown cd-theme-default"
+                                 th:text="${entryData == null} ? null : ${entryData.body.rawContent}"></div>
+                            <div class="form-group">
+                                <label>Files</label>
+                                <p class="form-control-static" th:text="${entryData.body.attachments}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">Attributes</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label th:if="${entryData != null and entryData.body.enabled}">
+                                    Enabled
+                                </label>
+                                <label th:if="${entryData == null or !entryData.body.enabled}">
+                                   Disabled
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <p class="form-control-static"
+                                   th:text="${T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).valueOf(entryData.body.entryStatus)}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Language</label>
+                                <p class="form-control-static" th:text="${entryData.body.locale}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <p class="form-control-static" th:text="${entryData.body.category.title}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Tags</label>
+                                <p class="form-control-static" th:text="${entryData.body.tags}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">SEO Attributes</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>SEO Title</label>
+                                <p class="form-control-static" th:text="${entryData == null} ? '' : ${entryData.seo.metaTitle}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>SEO Description</label>
+                                <p class="form-control-static" th:text="${entryData.seo.metaDescription}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>SEO Keywords</label>
+                                <p class="form-control-static" th:text="${entryData.seo.metaKeywords}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-footer">
+                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}"
+                               href="#" class="btn btn-sm btn-info">
+                                <i class="fa fa-pencil"></i> Edit
+                            </a>
+                            <form class="inline" method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}">
+                                <button class="btn btn-info">
+                                    <i class="fa fa-folder-open" th:if="${entryData != null and entryData.body.enabled}"></i>
+                                    <i class="fa fa-folder" th:if="${entryData == null or !entryData.body.enabled}"></i>
+                                    Change status
+                                </button>
+                            </form>
+                            <form class="inline" method="post" th:action="@{/entries/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                                <button class="btn btn-danger">
+                                    <i class="fa fa-times"></i>  Delete entry
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</th:block>
+</body>
 </html>
