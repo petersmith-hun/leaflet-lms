@@ -88,7 +88,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).getEntry(ENTRY_ID);
         verifyViewCreated(VIEW_DETAILS);
-        verifyFieldsSet(FIELD_CONTENT, FIELD_SEO);
+        verifyFieldsSet(FIELD_ENTRY_DATA);
     }
 
     @Test

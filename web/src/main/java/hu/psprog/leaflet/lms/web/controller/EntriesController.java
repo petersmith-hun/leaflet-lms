@@ -94,13 +94,10 @@ public class EntriesController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, path = PATH_VIEW)
     public ModelAndView viewEntry(@PathVariable(PATH_VARIABLE_ID) Long entryID) throws CommunicationFailureException {
 
-        EntryFormContent response = entryFacade.fillForm(entryID);
+        WrapperBodyDataModel<EditEntryDataModel> response = entryFacade.getEntry(entryID);
 
         return modelAndViewFactory.createForView(VIEW_ENTRY_DETAILS)
-                .withAttribute("tagSelector", response.getExistingTags())
-                .withAttribute("categorySelector", response.getExistingCategories())
-                .withAttribute("fileSelector", response.getExistingFiles())
-                .withAttribute("entryData", response.getEntryData())
+                .withAttribute("entryData", response)
                 .build();
     }
 
