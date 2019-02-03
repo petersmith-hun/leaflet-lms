@@ -1,0 +1,40 @@
+.table{
+  thead{
+    th{
+      a{
+        display: flex;
+        align-items: center;
+        i{
+          margin-left: auto;
+        }
+      }
+    }
+  }
+  & > thead,
+  & > tbody,
+  & > tfoot{
+    & > tr {
+      & > th,
+      & > td {
+        vertical-align: middle;
+        &.col-xs {
+          width: 50px;
+        }
+        &.col-sm{
+          width: 125px;
+        }
+        &.col-md{
+          width: 300px;
+        }
+        .table-control__btn-group{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          .btn{
+            margin: 5px;
+          }
+        }
+      }
+    }
+  }
+}

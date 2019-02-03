@@ -25,7 +25,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box box-solid">
+                    <div class="box box-primary">
                         <div class="box-header">
                             <h3 class="box-title">Table of entries</h3>
                             <div class="box-tools hidden">
@@ -46,8 +46,10 @@
                                                 ${'TITLE'},
                                                 ${pagination})" />
                                         </th>
-                                        <th>Author</th>
-                                        <th>
+                                        <th class="col-sm">
+                                            Author
+                                        </th>
+                                        <th class="col-md">
                                             <th:block th:replace="
                                             _fragment/sort :: sort(
                                                 ${'/entries/{page}'},
@@ -56,8 +58,10 @@
                                                 ${'CREATED'},
                                                 ${pagination})" />
                                         </th>
-                                        <th>Modified at</th>
-                                        <th></th>
+                                        <th class="col-md">
+                                            Modified at
+                                        </th>
+                                        <th class="col-sm"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -69,8 +73,8 @@
                                         <td th:text="${entry.user.username}"></td>
                                         <td th:text="${entry.created}"></td>
                                         <td th:text="${entry.lastModified}"></td>
-                                        <td>
-                                            <div class="pull-right">
+                                        <td class="td--table-control">
+                                            <div class="table-control__btn-group">
                                                 <a th:href="@{/entries/edit/{id}(id=${entry.id})}"
                                                    href="#" class="btn btn-sm btn-info">
                                                     <i class="fa fa-pencil"></i> Edit
@@ -94,35 +98,19 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="box-footer text-center">
-                                <ul class="pagination pagination-sm" th:if="${pagination.pageCount > 1}">
-                                    <li class="page-item" th:if="${pagination.hasPrevious}">
-                                        <a class="page-link" href="#" th:href="@{/entries/{page}(
-                                                    page=__${pagination.pageNumber - 1}__,
-                                                    limit=__${pagination.limit}__,
-                                                    orderBy=__${pagination.orderBy}__,
-                                                    orderDirection=__${pagination.orderDirection}__)}">
-                                            <i class="fa fa-angle-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item"
-                                        th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
-                                        <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/entries/{page}(
-                                                    page=__${pageNum}__,
-                                                    limit=__${pagination.limit}__,
-                                                    orderBy=__${pagination.orderBy}__,
-                                                    orderDirection=__${pagination.orderDirection}__)}">1</a>
-                                    </li>
-                                    <li class="page-item" th:if="${pagination.hasNext}">
-                                        <a class="page-link" href="#" th:href="@{/entries/{page}(
-                                                    page=__${pagination.pageNumber + 1}__,
-                                                    limit=__${pagination.limit}__,
-                                                    orderBy=__${pagination.orderBy}__,
-                                                    orderDirection=__${pagination.orderDirection}__)}">
-                                            <i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div class="box-footer box-footer--table-control">
+                                <th:block
+                                    th:replace="
+                                        _fragment/limit :: limit(
+                                            ${'/entries/{page}'},
+                                            ${pageNum},
+                                            ${pagination})" />
+                                <th:block
+                                        th:replace="
+                                        _fragment/pagination :: pagination(
+                                            ${'/entries/{page}'},
+                                            ${pageNum},
+                                            ${pagination})" />
                             </div>
                         </div>
                     </div>

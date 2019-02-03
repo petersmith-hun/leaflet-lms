@@ -1,0 +1,53 @@
+<th:block th:fragment="limit(url,pageNum,pagination)"
+          xmlns:th="http://www.thymeleaf.org">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            <th:block th:text="${pagination.limit}" /> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${10}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__)}">
+                    10
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${25}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__)}">
+                    25
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${50}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__)}">
+                    50
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${100}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__)}">
+                    100
+                </a>
+            </li>
+        </ul>
+    </div>
+</th:block>
