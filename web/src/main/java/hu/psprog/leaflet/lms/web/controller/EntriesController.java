@@ -212,7 +212,7 @@ public class EntriesController extends BaseController {
      * @return populated {@link ModelAndView} object - redirecting to the view entry page
      * @throws CommunicationFailureException on Bridge communication failure
      */
-    @RequestMapping(method = RequestMethod.DELETE, path = PATH_DELETE)
+    @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE)
     public ModelAndView processDeletion(@PathVariable(PATH_VARIABLE_ID) Long id, RedirectAttributes redirectAttributes) throws CommunicationFailureException {
 
         entryFacade.processDeletion(id);
