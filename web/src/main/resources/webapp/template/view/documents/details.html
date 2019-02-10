@@ -86,12 +86,12 @@
 				<div class="col-md-12">
 					<div class="box box-solid">
 						<div class="box-footer">
-							<a th:href="@{/documents/edit/{id}(id=__${#request.getAttribute('id')}__)}"
+							<a th:href="@{/documents/edit/{id}(id=${document.body.id})}"
 							   href="#" class="btn btn-info">
 								<i class="fa fa-pencil"></i> Edit
 							</a>
 							<form class="display-inline-block"
-								  th:action="@{/documents/status/{id}(id=__${#request.getAttribute('id')}__)}"
+								  th:action="@{/documents/status/{id}(id=${document.body.id})}"
 								  th:method="post">
 								<input type="hidden" name="redirect" value="view">
 								<button class="btn btn-warning" type="submit">
@@ -103,7 +103,7 @@
 								</button>
 							</form>
 							<form class="display-inline-block"
-								  th:action="@{/documents/delete/{id}(id=__${#request.getAttribute('id')}__)}"
+								  th:action="@{/documents/delete/{id}(id=${document.body.id})}"
 								  th:method="post">
 								<button class="btn btn-danger" type="submit"
 										onclick="return confirm('Are you sure to delete this document?')">
