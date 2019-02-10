@@ -34,6 +34,7 @@ public class DocumentsController extends BaseController {
 
     static final String PATH_DOCUMENTS = "/documents";
     private static final String PATH_CREATE_DOCUMENT = PATH_DOCUMENTS + PATH_CREATE;
+    private static final String LIST_PATH_REDIRECTION_PARAMETER = "list";
 
     private DocumentFacade documentFacade;
 
@@ -189,7 +190,7 @@ public class DocumentsController extends BaseController {
     }
 
     private String getRedirectionPath(Long documentID, String redirectTo) {
-        return redirectTo.equalsIgnoreCase("list")
+        return LIST_PATH_REDIRECTION_PARAMETER.equalsIgnoreCase(redirectTo)
                 ? PATH_DOCUMENTS
                 : getRedirectionPath(documentID);
     }
