@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,6 +34,7 @@ public class DocumentsController extends BaseController {
 
     static final String PATH_DOCUMENTS = "/documents";
     private static final String PATH_CREATE_DOCUMENT = PATH_DOCUMENTS + PATH_CREATE;
+    private static final String LIST_PATH_REDIRECTION_PARAMETER = "list";
 
     private DocumentFacade documentFacade;
 
@@ -167,12 +169,15 @@ public class DocumentsController extends BaseController {
      * Processes document status change request.
      *
      * @param documentID ID of the document the status to be changed of
+     * @param redirectTo value where redirect after the change to
      * @param redirectAttributes redirection attributes
      * @return populated {@link ModelAndView} object (redirection to view the edited document)
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_STATUS)
-    public ModelAndView processChangeDocumentStatus(@PathVariable(PATH_VARIABLE_ID) Long documentID, RedirectAttributes redirectAttributes)
+    public ModelAndView processChangeDocumentStatus(@PathVariable(PATH_VARIABLE_ID) Long documentID,
+                                                    @RequestParam(REQUEST_PARAM_REDIRECT) String redirectTo,
+                                                    RedirectAttributes redirectAttributes)
             throws CommunicationFailureException {
 
         String currentStatus = documentFacade.processChangeDocumentStatus(documentID)
@@ -181,7 +186,13 @@ public class DocumentsController extends BaseController {
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, String.format(DOCUMENT_STATUS_SUCCESSFULLY_CHANGED, currentStatus));
 
         return modelAndViewFactory
-                .createRedirectionTo(getRedirectionPath(documentID));
+                .createRedirectionTo(getRedirectionPath(documentID, redirectTo));
+    }
+
+    private String getRedirectionPath(Long documentID, String redirectTo) {
+        return LIST_PATH_REDIRECTION_PARAMETER.equalsIgnoreCase(redirectTo)
+                ? PATH_DOCUMENTS
+                : getRedirectionPath(documentID);
     }
 
     private String getRedirectionPath(Long documentID) {

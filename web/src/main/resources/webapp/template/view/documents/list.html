@@ -8,59 +8,108 @@
         <section class="content-header">
             <h1>Documents</h1>
         </section>
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-xs-9">
-                                <p class="form-control-static m-0">Table of documents</p>
-                            </div>
-                            <div class="col-xs-3">
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a class="btn btn-primary" th:href="@{/documents/create}" href="#">New document</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Table of documents</h3>
+                            <div class="box-tools hidden">
                                 <input class="form-control pull-right" type="text" placeholder="Search">
                             </div>
                         </div>
-                    </div>
-                    <div class="card-block">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                <tr>
-                                    <th>
-                                        <input type="checkbox" name="check-all">
-                                    </th>
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Created at</th>
-                                    <th>Modified at</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="document,stat: ${documents}">
-                                    <td>
-                                        <input type="checkbox" name="entity-0">
-                                    </td>
-                                    <td th:text="${stat.index + 1}">0</td>
-                                    <td th:text="${document.title}">Test Title</td>
-                                    <td th:text="${document.user.username}">Test Author</td>
-                                    <td th:text="${document.created}">2016.12.09. 12:00</td>
-                                    <td th:text="${document.lastModified}">2016.12.09. 12:00</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            Title
+                                        </th>
+                                        <th class="col-sm">
+                                            Author
+                                        </th>
+                                        <th class="col-xs">
+                                            Status
+                                        </th>
+                                        <th class="col-md">
+                                            Created at
+                                        </th>
+                                        <th class="col-md">
+                                            Modified at
+                                        </th>
+                                        <th class="col-sm"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="document,stat: ${documents}">
+                                        <td>
+                                            <a th:href="@{/documents/view/{id}(id=${document.id})}"
+                                               th:text="${document.title}"></a>
+                                        </td>
+                                        <td th:text="${document.user.username}"></td>
+                                        <td class="text-center">
+                                            <i class="fa fa-dot-circle-o text-green"
+                                               th:if="${document.enabled}"></i>
+                                            <i class="fa fa-circle-o text-muted"
+                                               th:if="${!document.enabled}"></i>
+                                        </td>
+                                        <td th:text="${document.created}"></td>
+                                        <td th:text="${document.lastModified}"></td>
+                                        <td class="td--table-control">
+                                            <div class="table-control__btn-group">
+                                                <a th:href="@{/documents/edit/{id}(id=${document.id})}"
+                                                   href="#" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-pencil"></i> Edit
+                                                </a>
+                                                <form th:action="@{/documents/status/{id}(id=${document.id})}"
+                                                      th:method="post">
+                                                    <input type="hidden" name="redirect" value="list">
+                                                    <button class="btn btn-sm btn-warning" type="submit">
+                                                        <i class="fa fa-dot-circle-o"
+                                                           th:if="${document.enabled}"></i>
+                                                        <i class="fa fa-circle-o"
+                                                           th:if="${!document.enabled}"></i>
+                                                        Change status
+                                                    </button>
+                                                </form>
+                                                <form th:action="@{/documents/delete/{id}(id=${document.id})}"
+                                                      th:method="post">
+                                                    <button class="btn btn-sm btn-danger" type="submit"
+                                                            onclick="return confirm('Are you sure to delete this document?')">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${documents == null or documents.isEmpty()}">
+                                        <td colspan="6">
+                                            There is no document in the database!
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 flex-lg-unordered flex-xs-first">
-                <div class="card">
-                    <div class="card-block">
-                        <a class="btn btn-primary" th:href="@{/documents/create}" href="#">New document</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
     </section>
 </th:block>
 </body>

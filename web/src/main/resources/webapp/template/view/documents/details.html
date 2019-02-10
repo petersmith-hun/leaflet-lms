@@ -1,17 +1,120 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{_layout/default}">
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[todo populate]</h1>
+            <h1>Document<small th:text="${document == null} ? null : ${document.body.title}"></small></h1>
         </section>
-        <form method="post" th:action="@{/documents/status/{id}(id=__${#request.getAttribute('id')}__)}">
-            <input type="submit" value="Change status" />
-        </form>
-        <form method="post" th:action="@{/documents/delete/{id}(id=__${#request.getAttribute('id')}__)}">
-            <input type="submit" value="Delete document" />
-        </form>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title"></h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <p class="form-control-static"
+                                   th:text="${document == null} ? null : ${document.body.title}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Link</label>
+                                <p class="form-control-static"
+                                   th:text="${document == null} ? null : ${document.body.link}"></p>
+                            </div>
+                            <div class="calmdown cd-theme-default"
+                                 th:text="${document == null} ? null : ${document.body.rawContent}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Attributes</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <p class="form-control-static"
+                                   th:if="${document != null and document.body.enabled}">
+                                    <i class="fa fa-dot-circle-o text-green"></i> Enabled
+                                </p>
+                                <p class="form-control-static"
+                                   th:if="${document == null or !document.body.enabled}">
+                                    <i class="fa fa-circle-o text-muted"></i> Disabled
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label>Language</label>
+                                <p class="form-control-static"
+                                   th:text="${document != null and locale == document.body.locale}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">SEO Attributes</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>SEO Title</label>
+                                <p class="form-control-static"
+                                   th:text="${document == null} ? null : ${document.seo.metaTitle}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>SEO Description</label>
+                                <p class="form-control-static"
+                                   th:text="${document == null} ? null : ${document.seo.metaDescription}"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>SEO Keywords</label>
+                                <p class="form-control-static"
+                                   th:text="${document == null} ? null : ${document.seo.metaKeywords}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-footer">
+                            <a th:href="@{/documents/edit/{id}(id=${document.body.id})}"
+                               href="#" class="btn btn-info">
+                                <i class="fa fa-pencil"></i> Edit
+                            </a>
+                            <form class="display-inline-block"
+                                  th:action="@{/documents/status/{id}(id=${document.body.id})}"
+                                  th:method="post">
+                                <input type="hidden" name="redirect" value="view">
+                                <button class="btn btn-warning" type="submit">
+                                    <i class="fa fa-dot-circle-o"
+                                       th:if="${document != null and document.body.enabled}"></i>
+                                    <i class="fa fa-circle-o"
+                                       th:if="${document == null or !document.body.enabled}"></i>
+                                    Change status
+                                </button>
+                            </form>
+                            <form class="display-inline-block"
+                                  th:action="@{/documents/delete/{id}(id=${document.body.id})}"
+                                  th:method="post">
+                                <button class="btn btn-danger" type="submit"
+                                        onclick="return confirm('Are you sure to delete this document?')">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
 </th:block>
 </body>

@@ -69,6 +69,7 @@ $choices-button-icon-path: "~choices.js/assets/icons";
 // App
 // base
 @import "base/variables";
+@import "base/default";
 // components
 @import "components/header";
 @import "components/login";

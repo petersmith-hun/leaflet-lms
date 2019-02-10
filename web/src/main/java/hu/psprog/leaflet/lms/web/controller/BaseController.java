@@ -59,6 +59,8 @@ class BaseController {
 
     static final String FLASH_MESSAGE = "flash";
 
+    static final String REQUEST_PARAM_REDIRECT = "redirect";
+
     @Autowired
     ModelAndViewFactory modelAndViewFactory;
 

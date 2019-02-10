@@ -161,28 +161,28 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         verifyRedirectionCreated(PATH_DOCUMENTS);
     }
     @Test
-    public void shouldProcessChangeStatusWithEnabledStatusMessage() throws CommunicationFailureException {
+    public void shouldProcessChangeStatusWithEnabledStatusMessageAndListRedirection() throws CommunicationFailureException {
 
         // given
         given(documentFacade.processChangeDocumentStatus(DOCUMENT_ID)).willReturn(true);
 
         // when
-        documentsController.processChangeDocumentStatus(DOCUMENT_ID, redirectAttributes);
+        documentsController.processChangeDocumentStatus(DOCUMENT_ID, "list", redirectAttributes);
 
         // then
         verify(documentFacade).processChangeDocumentStatus(DOCUMENT_ID);
         verifyStatusFlashMessage(true);
-        verifyRedirectionCreated(DOCUMENT_VIEW_PATH);
+        verifyRedirectionCreated(PATH_DOCUMENTS);
     }
 
     @Test
-    public void shouldProcessChangeStatusWithDisabledStatusMessage() throws CommunicationFailureException {
+    public void shouldProcessChangeStatusWithDisabledStatusMessageAndViewDocumentRedirection() throws CommunicationFailureException {
 
         // given
         given(documentFacade.processChangeDocumentStatus(DOCUMENT_ID)).willReturn(false);
 
         // when
-        documentsController.processChangeDocumentStatus(DOCUMENT_ID, redirectAttributes);
+        documentsController.processChangeDocumentStatus(DOCUMENT_ID, null, redirectAttributes);
 
         // then
         verify(documentFacade).processChangeDocumentStatus(DOCUMENT_ID);
