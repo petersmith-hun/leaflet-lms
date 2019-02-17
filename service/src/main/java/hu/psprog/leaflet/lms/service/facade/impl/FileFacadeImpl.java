@@ -66,6 +66,7 @@ public class FileFacadeImpl implements FileFacade {
         InputStream fileStream = fileBridgeService.downloadFile(pathUUID, filename);
         try {
             content = IOUtils.toByteArray(fileStream);
+            fileStream.close();
         } catch (Exception e) {
             LOGGER.error("Failed to convert received file [{}] to byte array.", pathUUID);
         }

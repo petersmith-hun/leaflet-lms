@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.web.config;
 
 import hu.psprog.leaflet.lms.web.auth.SessionExtensionFilter;
 import hu.psprog.leaflet.lms.web.auth.TokenRevokeLogoutHandler;
+import hu.psprog.leaflet.rcp.hystrix.support.filter.HystrixContextFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
  * Spring Security configuration.
@@ -31,12 +33,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final TokenRevokeLogoutHandler tokenRevokeLogoutHandler;
     private final SessionExtensionFilter sessionExtensionFilter;
     private final WebAppResources webAppResources;
+    private final HystrixContextFilter hystrixContextFilter;
 
     @Autowired
-    public SecurityConfiguration(SessionExtensionFilter sessionExtensionFilter, TokenRevokeLogoutHandler tokenRevokeLogoutHandler, WebAppResources webAppResources) {
+    public SecurityConfiguration(SessionExtensionFilter sessionExtensionFilter, TokenRevokeLogoutHandler tokenRevokeLogoutHandler,
+                                 WebAppResources webAppResources, HystrixContextFilter hystrixContextFilter) {
         this.sessionExtensionFilter = sessionExtensionFilter;
         this.tokenRevokeLogoutHandler = tokenRevokeLogoutHandler;
         this.webAppResources = webAppResources;
+        this.hystrixContextFilter = hystrixContextFilter;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+            .addFilterBefore(hystrixContextFilter, LogoutFilter.class)
             .addFilterAfter(sessionExtensionFilter, UsernamePasswordAuthenticationFilter.class)
 
             .authorizeRequests()
