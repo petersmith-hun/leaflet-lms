@@ -4,6 +4,7 @@ open module leaflet.app.lms.web {
     requires leaflet.component.bridge.implementation;
     requires leaflet.component.rest.backend.api;
     requires leaflet.component.rest.failover.api;
+    requires transitive leaflet.component.rest.support.hystrix;
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tms.api;
     requires leaflet.component.tlp.appender;

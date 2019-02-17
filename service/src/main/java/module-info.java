@@ -6,6 +6,7 @@ open module leaflet.app.lms.service {
     requires leaflet.component.rest.failover.api;
     requires leaflet.component.rest.failover.client;
     requires leaflet.component.rest.request.adapters;
+    requires transitive leaflet.component.rest.support.hystrix;
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tlp.client;
     requires leaflet.component.rest.tms.api;
