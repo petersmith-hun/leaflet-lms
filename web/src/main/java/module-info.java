@@ -7,10 +7,10 @@ open module leaflet.app.lms.web {
     requires transitive leaflet.component.rest.support.hystrix;
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tms.api;
+    requires leaflet.component.security.jwt.support.api;
+    requires leaflet.component.security.jwt.support.frontend;
     requires leaflet.component.tlp.appender;
     requires leaflet.component.tms.adapter;
-    requires jwt.auth.support.api;
-    requires jwt.auth.front.end.support; // TODO (automatic - change after putting module descriptors in place)
 
     requires java.compiler;
     requires com.fasterxml.jackson.databind;

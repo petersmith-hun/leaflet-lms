@@ -11,8 +11,8 @@ open module leaflet.app.lms.service {
     requires leaflet.component.rest.tlp.client;
     requires leaflet.component.rest.tms.api;
     requires leaflet.component.rest.tms.client;
-    requires jwt.auth.support.api;
-    requires jwt.auth.handler; // TODO automatic, change later
+    requires leaflet.component.security.jwt.support.api;
+    requires leaflet.component.security.jwt.support.handler;
 
     requires java.validation;
     requires com.fasterxml.jackson.core;
