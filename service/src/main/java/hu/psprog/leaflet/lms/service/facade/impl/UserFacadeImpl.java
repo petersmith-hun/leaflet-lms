@@ -1,19 +1,15 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
-import hu.psprog.leaflet.api.rest.request.user.LoginRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateRoleRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
-import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
-import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
-import hu.psprog.leaflet.lms.service.auth.handler.JWTTokenPayloadReader;
+import hu.psprog.leaflet.jwt.auth.support.service.AuthenticationService;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
-import hu.psprog.leaflet.lms.service.exception.TokenAuthenticationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -34,54 +29,38 @@ import java.util.Optional;
 @Service
 public class UserFacadeImpl implements UserFacade {
 
-    private static final String INVALID_USER_CREDENTIALS = "Invalid user credentials.";
-
     private UserBridgeService userBridgeService;
-    private JWTTokenPayloadReader jwtTokenPayloadReader;
-    private AuthenticationUtility authenticationUtility;
+    private AuthenticationService authenticationService;
 
     @Autowired
-    public UserFacadeImpl(UserBridgeService userBridgeService, JWTTokenPayloadReader jwtTokenPayloadReader, AuthenticationUtility authenticationUtility) {
+    public UserFacadeImpl(UserBridgeService userBridgeService, AuthenticationService authenticationService) {
         this.userBridgeService = userBridgeService;
-        this.jwtTokenPayloadReader = jwtTokenPayloadReader;
-        this.authenticationUtility = authenticationUtility;
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public void demandPasswordReset(PasswordResetDemandRequestModel passwordResetDemandRequestModel) throws CommunicationFailureException {
-        userBridgeService.demandPasswordReset(passwordResetDemandRequestModel);
+        authenticationService.demandPasswordReset(passwordResetDemandRequestModel);
     }
 
     @Override
     public void confirmPasswordReset(UserPasswordRequestModel userPasswordRequestModel, String token) throws CommunicationFailureException {
-        authenticationUtility.createAndStoreTemporal(token);
-        userBridgeService.confirmPasswordReset(userPasswordRequestModel);
+        authenticationService.confirmPasswordReset(userPasswordRequestModel, token);
     }
 
     @Override
     public void renewToken(Authentication authentication) throws CommunicationFailureException {
-        authenticationUtility.replace(authentication.getPrincipal().toString(), userBridgeService.renewToken().getToken());
+        authenticationService.renewToken(authentication);
     }
 
     @Override
     public void revokeToken() throws CommunicationFailureException {
-        userBridgeService.revokeToken();
+        authenticationService.revokeToken();
     }
 
     @Override
     public Authentication claimToken(Authentication authentication) throws CommunicationFailureException {
-
-        LoginResponseDataModel loginResponseModel = userBridgeService.claimToken(convertToLoginRequest(authentication));
-
-        if (Objects.isNull(loginResponseModel) || loginResponseModel.getStatus() != LoginResponseDataModel.AuthenticationResult.AUTH_SUCCESS) {
-            throw new TokenAuthenticationFailureException(INVALID_USER_CREDENTIALS);
-        }
-
-        return new JWTTokenAuthentication.Builder()
-                .withEmailAddress(authentication.getPrincipal().toString())
-                .withToken(loginResponseModel.getToken())
-                .withDetails(jwtTokenPayloadReader.readPayload(loginResponseModel.getToken()))
-                .build();
+        return authenticationService.claimToken(authentication);
     }
 
     @Override
@@ -145,14 +124,5 @@ public class UserFacadeImpl implements UserFacade {
         updateRoleRequestModel.setRole(role.name());
 
         return updateRoleRequestModel;
-    }
-
-    private LoginRequestModel convertToLoginRequest(Authentication authentication) {
-
-        LoginRequestModel loginRequestModel = new LoginRequestModel();
-        loginRequestModel.setEmail(authentication.getPrincipal().toString());
-        loginRequestModel.setPassword(authentication.getCredentials().toString());
-
-        return loginRequestModel;
     }
 }

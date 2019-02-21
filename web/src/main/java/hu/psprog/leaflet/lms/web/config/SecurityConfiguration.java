@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.config;
 
-import hu.psprog.leaflet.lms.web.auth.SessionExtensionFilter;
-import hu.psprog.leaflet.lms.web.auth.TokenRevokeLogoutHandler;
+import hu.psprog.leaflet.jwt.auth.support.filter.SessionExtensionFilter;
+import hu.psprog.leaflet.jwt.auth.support.logout.TokenRevokeLogoutHandler;
 import hu.psprog.leaflet.rcp.hystrix.support.filter.HystrixContextFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

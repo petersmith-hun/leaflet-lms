@@ -54,6 +54,14 @@
             <groupId>hu.psprog.leaflet</groupId>
             <artifactId>leaflet-translation-adapter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.psprog.leaflet</groupId>
+            <artifactId>jwt-auth-front-end-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.psprog.leaflet</groupId>
+            <artifactId>jwt-auth-support-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -5,8 +5,8 @@ import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageRespon
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
-import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
-import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.jwt.auth.support.domain.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.jwt.auth.support.domain.JWTTokenAuthentication;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

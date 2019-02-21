@@ -11,6 +11,8 @@ open module leaflet.app.lms.service {
     requires leaflet.component.rest.tlp.client;
     requires leaflet.component.rest.tms.api;
     requires leaflet.component.rest.tms.client;
+    requires jwt.auth.support.api;
+    requires jwt.auth.handler; // TODO automatic, change later
 
     requires java.validation;
     requires com.fasterxml.jackson.core;
@@ -27,8 +29,6 @@ open module leaflet.app.lms.service {
     requires spring.security.core;
     requires spring.web;
 
-    exports hu.psprog.leaflet.lms.service.auth;
-    exports hu.psprog.leaflet.lms.service.auth.user;
     exports hu.psprog.leaflet.lms.service.domain.common;
     exports hu.psprog.leaflet.lms.service.domain.entry;
     exports hu.psprog.leaflet.lms.service.domain.file;

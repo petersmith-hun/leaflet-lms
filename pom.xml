@@ -34,6 +34,7 @@
         <leaflet.translation-adapter.version>2.1.0</leaflet.translation-adapter.version>
         <leaflet.bridge.version>3.2.2</leaflet.bridge.version>
         <leaflet.rest-api.version>1.6.1</leaflet.rest-api.version>
+        <leaflet.jwt-support.version>1.0.0</leaflet.jwt-support.version>
 
         <!-- Spring versions -->
         <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
@@ -110,6 +111,21 @@
                 <groupId>hu.psprog.leaflet</groupId>
                 <artifactId>bridge-spring-integration</artifactId>
                 <version>${leaflet.bridge.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>jwt-auth-support-api</artifactId>
+                <version>${leaflet.jwt-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>jwt-auth-handler</artifactId>
+                <version>${leaflet.jwt-support.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>jwt-auth-front-end-support</artifactId>
+                <version>${leaflet.jwt-support.version}</version>
             </dependency>
 
             <!-- Spring Framework dependencies -->
