@@ -23,6 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
+    private static final String PATH_LOGIN_FAILURE = "/login?auth=fail";
     private static final String DEFAULT_SUCCESS_URL = "/";
     private static final String USERNAME_PARAMETER = "email";
     private static final String ROLE_ADMIN = "ADMIN";
@@ -68,7 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .formLogin()
                 .loginPage(PATH_LOGIN)
-                .failureForwardUrl(PATH_LOGIN)
+                .failureUrl(PATH_LOGIN_FAILURE)
                 .usernameParameter(USERNAME_PARAMETER)
                 .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
                 .and()
