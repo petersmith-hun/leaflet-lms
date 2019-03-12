@@ -34,6 +34,16 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="authRequirement">Auth requirement</label>
+                <select class="form-control" name="authRequirement" id="authRequirement" th:with="authRequirementOptions = ${ {'SHOW_ALWAYS', 'AUTHENTICATED', 'ANONYMOUS'} }">
+                    <option th:each="authRequirementOption : ${authRequirementOptions}"
+                            th:selected="${route != null and authRequirementOption == route.authRequirement}"
+                            th:value="${authRequirementOption}"
+                            th:text="${authRequirementOption}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-primary">Save</button>
             </div>
         </form>
