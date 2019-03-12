@@ -7,6 +7,8 @@ open module leaflet.app.lms.web {
     requires transitive leaflet.component.rest.support.hystrix;
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tms.api;
+    requires leaflet.component.security.jwt.support.api;
+    requires leaflet.component.security.jwt.support.frontend;
     requires leaflet.component.tlp.appender;
     requires leaflet.component.tms.adapter;
 

@@ -11,13 +11,13 @@ import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.api.rest.response.user.UserListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
-import hu.psprog.leaflet.lms.service.auth.handler.JWTTokenPayloadReader;
-import hu.psprog.leaflet.lms.service.auth.util.AbstractTokenRelatedTest;
+import hu.psprog.leaflet.jwt.auth.support.service.AuthenticationService;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
-import hu.psprog.leaflet.lms.service.exception.TokenAuthenticationFailureException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -28,7 +28,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
-import java.text.ParseException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -48,25 +47,28 @@ import static org.mockito.Mockito.verify;
 @TestExecutionListeners(listeners = {
         DirtiesContextTestExecutionListener.class,
         WithSecurityContextTestExecutionListener.class})
-public class UserFacadeImplTest extends AbstractTokenRelatedTest {
+public class UserFacadeImplTest {
 
     private static final String TOKEN = "auth-token";
     private static final String USERNAME = "test-user";
+    private static final String EMAIL = "test-user@dev.local";
     private static final String CREDENTIALS = "credentials";
-    private static final String EXPECTED_DATE = "2018-01-07 12:12:01+0000";
     private static final Long USER_ID = 1L;
 
     @Mock
     private UserBridgeService userBridgeService;
 
     @Mock
-    private JWTTokenPayloadReader jwtTokenPayloadReader;
-
-    @Mock
-    private AuthenticationUtility authenticationUtility;
+    private AuthenticationService authenticationService;
 
     @Mock
     private Authentication authentication;
+
+    @Mock
+    private Authentication jwtAuthentication;
+
+    @Captor
+    private ArgumentCaptor<Authentication> authenticationCaptor;
 
     @InjectMocks
     private UserFacadeImpl userFacade;
@@ -88,7 +90,7 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
         userFacade.demandPasswordReset(passwordResetDemandRequestModel);
 
         // then
-        verify(userBridgeService).demandPasswordReset(passwordResetDemandRequestModel);
+        verify(authenticationService).demandPasswordReset(passwordResetDemandRequestModel);
     }
 
     @Test
@@ -101,8 +103,7 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
         userFacade.confirmPasswordReset(userPasswordRequestModel, TOKEN);
 
         // then
-        verify(authenticationUtility).createAndStoreTemporal(TOKEN);
-        verify(userBridgeService).confirmPasswordReset(userPasswordRequestModel);
+        verify(authenticationService).confirmPasswordReset(userPasswordRequestModel, TOKEN);
     }
 
     @Test
@@ -115,7 +116,7 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
         userFacade.renewToken(authentication);
 
         // then
-        verify(authenticationUtility).replace(USERNAME, TOKEN);
+        verify(authenticationService).renewToken(authentication);
     }
 
     @Test
@@ -125,49 +126,20 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
         userFacade.revokeToken();
 
         // then
-        verify(userBridgeService).revokeToken();
+        verify(authenticationService).revokeToken();
     }
 
     @Test
-    public void shouldClaimTokenWithSuccess() throws CommunicationFailureException, ParseException {
+    public void shouldClaimTokenWithSuccess() throws CommunicationFailureException {
 
         // given
-        given(userBridgeService.claimToken(prepareLoginRequestModel())).willReturn(prepareLoginResponseDataModel(true));
-        given(jwtTokenPayloadReader.readPayload(TOKEN)).willReturn(prepareAuthenticationUserDetailsModel(EXPECTED_DATE));
+        given(authenticationService.claimToken(authentication)).willReturn(jwtAuthentication);
 
         // when
         Authentication result = userFacade.claimToken(authentication);
 
         // then
-        assertThat(result, notNullValue());
-        assertThat(result.getPrincipal(), equalTo(USERNAME));
-        assertThat(result.getAuthorities().contains(SERVICE_ROLE), is(true));
-    }
-
-    @Test(expected = TokenAuthenticationFailureException.class)
-    public void shouldThrowTokenAuthenticationFailureOnInvalidCredentials() throws CommunicationFailureException {
-
-        // given
-        given(userBridgeService.claimToken(prepareLoginRequestModel())).willReturn(prepareLoginResponseDataModel(false));
-
-        // when
-        userFacade.claimToken(authentication);
-
-        // then
-        // exception expected
-    }
-
-    @Test(expected = TokenAuthenticationFailureException.class)
-    public void shouldThrowTokenAuthenticationFailureOnNullResponse() throws CommunicationFailureException {
-
-        // given
-        given(userBridgeService.claimToken(prepareLoginRequestModel())).willReturn(null);
-
-        // when
-        userFacade.claimToken(authentication);
-
-        // then
-        // exception expected
+        assertThat(result, equalTo(jwtAuthentication));
     }
 
     @Test
@@ -284,23 +256,27 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
     }
 
     @Test
-    public void shouldProcessAccountDeletion() throws CommunicationFailureException, ParseException {
+    public void shouldProcessAccountDeletion() throws CommunicationFailureException {
 
         // given
         given(userBridgeService.getUserByID(USER_ID)).willReturn(prepareExtendedUserDataModel());
+        given(authenticationService.claimToken(any(Authentication.class))).willReturn(jwtAuthentication);
         given(userBridgeService.claimToken(prepareLoginRequestModel())).willReturn(prepareLoginResponseDataModel(true));
-        given(jwtTokenPayloadReader.readPayload(TOKEN)).willReturn(prepareAuthenticationUserDetailsModel(EXPECTED_DATE));
+        given(jwtAuthentication.getPrincipal()).willReturn(EMAIL);
 
         // when
         userFacade.processAccountDeletion(USER_ID, CREDENTIALS);
 
         // then
-        verify(userBridgeService).revokeToken();
+        verify(authenticationService).revokeToken();
         verify(userBridgeService).deleteUser(USER_ID);
+        verify(authenticationService).claimToken(authenticationCaptor.capture());
+
         Authentication result = SecurityContextHolder.getContext().getAuthentication();
         assertThat(result, notNullValue());
-        assertThat(result.getPrincipal(), equalTo(USERNAME));
-        assertThat(result.getAuthorities().contains(SERVICE_ROLE), is(true));
+        assertThat(result.getPrincipal(), equalTo(EMAIL));
+        assertThat(authenticationCaptor.getValue().getPrincipal(), equalTo(EMAIL));
+        assertThat(authenticationCaptor.getValue().getCredentials(), equalTo(CREDENTIALS));
     }
 
     private UpdateRoleRequestModel prepareUpdateToAdminRoleRequestModel() {
@@ -321,7 +297,7 @@ public class UserFacadeImplTest extends AbstractTokenRelatedTest {
         return ExtendedUserDataModel.getExtendedBuilder()
                 .withId(USER_ID)
                 .withUsername(USERNAME)
-                .withEmail(USERNAME)
+                .withEmail(EMAIL)
                 .build();
     }
 

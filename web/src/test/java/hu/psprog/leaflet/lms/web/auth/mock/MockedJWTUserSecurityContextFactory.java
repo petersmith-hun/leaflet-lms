@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.auth.mock;
 
-import hu.psprog.leaflet.lms.service.auth.JWTTokenAuthentication;
-import hu.psprog.leaflet.lms.service.auth.user.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.jwt.auth.support.domain.AuthenticationUserDetailsModel;
+import hu.psprog.leaflet.jwt.auth.support.domain.JWTTokenAuthentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,7 @@ public class MockedJWTUserSecurityContextFactory implements WithSecurityContextF
     public SecurityContext createSecurityContext(WithMockedJWTUser withMockedJWTUser) {
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = new JWTTokenAuthentication.Builder()
+        Authentication authentication = JWTTokenAuthentication.getBuilder()
                 .withEmailAddress(EMAIL_ADDRESS)
                 .withToken(TOKEN)
                 .withDetails(prepareUserDetails(withMockedJWTUser))
@@ -37,14 +37,12 @@ public class MockedJWTUserSecurityContextFactory implements WithSecurityContextF
     }
 
     private AuthenticationUserDetailsModel prepareUserDetails(WithMockedJWTUser withMockedJWTUser) {
-
-        AuthenticationUserDetailsModel userDetailsModel = new AuthenticationUserDetailsModel();
-        userDetailsModel.setExpiration(createExpirationDate());
-        userDetailsModel.setId(withMockedJWTUser.userID());
-        userDetailsModel.setRole(withMockedJWTUser.role());
-        userDetailsModel.setName(USERNAME);
-
-        return userDetailsModel;
+        return AuthenticationUserDetailsModel.getBuilder()
+                .withExpiration(createExpirationDate())
+                .withId(withMockedJWTUser.userID())
+                .withRole(withMockedJWTUser.role())
+                .withName(USERNAME)
+                .build();
     }
 
     private Date createExpirationDate() {

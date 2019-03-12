@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.config;
 
-import hu.psprog.leaflet.lms.web.auth.SessionExtensionFilter;
-import hu.psprog.leaflet.lms.web.auth.TokenRevokeLogoutHandler;
+import hu.psprog.leaflet.jwt.auth.support.filter.SessionExtensionFilter;
+import hu.psprog.leaflet.jwt.auth.support.logout.TokenRevokeLogoutHandler;
 import hu.psprog.leaflet.rcp.hystrix.support.filter.HystrixContextFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
+    private static final String PATH_LOGIN_FAILURE = "/login?auth=fail";
     private static final String DEFAULT_SUCCESS_URL = "/";
     private static final String USERNAME_PARAMETER = "email";
     private static final String ROLE_ADMIN = "ADMIN";
@@ -68,7 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             .formLogin()
                 .loginPage(PATH_LOGIN)
-                .failureForwardUrl(PATH_LOGIN)
+                .failureUrl(PATH_LOGIN_FAILURE)
                 .usernameParameter(USERNAME_PARAMETER)
                 .defaultSuccessUrl(DEFAULT_SUCCESS_URL, true)
                 .and()

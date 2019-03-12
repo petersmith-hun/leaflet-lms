@@ -49,6 +49,10 @@
             <version>${leaflet.rcp.version}</version>
         </dependency>
         <dependency>
+            <groupId>hu.psprog.leaflet</groupId>
+            <artifactId>jwt-auth-handler</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
