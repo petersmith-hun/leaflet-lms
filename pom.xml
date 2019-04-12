@@ -305,7 +305,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>${argLine.surefire}</argLine>
-                    <forkCount>1</forkCount>
+                    <forkCount>0</forkCount>
                 </configuration>
             </plugin>
             <plugin>
