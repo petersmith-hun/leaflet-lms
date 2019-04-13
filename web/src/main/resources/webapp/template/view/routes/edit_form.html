@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label for="type">Type</label>
-                <select class="form-control" name="type" id="type" th:with="types = ${ {'HEADER_MENU', 'FOOTER_MENU', 'STANDALONE', 'ENTRY_ROUTE_MASK', 'CATEGORY_ROUTE_MASK'} }">
+                <select class="form-control" name="type" id="type" th:with="types = ${ {'HEADER_MENU', 'FOOTER_MENU', 'STANDALONE', 'ENTRY_ROUTE_MASK', 'CATEGORY_ROUTE_MASK', 'TAG_ROUTE_MASK'} }">
                     <option th:each="type : ${types}"
                             th:selected="${route != null and type == route.type}"
                             th:value="${type}"
