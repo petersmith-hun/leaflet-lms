@@ -1,30 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<head>
+    <style type="text/css">
+        .box-body-override {
+            text-align: right;
+            font-size: x-large;
+        }
+
+        .content {
+            min-height: auto;
+        }
+    </style>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
-        <section class="content-header">
+        <div class="content-header">
             <h1>CBFS status</h1>
-        </section>
-        <div style="padding-left: 20px;">
-            <p>CBFS is currently <span th:text="${status.status}">status</span></p>
-            <p>The last time CBFS started serving traffic was <span th:text="${status.lastCall != null} ? ${status.lastCall} : 'never'">last call date</span></p>
-            <p>The last time CBFS created a mirror was <span th:text="${status.lastMirroring != null} ? ${status.lastMirroring} : 'never'">last mirroring date</span></p>
         </div>
-        <h3>Mirror status</h3>
-        <div style="padding-left: 20px;">
-            <p th:each="mirror : ${status.mirrorStatus}">
-                <span th:text="${mirror.mirrorType}">mirror ID</span><br />
-                <span th:text="${mirror.numberOfRecords} + ' records'">number of records</span>
-            </p>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="box box-solid" th:class="${status.status == T(hu.psprog.leaflet.failover.api.domain.FailoverStatus).SERVING ? 'box box-danger' : 'box box-success'}">
+                        <div class="box-header">
+                            <h3 class="box-title">CBFS status is currently</h3>
+                        </div>
+                        <div class="box-body box-body-override">
+                            <span th:text="${status.status}">status</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">The last time CBFS started serving traffic was</h3>
+                        </div>
+                        <div class="box-body box-body-override">
+                            <span th:text="${status.lastCall != null} ? ${status.lastCall} : 'never'">last call date</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">The last time CBFS created a mirror was</h3>
+                        </div>
+                        <div class="box-body box-body-override">
+                            <span th:text="${status.lastMirroring != null} ? ${status.lastMirroring} : 'never'">last mirroring date</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h3>Status entries</h3>
-        <div style="padding-left: 20px;">
-            <p th:each="statusEntry : ${status.statusEntryList}">
-                <span th:text="${statusEntry.created}">entry created at</span><br />
-                <span th:text="${statusEntry.status}">status</span>
-                <span th:if="${statusEntry.parameter != null}" th:text="' (' + ${statusEntry.parameter} + ')'"> (parameter info)</span>
-            </p>
+        <div class="content-header">
+            <h1>Mirror status</h1>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-3" th:each="mirror : ${status.mirrorStatus}">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title" th:text="${mirror.mirrorType}">mirror ID</h3>
+                        </div>
+                        <div class="box-body box-body-override">
+                            <span th:text="${mirror.numberOfRecords} + ' records'">number of records</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-header">
+            <h1>Status transitions</h1>
+        </div>
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <td>Timestamp</td>
+                                    <td>Status went to</td>
+                                    <td>Additional info</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="statusEntry : ${status.statusEntryList}">
+                                    <td th:text="${statusEntry.created}">entry created at</td>
+                                    <td th:text="${statusEntry.status}">status</td>
+                                    <td th:text="${statusEntry.parameter}"> (parameter info)</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </th:block>
