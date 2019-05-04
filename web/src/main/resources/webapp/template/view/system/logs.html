@@ -2,20 +2,9 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <head>
     <style type="text/css">
-        .log-details-wrapper {
-            margin-top: 5px;
-            margin-bottom: 15px;
-        }
-
-        .log-details-wrapper:hover {
-            background-color: rgba(132,198,255,0.26);
-        }
 
         .log-details-header {
-            padding-bottom: 2px;
-            padding-left: 10px;
-            margin-bottom: 2px;
-            border-bottom: 1px solid #a1a1a1;
+            font-size: 15px !important;
         }
 
         .log-details-level {
@@ -51,14 +40,28 @@
         }
 
         .log-details-content {
-            padding: 3px 10px;
-            display: inline-block;
+            white-space: pre-line;
         }
 
         .log-details-exception {
-            white-space: pre-wrap;
+            white-space: pre-line;
             font-size: smaller;
-            padding: 3px 10px;
+            font-family: Consolas;
+        }
+
+        .log-details-exception-message {
+            font-size: 15px !important;
+        }
+
+        @media all and (max-width: 900px) {
+            .log-details-header span {
+                display: block;
+                word-break: break-all;
+            }
+
+            .log-details-exception {
+                word-wrap: break-word;
+            }
         }
     </style>
 </head>
@@ -169,35 +172,100 @@
             <section class="content-header">
                 <h1>Query result</h1>
             </section>
-            <section class="content">
-                <p style="font-style: italic"><span th:text="${logs.entityCount}">0</span> results</p>
-                <div class="log-details-wrapper" th:each="log : ${logs.entitiesOnPage}">
-                    <div class="log-details-header">
-                        <span class="log-details-level" th:text="${log.level}">level</span>
-                        <span class="log-details-source" th:text="${log.source}">source</span>
-                        <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
-                        <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
-                        <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
+            <section class="content" id="logs-accordion">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+                                <i class="fa fa-warning"></i>
+                                <h3 class="box-title">
+                                    <span th:text="${logs.entityCount}">0</span> results
+                                </h3>
+                            </div>
+                        </div>
                     </div>
-                    <span class="log-details-content" th:text="${log.content}">content</span>
-                    <pre class="log-details-exception" th:if="${log.exception != null}" th:text="${log.exception.message} + ${log.exception.stackTrace}">exception</pre>
                 </div>
-                <div class="card-footer text-xs-center">
-                    <ul class="pagination pagination-sm m-0" th:if="${logs.pageCount > 1}">
-                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, logs.pageCount)}">
-                            <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
-                                                            queried=true,
-                                                            page=__${pageNum}__,
-                                                            limit=__${pagination.limit}__,
-                                                            orderBy=__${pagination.orderBy}__,
-                                                            orderDirection=__${pagination.orderDirection}__,
-                                                            source=__${pagination.source}__,
-                                                            level=__${pagination.level}__,
-                                                            content=__${pagination.content}__,
-                                                            from=__${pagination.from}__,
-                                                            to=__${pagination.to}__)}">1</a>
-                        </li>
-                    </ul>
+                <div class="row" th:each="log : ${logs.entitiesOnPage}">
+                    <div class="col-md-12">
+                        <div class="box box-default" th:class="${@logMessageRuleProvider.getRule(log.level)}">
+                            <div class="box-header">
+                                <div class="box-title log-details-header">
+                                    <span class="log-details-level" th:text="${log.level}">level</span>
+                                    <span class="log-details-source" th:text="${log.source}">source</span>
+                                    <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
+                                    <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
+                                    <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="log-details-wrapper">
+                                    <span class="log-details-content" th:text="${log.content}">content</span>
+                                    <div class="panel box box-solid" th:if="${log.exception != null}">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title log-details-exception-message" th:text="${log.exception.message == null ? '<no message>' : log.exception.message}">exception message</h3>
+                                            <a data-toggle="collapse" title="Show stack trace" data-parent="#logs-accordion" th:href="'#collapse_log_' + ${log.timeStamp.time}" class="btn btn-box-tool">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                        <div th:id="'collapse_log_' + ${log.timeStamp.time}" class="panel-collapse collapse">
+                                            <div class="box-body log-details-exception" th:text="${log.exception.stackTrace}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-footer text-xs-center">
+                            <ul class="pagination pagination-sm m-0"
+                                    th:if="${logs.pageCount > 1}"
+                                    th:with="currentPage=${T(Integer).parseInt(#request.getParameter('page') ?: '1')},
+                                             startPage=${currentPage > logs.pageCount ? 1 : T(Math).max(1, currentPage - 9)},
+                                             endPage=${T(Math).min(logs.pageCount, startPage + 10)}">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=1,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">&lt;&lt;</a>
+                                </li>
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+                                    <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=__${pageNum}__,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=__${logs.pageCount}__,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">&gt;&gt;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </section>
         </th:block>
