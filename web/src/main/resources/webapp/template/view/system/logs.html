@@ -2,20 +2,9 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
 <head>
     <style type="text/css">
-        .log-details-wrapper {
-            margin-top: 5px;
-            margin-bottom: 15px;
-        }
-
-        .log-details-wrapper:hover {
-            background-color: rgba(132,198,255,0.26);
-        }
 
         .log-details-header {
-            padding-bottom: 2px;
-            padding-left: 10px;
-            margin-bottom: 2px;
-            border-bottom: 1px solid #a1a1a1;
+            font-size: 15px !important;
         }
 
         .log-details-level {
@@ -51,14 +40,36 @@
         }
 
         .log-details-content {
-            padding: 3px 10px;
-            display: inline-block;
+            white-space: pre-line;
         }
 
-        .log-details-exception {
-            white-space: pre-wrap;
+        .log-details-exception-stack-trace {
+            white-space: pre-line;
             font-size: smaller;
-            padding: 3px 10px;
+            font-family: Consolas;
+        }
+
+        .log-details-exception-message {
+            font-size: 15px !important;
+        }
+
+        input[type="date"] {
+            line-height: normal !important;
+        }
+
+        @media all and (max-width: 900px) {
+            .log-details-header span {
+                display: block;
+                word-break: break-all;
+            }
+
+            .log-details-exception-stack-trace {
+                word-wrap: break-word;
+            }
+        }
+
+        .copied:after {
+            content: ' copied';
         }
     </style>
 </head>
@@ -66,114 +77,211 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[PROTOTYPE TEMPLATE] Log management</h1>
+            <h1>Log management</h1>
         </section>
-        <form method="get" th:action="@{''}">
-            <input type="hidden" name="queried" value="true" />
-            <div class="row">
-                <div class="col-sm-4 form-group">
-                    <label for="limit">Limit</label>
-                    <select class="form-control" id="limit" name="limit" th:with="limitList = ${ {'10', '20', '50', '100'} }">
-                        <option th:each="limitOption : ${limitList}"
-                                th:selected="${(#request.getParameter('limit') != null and #request.getParameter('limit') == limitOption)
-                                            or (#request.getParameter('limit') == null and limitOption == '20')}"
-                                th:value="${limitOption}"
-                                th:text="${limitOption}">
-                        </option>
-                    </select>
+        <section class="content" style="min-height: auto;">
+            <form method="get" th:action="@{''}">
+                <input type="hidden" name="queried" value="true" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-default collapsed-box" th:class="${#request.getParameter('queried') == null ? 'box box-default' : 'box box-default collapsed-box'}">
+                            <div class="box-header">
+                                <h3 class="box-title">Search controls</h3>
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                                        <i class="fa fa-plus" th:class="${#request.getParameter('queried') == null ? 'fa fa-minus' : 'fa fa-plus'}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-sm-4 form-group">
+                                        <label for="limit">Limit</label>
+                                        <select class="form-control" id="limit" name="limit" th:with="limitList = ${ {'10', '20', '50', '100'} }">
+                                            <option th:each="limitOption : ${limitList}"
+                                                    th:selected="${(#request.getParameter('limit') != null and #request.getParameter('limit') == limitOption)
+                                                                or (#request.getParameter('limit') == null and limitOption == '20')}"
+                                                    th:value="${limitOption}"
+                                                    th:text="${limitOption}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 form-group">
+                                        <label for="orderBy">Order by</label>
+                                        <select class="form-control" id="orderBy" name="orderBy">
+                                            <option th:each="by : ${orderByOptions}"
+                                                    th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).valueOf(#request.getParameter('orderBy')))
+                                                                or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).TIMESTAMP)}"
+                                                    th:value="${by}"
+                                                    th:text="${by}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4 form-group">
+                                        <label for="orderDirection">Order direction</label>
+                                        <select class="form-control" id="orderDirection" name="orderDirection">
+                                            <option th:each="direction : ${orderDirectionOptions}"
+                                                    th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).valueOf(#request.getParameter('orderDirection')))
+                                                                or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).DESC)}"
+                                                    th:value="${direction}"
+                                                    th:text="${direction}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3 form-group">
+                                        <label for="source">Source application</label>
+                                        <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa'} }">
+                                            <option th:each="sourceOption : ${sourceList}"
+                                                    th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
+                                                    th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
+                                                    th:text="${sourceOption}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 form-group">
+                                        <label for="level">Level</label>
+                                        <select class="form-control" id="level" name="level" th:with="levelList = ${ {'any', 'trace', 'debug', 'info', 'warn', 'error'} }">
+                                            <option th:each="levelOption : ${levelList}"
+                                                    th:selected="${#request.getParameter('level') != null and #request.getParameter('level') == levelOption}"
+                                                    th:value="${levelOption == 'any'} ? null : ${levelOption}"
+                                                    th:text="${levelOption}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3 form-group">
+                                        <label for="from">From date</label>
+                                        <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="from" name="from" placeholder="From date" th:value="${#request.getParameter('from')}" />
+                                    </div>
+                                    <div class="col-sm-3 form-group">
+                                        <label for="to">By date</label>
+                                        <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="to" name="to" placeholder="By date" th:value="${#request.getParameter('to')}" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 form-group">
+                                        <label for="content">Content</label>
+                                        <input class="form-control" type="text" id="content" name="content" placeholder="Content" th:value="${#request.getParameter('content')}" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 form-group">
+                                        <button class="btn btn-primary">Query logs</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <label for="orderBy">Order by</label>
-                    <select class="form-control" id="orderBy" name="orderBy">
-                        <option th:each="by : ${orderByOptions}"
-                                th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).valueOf(#request.getParameter('orderBy')))
-                                            or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).TIMESTAMP)}"
-                                th:value="${by}"
-                                th:text="${by}">
-                        </option>
-                    </select>
+            </form>
+        </section>
+        <th:block th:if="${logs != null}">
+            <section class="content-header">
+                <h1>Query result</h1>
+            </section>
+            <section class="content" id="logs-accordion">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-default">
+                            <div class="box-header with-border">
+                                <i class="fa fa-warning"></i>
+                                <h3 class="box-title">
+                                    <span th:text="${logs.entityCount}">0</span> results
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-4 form-group">
-                    <label for="orderDirection">Order direction</label>
-                    <select class="form-control" id="orderDirection" name="orderDirection">
-                        <option th:each="direction : ${orderDirectionOptions}"
-                                th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).valueOf(#request.getParameter('orderDirection')))
-                                            or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).DESC)}"
-                                th:value="${direction}"
-                                th:text="${direction}">
-                        </option>
-                    </select>
+                <div class="row" th:each="log, stats : ${logs.entitiesOnPage}">
+                    <div class="col-md-12">
+                        <div class="box box-default" th:class="${@logMessageRuleProvider.getRule(log.level)}" th:id="'logmsg_' + ${stats.index}">
+                            <div class="box-header">
+                                <div class="box-title log-details-header">
+                                    <span class="log-details-level" th:text="${log.level}">level</span>
+                                    <span class="log-details-source" th:text="${log.source}">source</span>
+                                    <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
+                                    <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
+                                    <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
+                                </div>
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool log-copy" th:data-id="'#logmsg_' + ${stats.index}" type="button">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="log-details-wrapper">
+                                    <span class="log-details-content" th:text="${log.content}">content</span>
+                                    <div class="panel box box-solid" th:if="${log.exception != null}">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title log-details-exception-message" th:text="${log.exception.message == null ? '<no message>' : log.exception.message}">exception message</h3>
+                                            <a data-toggle="collapse" title="Show stack trace" data-parent="#logs-accordion" th:href="'#collapse_log_' + ${log.timeStamp.time}" class="btn btn-box-tool">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </div>
+                                        <div th:id="'collapse_log_' + ${log.timeStamp.time}" class="panel-collapse collapse">
+                                            <div class="box-body log-details-exception-stack-trace" th:text="${log.exception.stackTrace}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-3 form-group">
-                    <label for="source">Source application</label>
-                    <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa'} }">
-                        <option th:each="sourceOption : ${sourceList}"
-                                th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
-                                th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
-                                th:text="${sourceOption}">
-                        </option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card-footer text-xs-center">
+                            <ul class="pagination pagination-sm m-0"
+                                    th:if="${logs.pageCount > 1}"
+                                    th:with="currentPage=${T(Integer).parseInt(#request.getParameter('page') ?: '1')},
+                                             startPage=${currentPage > logs.pageCount ? 1 : T(Math).max(1, currentPage - 6)},
+                                             endPage=${T(Math).min(logs.pageCount, startPage + 7)}">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=1,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">&lt;&lt;</a>
+                                </li>
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+                                    <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=__${pageNum}__,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">1</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" th:href="@{/system/logs(
+                                                                queried=true,
+                                                                page=__${logs.pageCount}__,
+                                                                limit=__${pagination.limit}__,
+                                                                orderBy=__${pagination.orderBy}__,
+                                                                orderDirection=__${pagination.orderDirection}__,
+                                                                source=__${pagination.source}__,
+                                                                level=__${pagination.level}__,
+                                                                content=__${pagination.content}__,
+                                                                from=__${pagination.from}__,
+                                                                to=__${pagination.to}__)}">&gt;&gt;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-3 form-group">
-                    <label for="level">Level</label>
-                    <select class="form-control" id="level" name="level" th:with="levelList = ${ {'any', 'trace', 'debug', 'info', 'warn', 'error'} }">
-                        <option th:each="levelOption : ${levelList}"
-                                th:selected="${#request.getParameter('level') != null and #request.getParameter('level') == levelOption}"
-                                th:value="${levelOption == 'any'} ? null : ${levelOption}"
-                                th:text="${levelOption}">
-                        </option>
-                    </select>
-                </div>
-                <div class="col-sm-3 form-group">
-                    <label for="from">From date</label>
-                    <input class="form-control" type="text" id="from" name="from" placeholder="From date" th:value="${#request.getParameter('from')}" />
-                </div>
-                <div class="col-sm-3 form-group">
-                    <label for="to">By date</label>
-                    <input class="form-control" type="text" id="to" name="to" placeholder="By date" th:value="${#request.getParameter('to')}" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="content">Content</label>
-                <input class="form-control" type="text" id="content" name="content" placeholder="Content" th:value="${#request.getParameter('content')}" />
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary">Query logs</button>
-            </div>
-        </form>
-        <div th:if="${logs != null}">
-            <p style="font-style: italic"><span th:text="${logs.entityCount}">0</span> results</p>
-            <div class="log-details-wrapper" th:each="log : ${logs.entitiesOnPage}">
-                <div class="log-details-header">
-                    <span class="log-details-level" th:text="${log.level}">level</span>
-                    <span class="log-details-source" th:text="${log.source}">source</span>
-                    <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
-                    <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
-                    <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
-                </div>
-                <span class="log-details-content" th:text="${log.content}">content</span>
-                <pre class="log-details-exception" th:if="${log.exception != null}" th:text="${log.exception.message} + ${log.exception.stackTrace}">exception</pre>
-            </div>
-            <div class="card-footer text-xs-center">
-                <ul class="pagination pagination-sm m-0" th:if="${logs.pageCount > 1}">
-                    <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, logs.pageCount)}">
-                        <a class="page-link" href="#" th:text="${pageNum}" th:href="@{/system/logs(
-                                                        queried=true,
-                                                        page=__${pageNum}__,
-                                                        limit=__${pagination.limit}__,
-                                                        orderBy=__${pagination.orderBy}__,
-                                                        orderDirection=__${pagination.orderDirection}__,
-                                                        source=__${pagination.source}__,
-                                                        level=__${pagination.level}__,
-                                                        content=__${pagination.content}__,
-                                                        from=__${pagination.from}__,
-                                                        to=__${pagination.to}__)}">1</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            </section>
+        </th:block>
     </section>
 </th:block>
 </body>

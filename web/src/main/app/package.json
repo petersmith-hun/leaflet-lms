@@ -45,6 +45,7 @@
     "bootstrap-sass": "^3.3.7",
     "calmdown": "^0.6.2",
     "choices.js": "^3.0.4",
+    "clipboard-copy": "^3.0.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "vivus": "^0.4.3"
