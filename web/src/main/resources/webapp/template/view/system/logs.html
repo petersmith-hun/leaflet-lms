@@ -43,7 +43,7 @@
             white-space: pre-line;
         }
 
-        .log-details-exception {
+        .log-details-exception-stack-trace {
             white-space: pre-line;
             font-size: smaller;
             font-family: Consolas;
@@ -59,9 +59,13 @@
                 word-break: break-all;
             }
 
-            .log-details-exception {
+            .log-details-exception-stack-trace {
                 word-wrap: break-word;
             }
+        }
+
+        .copied:after {
+            content: ' copied';
         }
     </style>
 </head>
@@ -185,9 +189,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="row" th:each="log : ${logs.entitiesOnPage}">
+                <div class="row" th:each="log, stats : ${logs.entitiesOnPage}">
                     <div class="col-md-12">
-                        <div class="box box-default" th:class="${@logMessageRuleProvider.getRule(log.level)}">
+                        <div class="box box-default" th:class="${@logMessageRuleProvider.getRule(log.level)}" th:id="'logmsg_' + ${stats.index}">
                             <div class="box-header">
                                 <div class="box-title log-details-header">
                                     <span class="log-details-level" th:text="${log.level}">level</span>
@@ -195,6 +199,11 @@
                                     <span class="log-details-timestamp" th:text="${log.timeStamp}">timestamp</span>
                                     <span class="log-details-thread" th:text="${log.threadName}">threadName</span>
                                     <span class="log-details-logger" th:text="${log.loggerName}">loggerName</span>
+                                </div>
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool log-copy" th:data-id="'#logmsg_' + ${stats.index}" type="button">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
                                 </div>
                             </div>
                             <div class="box-body">
@@ -208,7 +217,7 @@
                                             </a>
                                         </div>
                                         <div th:id="'collapse_log_' + ${log.timeStamp.time}" class="panel-collapse collapse">
-                                            <div class="box-body log-details-exception" th:text="${log.exception.stackTrace}"></div>
+                                            <div class="box-body log-details-exception-stack-trace" th:text="${log.exception.stackTrace}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -222,8 +231,8 @@
                             <ul class="pagination pagination-sm m-0"
                                     th:if="${logs.pageCount > 1}"
                                     th:with="currentPage=${T(Integer).parseInt(#request.getParameter('page') ?: '1')},
-                                             startPage=${currentPage > logs.pageCount ? 1 : T(Math).max(1, currentPage - 9)},
-                                             endPage=${T(Math).min(logs.pageCount, startPage + 10)}">
+                                             startPage=${currentPage > logs.pageCount ? 1 : T(Math).max(1, currentPage - 6)},
+                                             endPage=${T(Math).min(logs.pageCount, startPage + 7)}">
                                 <li class="page-item">
                                     <a class="page-link" href="#" th:href="@{/system/logs(
                                                                 queried=true,

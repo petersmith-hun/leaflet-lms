@@ -11,18 +11,21 @@ import '../img/mstile-150x150.png';
 import './vendor'
 
 // components
+import LogCopy from './components/LogCopy';
 import Logo from './components/Logo';
 import Select from './components/Select';
 import Editor from './components/Editor';
 
 class App {
 	constructor(){
+		this.logCopy = new LogCopy();
 		this.logo = new Logo();
 		this.select = new Select();
 		this.editor = new Editor();
 	}
 
 	init(){
+		this.logCopy.init();
 		this.logo.init();
 		this.select.init();
 		this.editor.init();
