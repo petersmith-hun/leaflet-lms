@@ -4,30 +4,43 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[PROTOTYPE TEMPLATE] Create translation pack</h1>
+            <h1>Create translation pack</h1>
         </section>
-        <form method="post" th:action="@{''}" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="packName">Pack name</label>
-                <input class="form-control" id="packName" name="packName" placeholder="Pack name" type="text" />
+        <section class="content">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Translation pack data</h3>
+                        </div>
+                        <div class="box-body">
+                            <form method="post" th:action="@{''}" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="packName">Pack name</label>
+                                    <input class="form-control" id="packName" name="packName" placeholder="Pack name" type="text" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="locale">Language</label>
+                                    <select class="form-control" name="locale" id="locale" th:with="localeList = ${ {'hu_HU', 'en'} }">
+                                        <option th:each="locale : ${localeList}"
+                                                th:value="${locale}"
+                                                th:text="${locale}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="definitions">Definitions as CSV (separated with ';')</label>
+                                    <input name="definitions" id="definitions" type="file" />
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="locale">Language</label>
-                <select class="form-control" name="locale" id="locale" th:with="localeList = ${ {'hu_HU', 'en'} }">
-                    <option th:each="locale : ${localeList}"
-                            th:value="${locale}"
-                            th:text="${locale}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="definitions">Definitions as CSV (separated with ';')</label>
-                <input class="form-control" name="definitions" id="definitions" type="file" />
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary">Save</button>
-            </div>
-        </form>
+        </section>
     </section>
 </th:block>
 </body>
