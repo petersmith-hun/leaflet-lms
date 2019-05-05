@@ -22,7 +22,7 @@ class LogCopyHandler {
 
 		let detailNode = document.querySelector(logID + ' .log-details-' + attribute);
 		let value = null;
-		if (detailNode != null) {
+		if (detailNode !== null) {
 			value = detailNode.innerHTML;
 		}
 
@@ -44,7 +44,7 @@ class LogCopyHandler {
 	formatProperty(logData, property) {
 
 		let formattedValue;
-		if (logData[property] == null) {
+		if (logData[property] === null) {
 			formattedValue = 'not specified';
 		} else if (property === 'content' || property === 'exception_stack_trace') {
 			formattedValue = '{code}' + logData[property] + '{code}';
