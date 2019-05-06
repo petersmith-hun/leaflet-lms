@@ -1,14 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<head>
+    <style type="text/css">
+        #metaTable > tbody > tr > td:nth-child(1) {
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[todo populate]</h1>
+            <h1>View file details</h1>
         </section>
-        <form method="post" th:action="@{/files/delete/{id}(id=__${#request.getAttribute('id')}__)}">
-            <input type="submit" value="Delete file" />
-        </form>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a class="btn btn-primary" href="#" th:href="@{/files/browse/__${@URLUtilities.getUpURL(file.path, 0)}__}">
+                                <i class="fa fa-backward"></i> Back to file browser
+                            </a>
+                            <a th:href="@{/files/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-sm btn-warning">
+                                <i class="fa fa-pencil"></i> Edit meta info
+                            </a>
+                            <form class="inline" method="post" th:action="@{/files/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                                <button class="btn btn-danger" onclick="return confirm('Are you sure to delete this file?')">
+                                    <i class="fa fa-times"></i>  Delete file
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">File details</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" id="metaTable">
+                                    <tbody>
+                                    <tr>
+                                        <td>Original filename</td>
+                                        <td th:text="${file.originalFilename}">original filename</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Public reference</td>
+                                        <td th:text="${file.reference}">reference</td>
+                                    </tr>
+                                    <tr>
+                                        <td>MIME</td>
+                                        <td th:text="${file.acceptedAs}">mime</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description</td>
+                                        <td th:text="${file.description}">description</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Physical relative path</td>
+                                        <td th:text="${file.path}">path</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <button class="btn btn-primary" id="copyFileReference" th:data-reference="${file.reference}">
+                                <i class="fa fa-copy"></i> Copy reference as MarkDown
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" th:if="${file.acceptedAs.startsWith('image/')}">
+                <div class="col-md-9">
+                    <div class="box box-default">
+                        <div class="box-header">
+                            <h3 class="box-title">Image preview</h3>
+                        </div>
+                        <div class="box-body">
+                            <img src="#" style="max-width: 100%;" th:src="@{/files/resource__${file.reference}__}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
 </th:block>
 </body>
