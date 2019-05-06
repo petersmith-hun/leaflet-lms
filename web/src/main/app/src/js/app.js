@@ -11,6 +11,7 @@ import '../img/mstile-150x150.png';
 import './vendor'
 
 // components
+import DefinitionTableHandler from './components/DefinitionTableHandler';
 import LogCopy from './components/LogCopy';
 import Logo from './components/Logo';
 import Select from './components/Select';
@@ -18,6 +19,7 @@ import Editor from './components/Editor';
 
 class App {
 	constructor(){
+		this.definitionTableHandler = new DefinitionTableHandler();
 		this.logCopy = new LogCopy();
 		this.logo = new Logo();
 		this.select = new Select();
@@ -25,6 +27,7 @@ class App {
 	}
 
 	init(){
+		this.definitionTableHandler.init();
 		this.logCopy.init();
 		this.logo.init();
 		this.select.init();
