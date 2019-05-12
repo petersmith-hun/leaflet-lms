@@ -6,35 +6,70 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[PROTOTYPE TEMPLATE] Update user profile</h1>
+            <h1>User profile</h1>
         </section>
-        <form method="post" th:action="@{''}">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input class="form-control" id="username" name="username" placeholder="Username" type="text" th:value="${user.username}" />
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input class="form-control" id="email" name="email" placeholder="Email" type="text" th:value="${user.email}" />
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a class="btn btn-primary" href="#" th:href="@{/account/change-password}">Change password</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="locale">Language</label>
-                <select class="form-control" name="defaultLocale" id="locale" th:with="localeList = ${ {'HU', 'EN'} }">
-                    <option th:each="locale : ${localeList}"
-                            th:selected="${locale == user.locale}"
-                            th:value="${locale}"
-                            th:text="${locale}">
-                    </option>
-                </select>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Update profile information</h3>
+                        </div>
+                        <div class="box-body">
+                            <form method="post" th:action="@{''}">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input class="form-control" id="username" name="username" placeholder="Username" type="text" th:value="${user.username}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input class="form-control" id="email" name="email" placeholder="Email" type="text" th:value="${user.email}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="locale">Language</label>
+                                    <select class="form-control" name="defaultLocale" id="locale" th:with="localeList = ${ {'HU', 'EN'} }">
+                                        <option th:each="locale : ${localeList}"
+                                                th:selected="${locale == user.locale}"
+                                                th:value="${locale}"
+                                                th:text="${locale}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <button class="btn btn-primary">Save</button>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-danger">
+                        <div class="box-header">
+                            <h3 class="box-title">Delete account</h3>
+                        </div>
+                        <div class="box-body">
+                            <a class="btn btn-danger" href="#" th:href="@{/account/delete-account}">Proceed to account deletion</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-        <h3>Delete account</h3>
-        <p>
-            <a href="#" th:href="@{/account/delete-account}">Delete account</a>
-        </p>
+        </section>
     </section>
 </th:block>
 </body>
