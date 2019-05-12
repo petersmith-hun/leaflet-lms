@@ -37,6 +37,7 @@ public class SystemConfigurationController extends BaseController {
 
     static final String PATH_SYSTEM = "/system";
     private static final String PATH_EDIT_SEO = PATH_SYSTEM + PATH_SEO;
+    private static final String SEO_UPDATED = "Default SEO attributes have been updated";
 
     private SystemConfigurationFacade systemConfigurationFacade;
     private LogViewerPaginationHelper logViewerPaginationHelper;
@@ -76,6 +77,7 @@ public class SystemConfigurationController extends BaseController {
 
         return handleValidationFailure(() -> {
             systemConfigurationFacade.processUpdateSEOConfiguration(seoConfiguration);
+            redirectAttributes.addFlashAttribute(FLASH_MESSAGE, SEO_UPDATED);
             return modelAndViewFactory.createRedirectionTo(PATH_EDIT_SEO);
         }, validationFailureRedirectionSupplier(redirectAttributes, seoConfiguration, PATH_EDIT_SEO));
     }

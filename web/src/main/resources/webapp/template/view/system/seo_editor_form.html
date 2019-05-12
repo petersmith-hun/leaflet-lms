@@ -6,29 +6,47 @@
     <th:block layout:fragment="content">
         <section class="content-wrapper">
             <section class="content-header">
-                <h1>[PROTOTYPE TEMPLATE] SEO configuration</h1>
+                <h1>SEO configuration</h1>
             </section>
-            <form method="post" th:action="@{''}">
-                <div class="form-group">
-                    <label for="pageTitle">Page title</label>
-                    <input class="form-control" id="pageTitle" name="pageTitle" placeholder="Page title" type="text" th:value="${seo.pageTitle}" />
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="metaTitle">SEO Title</label>
-                    <input class="form-control" id="metaTitle" name="defaultTitle" placeholder="SEO Title" type="text" th:value="${seo.defaultTitle}" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h3 class="box-title">Update default SEO attributes</h3>
+                            </div>
+                            <div class="box-body">
+                                <form method="post" th:action="@{''}">
+                                    <div class="form-group">
+                                        <label for="pageTitle">Page title</label>
+                                        <input class="form-control" id="pageTitle" name="pageTitle" placeholder="Page title" type="text" th:value="${seo.pageTitle}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="metaTitle">SEO Title</label>
+                                        <input class="form-control" id="metaTitle" name="defaultTitle" placeholder="SEO Title" type="text" th:value="${seo.defaultTitle}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="metaDescription">SEO Description</label>
+                                        <input class="form-control" id="metaDescription" name="defaultDescription" placeholder="SEO Description" type="text" th:value="${seo.defaultDescription}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="metaKeywords">SEO Keywords</label>
+                                        <input class="form-control" id="metaKeywords" name="defaultKeywords" placeholder="SEO Keywords" type="text" th:value="${seo.defaultKeywords}" />
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="metaDescription">SEO Description</label>
-                    <input class="form-control" id="metaDescription" name="defaultDescription" placeholder="SEO Description" type="text" th:value="${seo.defaultDescription}" />
-                </div>
-                <div class="form-group">
-                    <label for="metaKeywords">SEO Keywords</label>
-                    <input class="form-control" id="metaKeywords" name="defaultKeywords" placeholder="SEO Keywords" type="text" th:value="${seo.defaultKeywords}" />
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-primary">Save</button>
-                </div>
-            </form>
+            </section>
         </section>
     </th:block>
 </body>
