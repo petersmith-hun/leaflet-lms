@@ -85,7 +85,7 @@ public class AccountController extends BaseController {
             userFacade.processUserProfileUpdate(currentUserID(), updateProfileRequestModel);
             redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_ACCOUNT_HAS_SUCCESSFULLY_BEEN_UPDATED);
 
-            return modelAndViewFactory.createRedirectionTo(PATH_HOME);
+            return modelAndViewFactory.createRedirectionTo(PATH_ACCOUNT_UPDATE_PROFILE);
         }, validationFailureRedirectionSupplier(redirectAttributes, updateProfileRequestModel, PATH_ACCOUNT_UPDATE_PROFILE));
     }
 
