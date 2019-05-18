@@ -1,10 +1,87 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<head>
+    <style type="text/css">
+        #metaTable > tbody > tr > td:nth-child(1) {
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[todo populate]</h1>
+            <h1>Details of user <th:block th:text="${user.username}">username</th:block></h1>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a th:href="@{/users}" href="#" class="btn btn-sm btn-info">
+                                <i class="fa fa-backward"></i> Back to user management
+                            </a>
+                            <a th:href="@{/users/edit/{id}/role(id=${user.id})}" href="#" class="btn btn-sm btn-warning">
+                                <i class="fa fa-group"></i> Change role
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">User details</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped" id="metaTable">
+                                    <tbody>
+                                    <tr>
+                                        <td>User ID</td>
+                                        <td th:text="${user.id}">user ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Username</td>
+                                        <td th:text="${user.username}">username</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email address</td>
+                                        <td th:text="${user.email}">email</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Role</td>
+                                        <td th:text="${user.role}">role</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Locale</td>
+                                        <td th:text="${user.locale}">locale</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date of registration</td>
+                                        <td th:text="${user.created}">creation date</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date of last modification</td>
+                                        <td th:text="${user.lastModified}">last modified</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date of last login</td>
+                                        <td th:text="${user.lastLogin}">last login</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </section>
 </th:block>
