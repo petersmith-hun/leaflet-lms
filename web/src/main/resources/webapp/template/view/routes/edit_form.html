@@ -4,49 +4,77 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>[PROTOTYPE TEMPLATE] Create / Edit route</h1>
+            <h1 th:if="${#request.getAttribute('id') == null}">Create route</h1>
+            <h1 th:unless="${#request.getAttribute('id') == null}" th:text="${'Edit existing route: ' + route.name}">Edit route</h1>
         </section>
-        <form method="post" th:action="@{''}">
-            <div class="form-group">
-                <label for="routeId">Route ID</label>
-                <input class="form-control" id="routeId" name="routeId" placeholder="Route ID" type="text" th:value="${route == null} ? null : ${route.routeId}" />
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <a th:href="@{/system/routes}" href="#" class="btn btn-sm btn-info">
+                                <i class="fa fa-backward"></i> Back to front-end routes management
+                            </a>
+                            <a th:unless="${#request.getAttribute('id') == null}" th:href="@{/system/routes/view/{id}(id=${route.id})}" href="#" class="btn btn-sm btn-info">
+                                <i class="fa fa-info-circle"></i> Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input class="form-control" id="name" name="name" placeholder="Name" type="text" th:value="${route == null} ? null : ${route.name}" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Route data</h3>
+                        </div>
+                        <div class="box-body">
+                            <form method="post" th:action="@{''}">
+                                <div class="form-group">
+                                    <label for="routeId">Route ID</label>
+                                    <input class="form-control" id="routeId" name="routeId" placeholder="Route ID" type="text" th:value="${route == null} ? null : ${route.routeId}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" id="name" name="name" placeholder="Name" type="text" th:value="${route == null} ? null : ${route.name}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="url">Path</label>
+                                    <input class="form-control" id="url" name="url" placeholder="Path" type="text" th:value="${route == null} ? null : ${route.url}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="sequenceNumber">Sequence number</label>
+                                    <input class="form-control" id="sequenceNumber" name="sequenceNumber" placeholder="Sequence number" type="number" th:value="${route == null} ? null : ${route.sequenceNumber}" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Type</label>
+                                    <select class="form-control" name="type" id="type" th:with="types = ${ {'HEADER_MENU', 'FOOTER_MENU', 'STANDALONE', 'ENTRY_ROUTE_MASK', 'CATEGORY_ROUTE_MASK', 'TAG_ROUTE_MASK'} }">
+                                        <option th:each="type : ${types}"
+                                                th:selected="${route != null and type == route.type}"
+                                                th:value="${type}"
+                                                th:text="${type}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="authRequirement">Auth requirement</label>
+                                    <select class="form-control" name="authRequirement" id="authRequirement" th:with="authRequirementOptions = ${ {'SHOW_ALWAYS', 'AUTHENTICATED', 'ANONYMOUS'} }">
+                                        <option th:each="authRequirementOption : ${authRequirementOptions}"
+                                                th:selected="${route != null and authRequirementOption == route.authRequirement}"
+                                                th:value="${authRequirementOption}"
+                                                th:text="${authRequirementOption}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="url">Path</label>
-                <input class="form-control" id="url" name="url" placeholder="Path" type="text" th:value="${route == null} ? null : ${route.url}" />
-            </div>
-            <div class="form-group">
-                <label for="sequenceNumber">Sequence number</label>
-                <input class="form-control" id="sequenceNumber" name="sequenceNumber" placeholder="Sequence number" type="number" th:value="${route == null} ? null : ${route.sequenceNumber}" />
-            </div>
-            <div class="form-group">
-                <label for="type">Type</label>
-                <select class="form-control" name="type" id="type" th:with="types = ${ {'HEADER_MENU', 'FOOTER_MENU', 'STANDALONE', 'ENTRY_ROUTE_MASK', 'CATEGORY_ROUTE_MASK', 'TAG_ROUTE_MASK'} }">
-                    <option th:each="type : ${types}"
-                            th:selected="${route != null and type == route.type}"
-                            th:value="${type}"
-                            th:text="${type}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="authRequirement">Auth requirement</label>
-                <select class="form-control" name="authRequirement" id="authRequirement" th:with="authRequirementOptions = ${ {'SHOW_ALWAYS', 'AUTHENTICATED', 'ANONYMOUS'} }">
-                    <option th:each="authRequirementOption : ${authRequirementOptions}"
-                            th:selected="${route != null and authRequirementOption == route.authRequirement}"
-                            th:value="${authRequirementOption}"
-                            th:text="${authRequirementOption}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary">Save</button>
-            </div>
-        </form>
+        </section>
     </section>
 </th:block>
 </body>
