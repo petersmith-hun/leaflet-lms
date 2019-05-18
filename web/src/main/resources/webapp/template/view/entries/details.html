@@ -103,6 +103,9 @@
                 <div class="col-md-12">
                     <div class="box box-solid">
                         <div class="box-footer">
+                            <a th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-sm btn-social">
+                                <i class="fa fa-commenting-o"></i> Handle comments
+                            </a>
                             <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}"
                                href="#" class="btn btn-sm btn-info">
                                 <i class="fa fa-pencil"></i> Edit
