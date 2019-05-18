@@ -75,6 +75,9 @@
                                         <td th:text="${entry.lastModified}"></td>
                                         <td class="td--table-control">
                                             <div class="table-control__btn-group">
+                                                <a th:href="@{/comments/{id}(id=${entry.id})}" href="#" class="btn btn-sm btn-social">
+                                                    <i class="fa fa-commenting-o"></i> Handle comments
+                                                </a>
                                                 <a th:href="@{/entries/edit/{id}(id=${entry.id})}"
                                                    href="#" class="btn btn-sm btn-info">
                                                     <i class="fa fa-pencil"></i> Edit
