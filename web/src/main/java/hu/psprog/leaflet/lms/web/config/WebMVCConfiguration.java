@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import hu.psprog.leaflet.lms.web.interceptor.CommonPageDataInterceptor;
 import hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor;
 import hu.psprog.leaflet.lms.web.interceptor.ModelAndViewDebuggerInterceptor;
 import hu.psprog.leaflet.lms.web.menu.interceptor.SystemMenuInterceptor;
@@ -38,11 +39,15 @@ public class WebMVCConfiguration implements WebMvcConfigurer {
     @Autowired
     private Optional<ModelAndViewDebuggerInterceptor> modelAndViewDebuggerInterceptor;
 
+    @Autowired
+    private CommonPageDataInterceptor commonPageDataInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         modelAndViewDebuggerInterceptor.ifPresent(registry::addInterceptor);
         registry.addInterceptor(systemMenuInterceptor);
         registry.addInterceptor(generalStatusSetterInterceptor);
+        registry.addInterceptor(commonPageDataInterceptor);
     }
 
     @Override
