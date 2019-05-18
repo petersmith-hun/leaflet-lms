@@ -69,7 +69,7 @@ public class AccountControllerTest extends AbstractControllerTest {
         // then
         verify(userFacade).processUserProfileUpdate(USER_ID, updateProfileRequestModel);
         verifyFlashMessageSet();
-        verifyRedirectionCreated(PATH_ROOT);
+        verifyRedirectionCreated(PATH_ACCOUNT_UPDATE_PROFILE);
     }
 
     @Test
