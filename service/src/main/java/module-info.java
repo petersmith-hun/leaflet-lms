@@ -15,6 +15,7 @@ open module leaflet.app.lms.service {
     requires leaflet.component.security.jwt.support.handler;
 
     requires java.validation;
+    requires java.ws.rs;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
@@ -24,6 +25,7 @@ open module leaflet.app.lms.service {
     requires org.jvnet.mimepull;
     requires slf4j.api;
     requires spring.beans;
+    requires spring.boot;
     requires spring.context;
     requires spring.core;
     requires spring.security.core;
