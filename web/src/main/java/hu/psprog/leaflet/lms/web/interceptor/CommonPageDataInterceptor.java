@@ -1,7 +1,7 @@
 package hu.psprog.leaflet.lms.web.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Interceptor implementation that adds common variable to the model.
@@ -20,15 +21,15 @@ import java.util.Objects;
 @Component
 public class CommonPageDataInterceptor extends HandlerInterceptorAdapter {
 
-    private static final String APP_VERSION = "${app.version}";
     private static final String APP_VERSION_ATTRIBUTE = "footerAppVersion";
     private static final String COMMON_ATTRIBUTE = "common";
+    private static final String DEFAULT_VERSION = "snapshot";
 
     private Map<String, String> commonPageData;
 
     @Autowired
-    public CommonPageDataInterceptor(@Value(APP_VERSION) String applicationVersion) {
-        commonPageData = Map.of(APP_VERSION_ATTRIBUTE, applicationVersion);
+    public CommonPageDataInterceptor(Optional<BuildProperties> optionalBuildProperties) {
+        commonPageData = Map.of(APP_VERSION_ATTRIBUTE, optionalBuildProperties.map(BuildProperties::getVersion).orElse(DEFAULT_VERSION));
     }
 
     @Override

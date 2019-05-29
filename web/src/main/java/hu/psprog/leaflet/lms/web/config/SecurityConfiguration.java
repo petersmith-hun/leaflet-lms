@@ -24,6 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String PATH_LOGOUT = "/logout";
     private static final String PATH_RECLAIM = "/password-reset/**";
     private static final String PATH_LOGIN_FAILURE = "/login?auth=fail";
+    private static final String PATH_ACTUATOR = "/actuator/**";
     private static final String DEFAULT_SUCCESS_URL = "/";
     private static final String USERNAME_PARAMETER = "email";
     private static final String ROLE_ADMIN = "ADMIN";
@@ -61,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .addFilterAfter(sessionExtensionFilter, UsernamePasswordAuthenticationFilter.class)
 
             .authorizeRequests()
-                .antMatchers(PATH_LOGIN, PATH_RECLAIM)
+                .antMatchers(PATH_LOGIN, PATH_RECLAIM, PATH_ACTUATOR)
                     .permitAll()
                 .anyRequest()
                     .hasAnyAuthority(ROLE_ADMIN, ROLE_EDITOR)
