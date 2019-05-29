@@ -6,12 +6,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,10 +36,14 @@ public class CommonPageDataInterceptorTest {
     @Mock
     private HttpServletRequest request;
 
+    @Mock
+    private BuildProperties buildProperties;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        commonPageDataInterceptor = new CommonPageDataInterceptor(APPLICATION_VERSION);
+        given(buildProperties.getVersion()).willReturn(APPLICATION_VERSION);
+        commonPageDataInterceptor = new CommonPageDataInterceptor(Optional.of(buildProperties));
     }
 
     @Test
