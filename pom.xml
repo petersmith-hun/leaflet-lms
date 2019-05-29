@@ -55,8 +55,8 @@
 
         <!-- test framework versions -->
         <junit.params.version>1.0.5</junit.params.version>
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
 
         <!-- compiler settings -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -305,7 +305,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>${argLine.surefire}</argLine>
-                    <forkCount>0</forkCount>
+                    <useModulePath>false</useModulePath>
                 </configuration>
             </plugin>
             <plugin>
@@ -316,6 +316,7 @@
                     <excludes>
                         <exclude>**/domain/**</exclude>
                         <exclude>**/config/**</exclude>
+                        <exclude>**/model/**</exclude>
                         <exclude>**/PaginationDefaults.*</exclude>
                     </excludes>
                 </configuration>
