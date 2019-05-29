@@ -17,6 +17,7 @@ import LogCopy from './components/LogCopy';
 import Logo from './components/Logo';
 import Select from './components/Select';
 import Editor from './components/Editor';
+import ServiceStackStatus from "./components/ServiceStackStatus";
 
 class App {
 	constructor(){
@@ -25,6 +26,7 @@ class App {
 		this.logCopy = new LogCopy();
 		this.logo = new Logo();
 		this.select = new Select();
+		this.serviceStackStatus = new ServiceStackStatus();
 		this.editor = new Editor();
 	}
 
@@ -34,6 +36,7 @@ class App {
 		this.logCopy.init();
 		this.logo.init();
 		this.select.init();
+		this.serviceStackStatus.init();
 		this.editor.init();
 	}
 }

@@ -2,11 +2,42 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{_layout/default}">
+<head>
+    <script type="text/javascript" th:inline="javascript">
+        const stackStatusConfig = {
+        	enabled: /*[[${@stackStatusConfigModel.enabled}]]*/ false,
+            discoverEndpoint: /*[[${@stackStatusConfigModel.discoverEndpoint}]]*/ null
+        };
+    </script>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
             <h1>Dashboard</h1>
+        </section>
+        <section class="content">
+            <div>
+                <div class="row" id="dashboard" style="display: flex; flex-wrap: wrap;">
+                    <div class="col-md-12" th:if="${registeredServices.isEmpty()}">
+                        <div class="box box-warning">
+                            <div class="box-body">
+                                <i class="fa fa-warning"></i> Service stack info is currently unavailable
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" th:unless="${registeredServices.isEmpty()}" th:id="'svcStatus_' + ${abbreviation}" th:each="abbreviation : ${registeredServices}">
+                        <div class="box box-warning">
+                            <div class="box-header">
+                                <h3 class="box-title" th:text="${abbreviation}">abbreviation</h3>
+                            </div>
+                            <div class="box-body">
+                                <p>Waiting for response...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </section>
 </th:block>
