@@ -68,8 +68,8 @@
                                             <i class="fa fa-circle-o text-muted"
                                                th:if="${!document.enabled}"></i>
                                         </td>
-                                        <td th:text="${document.created}"></td>
-                                        <td th:text="${document.lastModified}"></td>
+                                        <td th:text="${{document.created}}"></td>
+                                        <td th:text="${{document.lastModified}}"></td>
                                         <td class="td--table-control">
                                             <div class="table-control__btn-group">
                                                 <a th:href="@{/documents/edit/{id}(id=${document.id})}"

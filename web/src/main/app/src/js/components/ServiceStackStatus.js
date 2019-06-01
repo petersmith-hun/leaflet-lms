@@ -10,16 +10,10 @@ class ServiceStackStatus {
 				rejectUnauthorized: false
 			}
 		};
-		this.stackStatusConfig = {
-			enabled: false
-		};
-
 		/* eslint-disable no-undef */
-		if (stackStatusConfig !== undefined) {
-
-			/* eslint-disable no-undef */
-			this.stackStatusConfig = stackStatusConfig;
-		}
+		this.stackStatusConfig = typeof stackStatusConfig === 'undefined'
+			? {enabled: false}
+			: stackStatusConfig;
 	}
 
 	init() {

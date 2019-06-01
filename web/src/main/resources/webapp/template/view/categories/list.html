@@ -49,8 +49,8 @@
                                         <td class="text-center">
                                             <i th:class="${category.enabled ? 'fa fa-dot-circle-o text-green' : 'fa fa-circle-o text-red'}"></i>
                                         </td>
-                                        <td th:text="${category.created}">2016.12.09. 12:00</td>
-                                        <td th:text="${category.lastModified}">2016.12.09. 12:00</td>
+                                        <td th:text="${{category.created}}">2016.12.09. 12:00</td>
+                                        <td th:text="${{category.lastModified}}">2016.12.09. 12:00</td>
                                         <td class="td--table-control">
                                             <div class="table-control__btn-group">
                                                 <a th:href="@{/categories/view/{id}(id=${category.id})}" href="#" class="btn btn-sm btn-info">
