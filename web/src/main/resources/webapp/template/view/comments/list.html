@@ -59,7 +59,7 @@
                                             <i th:class="${comment.enabled ? 'fa fa-dot-circle-o text-green' : 'fa fa-circle-o text-red'}"></i>
                                         </td>
                                         <td th:text="${comment.owner.username}">Test Author</td>
-                                        <td th:text="${comment.created}">2016.12.09. 12:00</td>
+                                        <td th:text="${{comment.created}}">2016.12.09. 12:00</td>
                                         <td class="td--table-control">
                                             <div class="table-control__btn-group">
                                                 <a th:href="@{/comments/view/{id}(id=${comment.id})}" href="#" class="btn btn-sm btn-info">

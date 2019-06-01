@@ -65,15 +65,15 @@
                                     </tr>
                                     <tr>
                                         <td>Date of registration</td>
-                                        <td th:text="${user.created}">creation date</td>
+                                        <td th:text="${{user.created}}">creation date</td>
                                     </tr>
                                     <tr>
                                         <td>Date of last modification</td>
-                                        <td th:text="${user.lastModified}">last modified</td>
+                                        <td th:text="${{user.lastModified}}">last modified</td>
                                     </tr>
                                     <tr>
                                         <td>Date of last login</td>
-                                        <td th:text="${user.lastLogin}">last login</td>
+                                        <td th:text="${{user.lastLogin}}">last login</td>
                                     </tr>
                                     </tbody>
                                 </table>

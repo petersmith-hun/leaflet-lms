@@ -71,8 +71,8 @@
                                                th:text="${entry.title}"></a>
                                         </td>
                                         <td th:text="${entry.user.username}"></td>
-                                        <td th:text="${entry.created}"></td>
-                                        <td th:text="${entry.lastModified}"></td>
+                                        <td th:text="${{entry.created}}"></td>
+                                        <td th:text="${{entry.lastModified}}"></td>
                                         <td class="td--table-control">
                                             <div class="table-control__btn-group">
                                                 <a th:href="@{/comments/{id}(id=${entry.id})}" href="#" class="btn btn-sm btn-social">

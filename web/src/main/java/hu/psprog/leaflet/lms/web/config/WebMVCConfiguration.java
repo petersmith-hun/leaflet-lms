@@ -4,9 +4,11 @@ import hu.psprog.leaflet.lms.web.interceptor.CommonPageDataInterceptor;
 import hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor;
 import hu.psprog.leaflet.lms.web.interceptor.ModelAndViewDebuggerInterceptor;
 import hu.psprog.leaflet.lms.web.menu.interceptor.SystemMenuInterceptor;
+import hu.psprog.leaflet.lms.web.support.thymeleaf.ZonedDateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -48,6 +50,11 @@ public class WebMVCConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(systemMenuInterceptor);
         registry.addInterceptor(generalStatusSetterInterceptor);
         registry.addInterceptor(commonPageDataInterceptor);
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new ZonedDateTimeFormatter());
     }
 
     @Override
