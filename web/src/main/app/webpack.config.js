@@ -1,20 +1,20 @@
 const path = require('path');
-const merge = require('webpack-merge');
 const webpack = require('webpack');
 
 // Webpack plugins
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // Get the environment
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Webpack configurations
-const devConfig = require('./config/webpack.dev.config');
-const prodConfig = require('./config/webpack.prod.config');
-
 // Webpack configuration
-const baseConfig = {
+const config = {
+
+	mode: isProduction ? 'production' : 'development',
+
+	devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
 
 	context: path.resolve(__dirname,'src'),
 
@@ -25,6 +25,10 @@ const baseConfig = {
 	output:{
 		path: path.resolve(__dirname, '../resources/webapp/resources/js'),
 		filename: './app.js'
+	},
+
+	optimization: {
+		minimize: isProduction
 	},
 
 	// Modules
@@ -41,14 +45,6 @@ const baseConfig = {
 				use: ExtractTextPlugin.extract({
 					fallback: 'style-loader',
 					use: [ 'css-loader', 'postcss-loader', 'sass-loader']
-				})
-			},
-			// Less
-			{
-				test: /\.less$/,
-				use: ExtractTextPlugin.extract({
-					fallback: 'style-loader',
-					use: ['css-loader', 'postcss-loader', 'less-loader']
 				})
 			},
 			// Css
@@ -86,7 +82,19 @@ const baseConfig = {
 	// Plugins
 	plugins:[
 		new ExtractTextPlugin('../css/app.css'),
-		new CleanWebpackPlugin(['resources/*'], {root: __dirname + '/../resources/webapp/' } ),
+		new OptimizeCssAssetsPlugin({
+			assetNameRegExp: /app\.css$/g,
+			cssProcessor: require('cssnano'),
+			cssProcessorPluginOptions: {
+				preset: ['default', { discardComments: { removeAll: true } }],
+			},
+			canPrint: true
+		}),
+		new CleanWebpackPlugin({
+			dry: false,
+			cleanOnceBeforeBuildPatterns: ['/../resources/webapp/resources/*'],
+			dangerouslyAllowCleanPatternsOutsideProject: true
+		}),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
 			jQuery: 'jquery',
@@ -97,4 +105,4 @@ const baseConfig = {
 };
 
 
-module.exports = merge(baseConfig, isProduction ? prodConfig : devConfig);
+module.exports = config;
