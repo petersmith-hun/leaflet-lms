@@ -53,6 +53,11 @@
             font-size: 15px !important;
         }
 
+        .log-details-exception-class {
+            font-family: Consolas;
+            font-size: smaller;
+        }
+
         input[type="date"] {
             line-height: normal !important;
         }
@@ -132,7 +137,7 @@
                                 <div class="row">
                                     <div class="col-sm-3 form-group">
                                         <label for="source">Source application</label>
-                                        <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa'} }">
+                                        <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa', 'domino'} }">
                                             <option th:each="sourceOption : ${sourceList}"
                                                     th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
                                                     th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
@@ -215,7 +220,10 @@
                                     <span class="log-details-content" th:text="${log.content}">content</span>
                                     <div class="panel box box-solid" th:if="${log.exception != null}">
                                         <div class="box-header with-border">
-                                            <h3 class="box-title log-details-exception-message" th:text="${log.exception.message == null ? '<no message>' : log.exception.message}">exception message</h3>
+                                            <h3 class="box-title log-details-exception-message">
+                                                <span class="log-details-exception-class" th:text="${log.exception.className == null ? '<no exception class>' : log.exception.className}">exception class</span>:
+                                                <span th:text="${log.exception.message == null ? '<no message>' : log.exception.message}">exception message</span>
+                                            </h3>
                                             <a data-toggle="collapse" title="Show stack trace" data-parent="#logs-accordion" th:href="'#collapse_log_' + ${log.timeStamp.time}" class="btn btn-box-tool">
                                                 <i class="fa fa-expand"></i>
                                             </a>
