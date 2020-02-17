@@ -6,7 +6,7 @@ open module leaflet.app.lms.service {
     requires leaflet.component.rest.failover.api;
     requires leaflet.component.rest.failover.client;
     requires leaflet.component.rest.request.adapters;
-    requires transitive leaflet.component.rest.support.hystrix;
+    requires leaflet.component.rest.support.hystrix;
     requires leaflet.component.rest.tlp.api;
     requires leaflet.component.rest.tlp.client;
     requires leaflet.component.rest.tms.api;
@@ -23,7 +23,7 @@ open module leaflet.app.lms.service {
     requires org.apache.commons.io;
     requires org.apache.commons.lang3;
     requires org.jvnet.mimepull;
-    requires slf4j.api;
+    requires org.slf4j;
     requires spring.beans;
     requires spring.boot;
     requires spring.context;

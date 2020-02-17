@@ -14,8 +14,9 @@ open module leaflet.app.lms.web {
 
     requires java.compiler;
     requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.classmate;
     requires org.apache.commons.lang3;
-    requires slf4j.api;
+    requires org.slf4j;
     requires spring.beans;
     requires spring.boot;
     requires spring.boot.autoconfigure;
@@ -27,5 +28,5 @@ open module leaflet.app.lms.web {
     requires spring.security.web;
     requires spring.web;
     requires spring.webmvc;
-    requires tomcat.embed.core;
+    requires org.apache.tomcat.embed.core;
 }
