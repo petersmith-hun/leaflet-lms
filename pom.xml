@@ -54,6 +54,14 @@
         <hibernate-validator.version>6.1.2.Final</hibernate-validator.version>
         <jackson.version>2.10.2</jackson.version>
         <jersey.version>2.30</jersey.version>
+        <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
+
+        <!-- Docker build configuration -->
+        <!--suppress UnresolvedMavenProperty -->
+        <docker.repository>${LEAFLET_DOCKER_REGISTRY_HOST}</docker.repository>
+        <docker.image-name>lms</docker.image-name>
+        <docker.skip>true</docker.skip>
 
         <!-- test framework versions -->
         <junit.params.version>1.0.5</junit.params.version>
@@ -317,6 +325,14 @@
                 <configuration>
                     <argLine>${argLine.surefire}</argLine>
                     <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>
