@@ -30,10 +30,12 @@ public class SystemConfigurationController extends BaseController {
     private static final String VIEW_SYSTEM_SEO_EDITOR_FORM = "view/system/seo_editor_form";
     private static final String VIEW_SYSTEM_FAILOVER = "view/system/failover";
     private static final String VIEW_SYSTEM_LOGS = "view/system/logs";
+    private static final String VIEW_SYSTEM_DOCKER = "view/system/docker";
 
     private static final String PATH_SEO = "/seo";
     private static final String PATH_FAILOVER = "/failover";
     private static final String PATH_LOGS = "/logs";
+    private static final String PATH_DOCKER = "/docker";
 
     static final String PATH_SYSTEM = "/system";
     private static final String PATH_EDIT_SEO = PATH_SYSTEM + PATH_SEO;
@@ -93,6 +95,19 @@ public class SystemConfigurationController extends BaseController {
 
         return modelAndViewFactory.createForView(VIEW_SYSTEM_FAILOVER)
                 .withAttribute("status", systemConfigurationFacade.getFailoverStatus())
+                .build();
+    }
+
+    /**
+     * Renders Docker cluster status page.
+     *
+     * @return populated {@link ModelAndView} object
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_DOCKER)
+    public ModelAndView showDockerClusterStatus() {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER)
+                .withAttribute("existingContainers", systemConfigurationFacade.getExistingContainers())
                 .build();
     }
 

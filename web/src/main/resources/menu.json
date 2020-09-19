@@ -26,6 +26,10 @@
           "link": "/system/failover"
         },
         {
+          "name": "Docker cluster status",
+          "link": "/system/docker"
+        },
+        {
           "name": "Log management",
           "link": "/system/logs"
         }
@@ -68,8 +72,12 @@
       "iconClass": "fa-desktop",
       "children": [
         {
-          "name": "Jenkins",
-          "link": "https://ci.psprog.hu"
+          "name": "CircleCI",
+          "link": "https://app.circleci.com"
+        },
+        {
+          "name": "Archiva",
+          "link": "https://artifact-repo.ci.psprog.hu/"
         },
         {
           "name": "Grafana",

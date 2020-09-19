@@ -2,9 +2,12 @@ package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.failover.api.domain.StatusResponse;
+import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
+
+import java.util.List;
 
 /**
  * System configuration facade.
@@ -37,6 +40,13 @@ public interface SystemConfigurationFacade {
      * @throws CommunicationFailureException if LMS fails to reach CBFS
      */
     StatusResponse getFailoverStatus() throws CommunicationFailureException;
+
+    /**
+     * Calls LSAS existing containers endpoint to return list of existing Docker containers.
+     *
+     * @return existing Docker containers as {@link List} of {@link Container} objects.
+     */
+    List<Container> getExistingContainers();
 
     /**
      * Calls TLP logs endpoint for retrieving stored logs.
