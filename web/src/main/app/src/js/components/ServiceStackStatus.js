@@ -18,7 +18,7 @@ class ServiceStackStatus {
 
 	init() {
 
-		if (this.stackStatusConfig.enabled === false) {
+		if (!this.stackStatusConfig.enabled) {
 			return;
 		}
 

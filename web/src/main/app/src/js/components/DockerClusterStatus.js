@@ -27,7 +27,7 @@ class DockerClusterStatus {
 
 	init() {
 
-		if (this.dockerClusterStatusConfig.enabled === false) {
+		if (!this.dockerClusterStatusConfig.enabled) {
 			return;
 		}
 
