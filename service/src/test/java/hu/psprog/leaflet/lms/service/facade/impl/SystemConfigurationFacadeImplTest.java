@@ -4,8 +4,10 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.failover.api.client.FailoverClient;
 import hu.psprog.leaflet.failover.api.domain.FailoverStatus;
 import hu.psprog.leaflet.failover.api.domain.StatusResponse;
+import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
+import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
 import hu.psprog.leaflet.tlp.api.client.TLPClient;
 import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
@@ -14,6 +16,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,6 +38,7 @@ public class SystemConfigurationFacadeImplTest {
             .build();
     private static final LogRequest LOG_REQUEST = new LogRequest();
     private static final LogEventPage LOG_EVENT_PAGE_RESPONSE = LogEventPage.getBuilder().build();
+    private static final List<Container> EXISTING_CONTAINERS_RESPONSE = Collections.singletonList(Container.getBuilder().build());
 
     @Mock
     private SEOConfigurationDCPAdapter seoConfigurationDCPAdapter;
@@ -42,6 +48,9 @@ public class SystemConfigurationFacadeImplTest {
 
     @Mock
     private TLPClient tlpClient;
+
+    @Mock
+    private StackAdminServiceClient stackAdminServiceClient;
 
     @InjectMocks
     private SystemConfigurationFacadeImpl systemConfigurationFacade;
@@ -87,6 +96,19 @@ public class SystemConfigurationFacadeImplTest {
 
         // then
         assertThat(result, equalTo(FAILOVER_STATUS_RESPONSE));
+    }
+
+    @Test
+    public void shouldGetExistingContainers() {
+
+        // given
+        given(stackAdminServiceClient.getExistingContainers()).willReturn(EXISTING_CONTAINERS_RESPONSE);
+
+        // when
+        List<Container> result = systemConfigurationFacade.getExistingContainers();
+
+        // then
+        assertThat(result, equalTo(EXISTING_CONTAINERS_RESPONSE));
     }
 
     @Test

@@ -32,12 +32,14 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String VIEW_SEO_EDITOR_FORM = "seo_editor_form";
     private static final String VIEW_LOGS = "logs";
     private static final String VIEW_FAILOVER = "failover";
+    private static final String VIEW_DOCKER = "docker";
 
     private static final String FIELD_STATUS = "status";
     private static final String FIELD_ORDER_BY_OPTIONS = "orderByOptions";
     private static final String FIELD_ORDER_DIRECTION_OPTIONS = "orderDirectionOptions";
     private static final String FIELD_LOGS = "logs";
     private static final String FIELD_PAGINATION = "pagination";
+    private static final String FIELD_EXISTING_CONTAINERS = "existingContainers";
 
     @Mock
     private SystemConfigurationFacade systemConfigurationFacade;
@@ -130,6 +132,18 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS, FIELD_PAGINATION);
         verify(systemConfigurationFacade).getLogs(logRequest);
         verify(logViewerPaginationHelper).extractPaginationAttributes(request);
+    }
+
+    @Test
+    public void shouldShowDockerClusterStatus() {
+
+        // when
+        systemConfigurationController.showDockerClusterStatus();
+
+        // then
+        verifyViewCreated(VIEW_DOCKER);
+        verifyFieldsSet(FIELD_EXISTING_CONTAINERS);
+        verify(systemConfigurationFacade).getExistingContainers();
     }
 
     @Override

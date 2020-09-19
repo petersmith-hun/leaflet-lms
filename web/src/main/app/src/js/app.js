@@ -18,6 +18,7 @@ import Logo from './components/Logo';
 import Select from './components/Select';
 import Editor from './components/Editor';
 import ServiceStackStatus from "./components/ServiceStackStatus";
+import DockerClusterStatus from "./components/DockerClusterStatus";
 
 class App {
 	constructor(){
@@ -27,6 +28,7 @@ class App {
 		this.logo = new Logo();
 		this.select = new Select();
 		this.serviceStackStatus = new ServiceStackStatus();
+		this.dockerClusterStatus = new DockerClusterStatus();
 		this.editor = new Editor();
 	}
 
@@ -37,6 +39,7 @@ class App {
 		this.logo.init();
 		this.select.init();
 		this.serviceStackStatus.init();
+		this.dockerClusterStatus.init();
 		this.editor.init();
 	}
 }
