@@ -40,6 +40,9 @@ public class StackAdminServiceClientImplTest {
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
     private static final String REGISTERED_SERVICES_ENDPOINT = "/registered/services/endpoint";
     private static final String EXISTING_CONTAINERS_ENDPOINT = "/existing/containers/endpoint";
+    private static final String API_KEY_FOR_REGISTERED_SERVICES = "api-key-for-registered-services";
+    private static final String API_KEY_FOR_CONTAINERS = "api-key-for-stack-status";
+    private static final String API_KEY_HEADER = "X-Api-Key";
 
     @Mock
     private Client client;
@@ -66,9 +69,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetRegisteredServicesReturnWithSuccess() {
 
         // given
-        given(stackStatusConfigModel.getRegisteredServicesEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
         given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
         given(builder.get()).willReturn(response);
         given(response.getStatusInfo()).willReturn(Response.Status.OK);
         given(response.readEntity(RegisteredServices.class)).willReturn(REGISTERED_SERVICES);
@@ -84,9 +89,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetRegisteredServicesReturnNullForNonSuccessfulResponse() {
 
         // given
-        given(stackStatusConfigModel.getRegisteredServicesEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
         given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
         given(builder.get()).willReturn(response);
         given(response.getStatusInfo()).willReturn(Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -104,9 +111,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetRegisteredServicesReturnNullWhenClientThrowsException() {
 
         // given
-        given(stackStatusConfigModel.getRegisteredServicesEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
+        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
         given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
         doThrow(RuntimeException.class).when(builder).get();
 
         // when
@@ -120,9 +129,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetExistingContainersReturnWithSuccess() {
 
         // given
-        given(dockerClusterStatusConfigModel.getExistingContainersEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
         given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
         given(builder.get()).willReturn(response);
         given(response.getStatusInfo()).willReturn(Response.Status.OK);
         given(response.readEntity(CONTAINER_LIST_GENERIC_TYPE)).willReturn(CONTAINER_LIST);
@@ -138,9 +149,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetExistingContainersReturnEmptyListForNonSuccessfulResponse() {
 
         // given
-        given(dockerClusterStatusConfigModel.getExistingContainersEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
         given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
         given(builder.get()).willReturn(response);
         given(response.getStatusInfo()).willReturn(Response.Status.INTERNAL_SERVER_ERROR);
 
@@ -158,9 +171,11 @@ public class StackAdminServiceClientImplTest {
     public void shouldGetExistingContainersReturnEmptyListWhenClientThrowsException() {
 
         // given
-        given(dockerClusterStatusConfigModel.getExistingContainersEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
+        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
         given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
         given(webTarget.request()).willReturn(builder);
+        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
         doThrow(RuntimeException.class).when(builder).get();
 
         // when

@@ -13,9 +13,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "docker-cluster-status")
-public class DockerClusterStatusConfigModel {
+public class DockerClusterStatusConfigModel implements ClientConfigModel {
 
     private boolean enabled;
+    private String apiKey;
     private String existingContainersEndpoint;
     private String statusEndpoint;
     private String detailsEndpoint;
@@ -26,6 +27,20 @@ public class DockerClusterStatusConfigModel {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public String getDefaultEndpoint() {
+        return existingContainersEndpoint;
+    }
+
+    @Override
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     public String getExistingContainersEndpoint() {
@@ -62,6 +77,7 @@ public class DockerClusterStatusConfigModel {
 
         return new EqualsBuilder()
                 .append(enabled, that.enabled)
+                .append(apiKey, that.apiKey)
                 .append(existingContainersEndpoint, that.existingContainersEndpoint)
                 .append(statusEndpoint, that.statusEndpoint)
                 .append(detailsEndpoint, that.detailsEndpoint)
@@ -72,6 +88,7 @@ public class DockerClusterStatusConfigModel {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(enabled)
+                .append(apiKey)
                 .append(existingContainersEndpoint)
                 .append(statusEndpoint)
                 .append(detailsEndpoint)
@@ -82,6 +99,7 @@ public class DockerClusterStatusConfigModel {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("enabled", enabled)
+                .append("apiKey", apiKey)
                 .append("existingContainersEndpoint", existingContainersEndpoint)
                 .append("statusEndpoint", statusEndpoint)
                 .append("detailsEndpoint", detailsEndpoint)

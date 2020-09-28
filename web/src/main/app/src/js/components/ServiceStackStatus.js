@@ -5,15 +5,18 @@ class ServiceStackStatus {
 
 	constructor() {
 		this.selector = "#dashboard";
+		/* eslint-disable no-undef */
+		this.stackStatusConfig = typeof stackStatusConfig === 'undefined'
+			? {enabled: false, apiKey: null}
+			: stackStatusConfig;
 		this.eventSourceInitDict = {
 			https: {
 				rejectUnauthorized: false
+			},
+			headers: {
+				"X-Api-Key": this.stackStatusConfig.apiKey
 			}
 		};
-		/* eslint-disable no-undef */
-		this.stackStatusConfig = typeof stackStatusConfig === 'undefined'
-			? {enabled: false}
-			: stackStatusConfig;
 	}
 
 	init() {

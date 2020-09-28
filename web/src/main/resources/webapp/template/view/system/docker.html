@@ -4,6 +4,7 @@
     <script type="text/javascript" th:inline="javascript">
 		const dockerClusterStatusConfig = {
 			enabled: /*[[${@dockerClusterStatusConfigModel.enabled}]]*/ false,
+			apiKey: /*[[${@dockerClusterStatusConfigModel.apiKey}]]*/ null,
 			statusEndpoint: /*[[${@dockerClusterStatusConfigModel.statusEndpoint}]]*/ null,
 			detailsEndpoint: /*[[${@dockerClusterStatusConfigModel.detailsEndpoint}]]*/ null
 		};
