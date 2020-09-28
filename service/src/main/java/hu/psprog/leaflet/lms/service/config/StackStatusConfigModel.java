@@ -13,9 +13,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "stack-status")
-public class StackStatusConfigModel {
+public class StackStatusConfigModel implements ClientConfigModel {
 
     private boolean enabled;
+    private String apiKey;
     private String registeredServicesEndpoint;
     private String discoverEndpoint;
 
@@ -25,6 +26,20 @@ public class StackStatusConfigModel {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public String getDefaultEndpoint() {
+        return registeredServicesEndpoint;
+    }
+
+    @Override
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     public String getRegisteredServicesEndpoint() {
@@ -53,6 +68,7 @@ public class StackStatusConfigModel {
 
         return new EqualsBuilder()
                 .append(enabled, that.enabled)
+                .append(apiKey, that.apiKey)
                 .append(registeredServicesEndpoint, that.registeredServicesEndpoint)
                 .append(discoverEndpoint, that.discoverEndpoint)
                 .isEquals();
@@ -62,6 +78,7 @@ public class StackStatusConfigModel {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(enabled)
+                .append(apiKey)
                 .append(registeredServicesEndpoint)
                 .append(discoverEndpoint)
                 .toHashCode();
@@ -71,6 +88,7 @@ public class StackStatusConfigModel {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("enabled", enabled)
+                .append("apiKey", apiKey)
                 .append("registeredServicesEndpoint", registeredServicesEndpoint)
                 .append("discoverEndpoint", discoverEndpoint)
                 .toString();

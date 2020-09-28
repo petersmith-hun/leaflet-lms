@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade.client.impl;
 
+import hu.psprog.leaflet.lms.service.config.ClientConfigModel;
 import hu.psprog.leaflet.lms.service.config.DockerClusterStatusConfigModel;
 import hu.psprog.leaflet.lms.service.config.StackStatusConfigModel;
 import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
@@ -27,6 +28,7 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(StackAdminServiceClientImpl.class);
 
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
+    private static final String X_API_KEY_HEADER = "X-Api-Key";
 
     private final Client client;
     private final StackStatusConfigModel stackStatusConfigModel;
@@ -46,7 +48,7 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
         RegisteredServices registeredServices = null;
 
         try {
-            Response response = callLSAS(stackStatusConfigModel.getRegisteredServicesEndpoint());
+            Response response = callLSAS(stackStatusConfigModel);
             if (isSuccessful(response)) {
                 registeredServices = response.readEntity(RegisteredServices.class);
             } else {
@@ -65,7 +67,7 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
         List<Container> runningContainers = Collections.emptyList();
 
         try {
-            Response response = callLSAS(dockerClusterStatusConfigModel.getExistingContainersEndpoint());
+            Response response = callLSAS(dockerClusterStatusConfigModel);
             if (isSuccessful(response)) {
                 runningContainers = response.readEntity(CONTAINER_LIST_GENERIC_TYPE);
             } else {
@@ -78,10 +80,11 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
         return runningContainers;
     }
 
-    private Response callLSAS(String endpoint) {
+    private Response callLSAS(ClientConfigModel clientConfig) {
 
-        return client.target(endpoint)
+        return client.target(clientConfig.getDefaultEndpoint())
                 .request()
+                .header(X_API_KEY_HEADER, clientConfig.getApiKey())
                 .get();
     }
 

@@ -8,11 +8,6 @@ class DockerClusterStatus {
 
 	constructor() {
 		this.selector = ".docker-status-card";
-		this.eventSourceInitDict = {
-			https: {
-				rejectUnauthorized: false
-			}
-		};
 		this.knobConfig = {
 			readOnly: true,
 			width: 90,
@@ -21,8 +16,16 @@ class DockerClusterStatus {
 		};
 		/* eslint-disable no-undef */
 		this.dockerClusterStatusConfig = typeof dockerClusterStatusConfig === 'undefined'
-			? {enabled: false}
+			? {enabled: false, apiKey: null}
 			: dockerClusterStatusConfig;
+		this.eventSourceInitDict = {
+			https: {
+				rejectUnauthorized: false
+			},
+			headers: {
+				"X-Api-Key": this.dockerClusterStatusConfig.apiKey
+			}
+		};
 	}
 
 	init() {
@@ -33,11 +36,13 @@ class DockerClusterStatus {
 
 		momentDurationFormatSetup(moment);
 
-		const containerIDList = this._extractContainerIDList();
-		this._createStatusObservable(containerIDList);
-		this._createDetailsObservable(containerIDList);
-		this._setTotalMemoryUsage();
-		this._checkStoppedContainers();
+		setTimeout(() => {
+			const containerIDList = this._extractContainerIDList();
+			this._createStatusObservable(containerIDList);
+			this._createDetailsObservable(containerIDList);
+			this._setTotalMemoryUsage();
+			this._checkStoppedContainers();
+		}, 300);
 	}
 
 	_extractContainerIDList() {
@@ -54,7 +59,7 @@ class DockerClusterStatus {
 
 		return Array.from(statusCards.values())
 			.map(card => card.dataset.container)
-			.reduce((previousValue, currentValue) => `${previousValue},${currentValue}`, "");
+			.reduce((previousValue, currentValue) => `${previousValue},${currentValue}`);
 	}
 
 	_createStatusObservable(containerIDList) {
