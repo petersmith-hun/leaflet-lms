@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{_layout/default}">
+<body>
+<th:block layout:fragment="content">
+    <section class="content-wrapper">
+        <section class="content-header">
+            <h1>Docker Registry browser</h1>
+        </section>
+        <th:block>
+            <section class="content">
+                <th:block th:if="${registries != null}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box docker-status-card">
+                                <div class="box-body">
+                                    <div class="table-responsive col-md-8">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                            <tr>
+                                                <td>Registry ID</td>
+                                                <td>Registry URL</td>
+                                                <td>Registry operations</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="registry : ${registries.entrySet()}">
+                                                <td th:text="${registry.getKey()}">registry-name</td>
+                                                <td th:text="${registry.getValue()}">registry-url</td>
+                                                <td class="td--table-control">
+                                                    <div class="table-control__btn-group">
+                                                        <a th:href="@{/system/docker/registry(registry=${registry.getKey()})}" href="#" class="btn btn-sm btn-social">
+                                                            <i class="fa fa-info"></i> View repositories
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:if="${repositories != null}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <a class="btn btn-primary" th:href="@{/system/docker/registry}" href="#">Back to registries</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box docker-status-card">
+                                <div class="box-header">
+                                    <div class="box-title">
+                                        <span th:text="'Repositories in ' + ${currentRegistry} + ' Docker registry'">title</span>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive col-md-8">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                            <tr>
+                                                <td>Repository ID</td>
+                                                <td>Repository operations</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="repository : ${repositories.repositories}">
+                                                <td th:text="${repository}">repository-name</td>
+                                                <td class="td--table-control">
+                                                    <div class="table-control__btn-group">
+                                                        <a th:href="@{/system/docker/registry(registry=${currentRegistry},repository=${repository})}" href="#" class="btn btn-sm btn-social">
+                                                            <i class="fa fa-info"></i> View tags
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:if="${tags != null}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-solid">
+                                <div class="box-body">
+                                    <a class="btn btn-primary" th:href="@{/system/docker/registry}" href="#">Back to registries</a>
+                                    <a class="btn btn-primary" th:href="@{/system/docker/registry(registry=${currentRegistry})}" href="#">Back to repositories</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box docker-status-card">
+                                <div class="box-header">
+                                    <div class="box-title">
+                                        <span th:text="'Tags of ' + ${currentRepository} + ' repository in ' + ${currentRegistry} + ' registry'">title</span>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive col-md-8">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                            <tr>
+                                                <td>Tag name</td>
+                                                <td>Created</td>
+                                                <td>Tag operations</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="tag : ${tags.tags}">
+                                                <td th:text="${tag.name}">tag-name</td>
+                                                <td th:text="${{tag.created}}">tag-created</td>
+                                                <td class="td--table-control">
+                                                    <div class="table-control__btn-group">
+                                                        <form class="display-inline-block" th:action="@{/system/docker/registry(registry=${currentRegistry},repository=${currentRepository},tag=${tag.name})}" th:method="post">
+                                                            <button class="btn btn-sm btn-social" style="color: #ff0000;" type="submit" onclick="return confirm('Are you sure to delete this image version?')">
+                                                                <i class="fa fa-remove"></i> Remove image version
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </section>
+        </th:block>
+    </section>
+</th:block>
+</body>
+</html>

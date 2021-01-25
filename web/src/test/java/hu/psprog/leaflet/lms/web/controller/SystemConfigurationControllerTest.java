@@ -33,6 +33,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String VIEW_LOGS = "logs";
     private static final String VIEW_FAILOVER = "failover";
     private static final String VIEW_DOCKER = "docker";
+    private static final String VIEW_DOCKER_REGISTRY_BROWSER = "docker_registry_browser";
 
     private static final String FIELD_STATUS = "status";
     private static final String FIELD_ORDER_BY_OPTIONS = "orderByOptions";
@@ -40,6 +41,15 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String FIELD_LOGS = "logs";
     private static final String FIELD_PAGINATION = "pagination";
     private static final String FIELD_EXISTING_CONTAINERS = "existingContainers";
+    private static final String FIELD_REGISTRIES = "registries";
+    private static final String FIELD_REPOSITORIES = "repositories";
+    private static final String FIELD_TAGS = "tags";
+    private static final String FIELD_CURRENT_REGISTRY = "currentRegistry";
+    private static final String FIELD_CURRENT_REPOSITORY = "currentRepository";
+
+    private static final String REGISTRY_ID = "registry-1";
+    private static final String REPOSITORY_ID = "repository-1";
+    private static final String TAG = "1.0";
 
     @Mock
     private SystemConfigurationFacade systemConfigurationFacade;
@@ -144,6 +154,53 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         verifyViewCreated(VIEW_DOCKER);
         verifyFieldsSet(FIELD_EXISTING_CONTAINERS);
         verify(systemConfigurationFacade).getExistingContainers();
+    }
+
+    @Test
+    public void shouldShowConfiguredDockerRegistryList() {
+
+        // when
+        systemConfigurationController.showConfiguredDockerRegistryList();
+
+        // then
+        verifyViewCreated(VIEW_DOCKER_REGISTRY_BROWSER);
+        verifyFieldsSet(FIELD_REGISTRIES);
+        verify(systemConfigurationFacade).getConfiguredRegistries();
+    }
+
+    @Test
+    public void shouldShowRepositories() {
+
+        // when
+        systemConfigurationController.showRepositories(REGISTRY_ID);
+
+        // then
+        verifyViewCreated(VIEW_DOCKER_REGISTRY_BROWSER);
+        verifyFieldsSet(FIELD_REPOSITORIES, FIELD_CURRENT_REGISTRY);
+        verify(systemConfigurationFacade).getDockerRepositories(REGISTRY_ID);
+    }
+
+    @Test
+    public void shouldShowRepositoryTags() {
+
+        // when
+        systemConfigurationController.showRepositoryTags(REGISTRY_ID, REPOSITORY_ID);
+
+        // then
+        verifyViewCreated(VIEW_DOCKER_REGISTRY_BROWSER);
+        verifyFieldsSet(FIELD_TAGS, FIELD_CURRENT_REGISTRY, FIELD_CURRENT_REPOSITORY);
+        verify(systemConfigurationFacade).getDockerRepositoryDetails(REGISTRY_ID, REPOSITORY_ID);
+    }
+
+    @Test
+    public void shouldDeleteImageByTag() {
+
+        // when
+        systemConfigurationController.processImageDeletionByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
+
+        // then
+        verifyRedirectionCreated("/system/docker/registry?registry=registry-1&repository=repository-1");
+        verify(systemConfigurationFacade).deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
     }
 
     @Override
