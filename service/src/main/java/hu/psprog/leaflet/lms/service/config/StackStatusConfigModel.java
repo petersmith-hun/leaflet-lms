@@ -19,6 +19,7 @@ public class StackStatusConfigModel implements ClientConfigModel {
     private String apiKey;
     private String registeredServicesEndpoint;
     private String discoverEndpoint;
+    private String dockerRepositoryBrowserEndpoint;
 
     public boolean isEnabled() {
         return enabled;
@@ -58,6 +59,14 @@ public class StackStatusConfigModel implements ClientConfigModel {
         this.discoverEndpoint = discoverEndpoint;
     }
 
+    public String getDockerRepositoryBrowserEndpoint() {
+        return dockerRepositoryBrowserEndpoint;
+    }
+
+    public void setDockerRepositoryBrowserEndpoint(String dockerRepositoryBrowserEndpoint) {
+        this.dockerRepositoryBrowserEndpoint = dockerRepositoryBrowserEndpoint;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,6 +80,7 @@ public class StackStatusConfigModel implements ClientConfigModel {
                 .append(apiKey, that.apiKey)
                 .append(registeredServicesEndpoint, that.registeredServicesEndpoint)
                 .append(discoverEndpoint, that.discoverEndpoint)
+                .append(dockerRepositoryBrowserEndpoint, that.dockerRepositoryBrowserEndpoint)
                 .isEquals();
     }
 
@@ -81,6 +91,7 @@ public class StackStatusConfigModel implements ClientConfigModel {
                 .append(apiKey)
                 .append(registeredServicesEndpoint)
                 .append(discoverEndpoint)
+                .append(dockerRepositoryBrowserEndpoint)
                 .toHashCode();
     }
 
@@ -91,6 +102,7 @@ public class StackStatusConfigModel implements ClientConfigModel {
                 .append("apiKey", apiKey)
                 .append("registeredServicesEndpoint", registeredServicesEndpoint)
                 .append("discoverEndpoint", discoverEndpoint)
+                .append("dockerRepositoryBrowserEndpoint", dockerRepositoryBrowserEndpoint)
                 .toString();
     }
 }

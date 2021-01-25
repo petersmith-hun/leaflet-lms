@@ -39,6 +39,9 @@ public class SystemConfigurationFacadeImplTest {
     private static final LogRequest LOG_REQUEST = new LogRequest();
     private static final LogEventPage LOG_EVENT_PAGE_RESPONSE = LogEventPage.getBuilder().build();
     private static final List<Container> EXISTING_CONTAINERS_RESPONSE = Collections.singletonList(Container.getBuilder().build());
+    private static final String REGISTRY_ID = "registry-1";
+    private static final String REPOSITORY_ID = "repository-1";
+    private static final String TAG = "1.0";
 
     @Mock
     private SEOConfigurationDCPAdapter seoConfigurationDCPAdapter;
@@ -109,6 +112,46 @@ public class SystemConfigurationFacadeImplTest {
 
         // then
         assertThat(result, equalTo(EXISTING_CONTAINERS_RESPONSE));
+    }
+
+    @Test
+    public void shouldGetConfiguredRegistries() {
+
+        // when
+        systemConfigurationFacade.getConfiguredRegistries();
+
+        // then
+        verify(stackAdminServiceClient).getConfiguredRegistries();
+    }
+
+    @Test
+    public void shouldGetDockerRepositories() {
+
+        // when
+        systemConfigurationFacade.getDockerRepositories(REGISTRY_ID);
+
+        // then
+        verify(stackAdminServiceClient).getDockerRepositories(REGISTRY_ID);
+    }
+
+    @Test
+    public void shouldGetDockerRepositoryDetails() {
+
+        // when
+        systemConfigurationFacade.getDockerRepositoryDetails(REGISTRY_ID, REPOSITORY_ID);
+
+        // then
+        verify(stackAdminServiceClient).getDockerRepositoryTags(REGISTRY_ID, REPOSITORY_ID);
+    }
+
+    @Test
+    public void shouldDeleteDockerImageByTag() {
+
+        // when
+        systemConfigurationFacade.deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
+
+        // then
+        verify(stackAdminServiceClient).deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
     }
 
     @Test

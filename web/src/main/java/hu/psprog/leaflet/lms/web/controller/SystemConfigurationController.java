@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,11 +32,13 @@ public class SystemConfigurationController extends BaseController {
     private static final String VIEW_SYSTEM_FAILOVER = "view/system/failover";
     private static final String VIEW_SYSTEM_LOGS = "view/system/logs";
     private static final String VIEW_SYSTEM_DOCKER = "view/system/docker";
+    private static final String VIEW_SYSTEM_DOCKER_REGISTRY_BROWSER = "view/system/docker_registry_browser";
 
     private static final String PATH_SEO = "/seo";
     private static final String PATH_FAILOVER = "/failover";
     private static final String PATH_LOGS = "/logs";
     private static final String PATH_DOCKER = "/docker";
+    private static final String PATH_DOCKER_REGISTRY = "/docker/registry";
 
     static final String PATH_SYSTEM = "/system";
     private static final String PATH_EDIT_SEO = PATH_SYSTEM + PATH_SEO;
@@ -109,6 +112,68 @@ public class SystemConfigurationController extends BaseController {
         return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER)
                 .withAttribute("existingContainers", systemConfigurationFacade.getExistingContainers())
                 .build();
+    }
+
+    /**
+     * Renders Docker Registry list page.
+     *
+     * @return populated {@link ModelAndView} object
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_DOCKER_REGISTRY)
+    public ModelAndView showConfiguredDockerRegistryList() {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER_REGISTRY_BROWSER)
+                .withAttribute("registries", systemConfigurationFacade.getConfiguredRegistries())
+                .build();
+    }
+
+    /**
+     * Renders the repository list page for the given Docker Registry.
+     *
+     * @param registryID ID of the registry to be listed
+     * @return populated {@link ModelAndView} object
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_DOCKER_REGISTRY, params = {"registry"})
+    public ModelAndView showRepositories(@RequestParam("registry") String registryID) {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER_REGISTRY_BROWSER)
+                .withAttribute("repositories", systemConfigurationFacade.getDockerRepositories(registryID))
+                .withAttribute("currentRegistry", registryID)
+                .build();
+    }
+
+    /**
+     * Renders the tag list page for the given Docker Registry and repository.
+     *
+     * @param registryID ID of the registry to be listed
+     * @param repositoryID ID of the repository to be listed
+     * @return populated {@link ModelAndView} object
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_DOCKER_REGISTRY, params = {"registry", "repository"})
+    public ModelAndView showRepositoryTags(@RequestParam("registry") String registryID, @RequestParam("repository") String repositoryID) {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER_REGISTRY_BROWSER)
+                .withAttribute("tags", systemConfigurationFacade.getDockerRepositoryDetails(registryID, repositoryID))
+                .withAttribute("currentRegistry", registryID)
+                .withAttribute("currentRepository", repositoryID)
+                .build();
+    }
+
+    /**
+     * Processes a Docker image deletion request.
+     *
+     * @param registryID ID of the registry to be managed
+     * @param repositoryID ID of the repository to be managed
+     * @param tag tag of the image to be deleted
+     * @return populated {@link ModelAndView} object for redirection back to the repository details page
+     */
+    @RequestMapping(method = RequestMethod.POST, path = PATH_DOCKER_REGISTRY, params = {"registry", "repository", "tag"})
+    public ModelAndView processImageDeletionByTag(@RequestParam("registry") String registryID, @RequestParam("repository") String repositoryID, @RequestParam("tag") String tag) {
+
+        systemConfigurationFacade.deleteDockerImageByTag(registryID, repositoryID, tag);
+        String redirectionPath = String.format("%s%s?registry=%s&repository=%s", PATH_SYSTEM, PATH_DOCKER_REGISTRY, registryID, repositoryID);
+
+        return modelAndViewFactory.createRedirectionTo(redirectionPath);
     }
 
     /**
