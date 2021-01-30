@@ -4,6 +4,8 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.failover.api.client.FailoverClient;
 import hu.psprog.leaflet.failover.api.domain.StatusResponse;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
+import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
+import hu.psprog.leaflet.lms.service.domain.system.DockerRepository;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link SystemConfigurationFacade}.
@@ -56,6 +59,26 @@ public class SystemConfigurationFacadeImpl implements SystemConfigurationFacade 
     @Override
     public List<Container> getExistingContainers() {
         return stackAdminServiceClient.getExistingContainers();
+    }
+
+    @Override
+    public Map<String, String> getConfiguredRegistries() {
+        return stackAdminServiceClient.getConfiguredRegistries();
+    }
+
+    @Override
+    public DockerRegistryContent getDockerRepositories(String registryID) {
+        return stackAdminServiceClient.getDockerRepositories(registryID);
+    }
+
+    @Override
+    public DockerRepository getDockerRepositoryDetails(String registryID, String repositoryID) {
+        return stackAdminServiceClient.getDockerRepositoryTags(registryID, repositoryID);
+    }
+
+    @Override
+    public void deleteDockerImageByTag(String registryID, String repositoryID, String tag) {
+        stackAdminServiceClient.deleteDockerImageByTag(registryID, repositoryID, tag);
     }
 
     @Override
