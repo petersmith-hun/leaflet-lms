@@ -1,7 +1,7 @@
 import Calmdown from 'calmdown/src/js/Calmdown';
 import TextareaEditor from "calmdown/src/js/TextareaEditor";
 
-const _RESOURCE_SERVER_URL_PATTERN = "{resource-server-url}"
+const _RESOURCE_SERVER_URL_PATTERN = /{resource-server-url}/g
 
 class Editor {
 
