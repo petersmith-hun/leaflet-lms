@@ -31,6 +31,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
     private static final long DOCUMENT_ID = 2L;
     private static final String DOCUMENT_VIEW_PATH = "/documents/view/" + DOCUMENT_ID;
     private static final String FIELD_DOCUMENT = "document";
+    private static final String FIELD_RESOURCE_SERVER_URL = "resourceServerUrl";
     private static final String PATH_DOCUMENTS = "/documents";
     private static final String PATH_DOCUMENTS_CREATE = PATH_DOCUMENTS + "/create";
 
@@ -61,7 +62,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         // then
         verify(documentFacade).getDocument(DOCUMENT_ID);
         verifyViewCreated(VIEW_DETAILS);
-        verifyFieldsSet(FIELD_DOCUMENT);
+        verifyFieldsSet(FIELD_DOCUMENT, FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test
@@ -72,6 +73,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
 
         // then
         verifyViewCreated(VIEW_EDIT_FORM);
+        verifyFieldsSet(FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class DocumentsControllerTest extends AbstractControllerTest {
         // then
         verify(documentFacade).getDocument(DOCUMENT_ID);
         verifyViewCreated(VIEW_EDIT_FORM);
-        verifyFieldsSet(FIELD_DOCUMENT);
+        verifyFieldsSet(FIELD_DOCUMENT, FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test

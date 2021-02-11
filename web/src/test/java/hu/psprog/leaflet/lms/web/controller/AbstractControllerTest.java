@@ -75,7 +75,7 @@ public abstract class AbstractControllerTest {
     Response response;
 
     @Mock
-    private ModelAndViewFactory modelAndViewFactory;
+    ModelAndViewFactory modelAndViewFactory;
 
     @Mock
     private ModelAndViewFactory.ModelAndViewWrapper modelAndViewWrapper;

@@ -5,6 +5,7 @@ import hu.psprog.leaflet.api.rest.request.document.DocumentUpdateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.DocumentFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,10 +38,13 @@ public class DocumentsController extends BaseController {
     private static final String LIST_PATH_REDIRECTION_PARAMETER = "list";
 
     private DocumentFacade documentFacade;
+    private String resourceServerUrl;
 
     @Autowired
-    public DocumentsController(DocumentFacade documentFacade) {
+    public DocumentsController(DocumentFacade documentFacade,
+                               @Value("${webapp.resource-server-url}") String resourceServerUrl) {
         this.documentFacade = documentFacade;
+        this.resourceServerUrl = resourceServerUrl;
     }
 
     /**
@@ -71,6 +75,7 @@ public class DocumentsController extends BaseController {
         return modelAndViewFactory
                 .createForView(VIEW_DOCUMENTS_DETAILS)
                 .withAttribute("document", documentFacade.getDocument(documentID))
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 
@@ -84,6 +89,7 @@ public class DocumentsController extends BaseController {
 
         return modelAndViewFactory
                 .createForView(VIEW_DOCUMENTS_EDIT_FORM)
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 
@@ -121,6 +127,7 @@ public class DocumentsController extends BaseController {
         return modelAndViewFactory
                 .createForView(VIEW_DOCUMENTS_EDIT_FORM)
                 .withAttribute("document", documentFacade.getDocument(documentID))
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 

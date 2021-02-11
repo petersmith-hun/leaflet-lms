@@ -41,6 +41,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_CATEGORY_SELECTOR = "categorySelector";
     private static final String FIELD_FILE_SELECTOR = "fileSelector";
     private static final String FIELD_ENTRY_DATA = "entryData";
+    private static final String FIELD_RESOURCE_SERVER_URL = "resourceServerUrl";
     private static final String PATH_ENTRIES = "/entries";
     private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
     private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
@@ -88,7 +89,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).getEntry(ENTRY_ID);
         verifyViewCreated(VIEW_DETAILS);
-        verifyFieldsSet(FIELD_ENTRY_DATA);
+        verifyFieldsSet(FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test
@@ -103,7 +104,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).fillForm();
         verifyViewCreated(VIEW_EDIT_FORM);
-        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR);
+        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test
@@ -150,7 +151,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).fillForm(ENTRY_ID);
         verifyViewCreated(VIEW_EDIT_FORM);
-        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_ENTRY_DATA);
+        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL);
     }
 
     @Test
