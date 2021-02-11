@@ -2,6 +2,13 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{_layout/default}">
+<head>
+    <script type="text/javascript" th:inline="javascript">
+		const calmdownEditorAdditionalConfig = {
+			resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
+		};
+    </script>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">

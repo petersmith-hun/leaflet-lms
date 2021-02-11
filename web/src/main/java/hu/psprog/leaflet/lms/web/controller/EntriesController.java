@@ -10,6 +10,7 @@ import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,11 +50,14 @@ public class EntriesController extends BaseController {
 
     private EntryFacade entryFacade;
     private EntryPaginationHelper paginationHelper;
+    private String resourceServerUrl;
 
     @Autowired
-    public EntriesController(EntryFacade entryFacade, EntryPaginationHelper paginationHelper) {
+    public EntriesController(EntryFacade entryFacade, EntryPaginationHelper paginationHelper,
+                             @Value("${webapp.resource-server-url}") String resourceServerUrl) {
         this.entryFacade = entryFacade;
         this.paginationHelper = paginationHelper;
+        this.resourceServerUrl = resourceServerUrl;
     }
 
     /**
@@ -98,6 +102,7 @@ public class EntriesController extends BaseController {
 
         return modelAndViewFactory.createForView(VIEW_ENTRY_DETAILS)
                 .withAttribute("entryData", response)
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 
@@ -116,6 +121,7 @@ public class EntriesController extends BaseController {
                 .withAttribute("tagSelector", response.getExistingTags())
                 .withAttribute("categorySelector", response.getExistingCategories())
                 .withAttribute("fileSelector", response.getExistingFiles())
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 
@@ -160,6 +166,7 @@ public class EntriesController extends BaseController {
                 .withAttribute("categorySelector", response.getExistingCategories())
                 .withAttribute("fileSelector", response.getExistingFiles())
                 .withAttribute("entryData", response.getEntryData())
+                .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
 
