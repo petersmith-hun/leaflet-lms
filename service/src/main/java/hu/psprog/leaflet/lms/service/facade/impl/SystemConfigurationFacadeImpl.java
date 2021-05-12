@@ -85,4 +85,9 @@ public class SystemConfigurationFacadeImpl implements SystemConfigurationFacade 
     public LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException {
         return tlpClient.getLogs(logRequest);
     }
+
+    @Override
+    public LogEventPage getLogs(String logRequest) throws CommunicationFailureException {
+        return tlpClient.getLogs(logRequest);
+    }
 }
