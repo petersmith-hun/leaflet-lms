@@ -85,101 +85,122 @@
             <h1>Log management</h1>
         </section>
         <section class="content" style="min-height: auto;">
-            <form method="get" th:action="@{''}">
-                <input type="hidden" name="queried" value="true" />
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-default collapsed-box" th:class="${#request.getParameter('queried') == null ? 'box box-default' : 'box box-default collapsed-box'}">
-                            <div class="box-header">
-                                <h3 class="box-title">Search controls</h3>
-                                <div class="box-tools pull-right">
-                                    <button class="btn btn-box-tool" type="button" data-widget="collapse">
-                                        <i class="fa fa-plus" th:class="${#request.getParameter('queried') == null ? 'fa fa-minus' : 'fa fa-plus'}"></i>
-                                    </button>
-                                </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-default collapsed-box" th:class="${#request.getParameter('queried') == null ? 'box box-default' : 'box box-default collapsed-box'}">
+                        <div class="box-header">
+                            <h3 class="box-title">Search controls</h3>
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" type="button" data-widget="collapse">
+                                    <i class="fa fa-plus" th:class="${#request.getParameter('queried') == null ? 'fa fa-minus' : 'fa fa-plus'}"></i>
+                                </button>
                             </div>
-                            <div class="box-body">
-                                <div class="row">
-                                    <div class="col-sm-4 form-group">
-                                        <label for="limit">Limit</label>
-                                        <select class="form-control" id="limit" name="limit" th:with="limitList = ${ {'10', '20', '50', '100'} }">
-                                            <option th:each="limitOption : ${limitList}"
-                                                    th:selected="${(#request.getParameter('limit') != null and #request.getParameter('limit') == limitOption)
-                                                                or (#request.getParameter('limit') == null and limitOption == '20')}"
-                                                    th:value="${limitOption}"
-                                                    th:text="${limitOption}">
-                                            </option>
-                                        </select>
+                        </div>
+                        <div class="box-body">
+                            <form method="get" th:action="@{''}">
+                                <fieldset class="form-group">
+                                    <input type="hidden" name="queried" value="true" />
+                                    <div class="row">
+                                        <legend class="col-form-label col-sm-12 pt-0">TLP v1 / Legacy</legend>
+                                        <div class="col-sm-4 form-group">
+                                            <label for="limit">Limit</label>
+                                            <select class="form-control" id="limit" name="limit" th:with="limitList = ${ {'10', '20', '50', '100'} }">
+                                                <option th:each="limitOption : ${limitList}"
+                                                        th:selected="${(#request.getParameter('limit') != null and #request.getParameter('limit') == limitOption)
+                                                                    or (#request.getParameter('limit') == null and limitOption == '20')}"
+                                                        th:value="${limitOption}"
+                                                        th:text="${limitOption}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4 form-group">
+                                            <label for="orderBy">Order by</label>
+                                            <select class="form-control" id="orderBy" name="orderBy">
+                                                <option th:each="by : ${orderByOptions}"
+                                                        th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).valueOf(#request.getParameter('orderBy')))
+                                                                    or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).TIMESTAMP)}"
+                                                        th:value="${by}"
+                                                        th:text="${by}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4 form-group">
+                                            <label for="orderDirection">Order direction</label>
+                                            <select class="form-control" id="orderDirection" name="orderDirection">
+                                                <option th:each="direction : ${orderDirectionOptions}"
+                                                        th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).valueOf(#request.getParameter('orderDirection')))
+                                                                    or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).DESC)}"
+                                                        th:value="${direction}"
+                                                        th:text="${direction}">
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-4 form-group">
-                                        <label for="orderBy">Order by</label>
-                                        <select class="form-control" id="orderBy" name="orderBy">
-                                            <option th:each="by : ${orderByOptions}"
-                                                    th:selected="${(#request.getParameter('orderBy') != null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).valueOf(#request.getParameter('orderBy')))
-                                                                or (#request.getParameter('orderBy') == null and by == T(hu.psprog.leaflet.tlp.api.domain.OrderBy).TIMESTAMP)}"
-                                                    th:value="${by}"
-                                                    th:text="${by}">
-                                            </option>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-sm-3 form-group">
+                                            <label for="source">Source application</label>
+                                            <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa', 'domino'} }">
+                                                <option th:each="sourceOption : ${sourceList}"
+                                                        th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
+                                                        th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
+                                                        th:text="${sourceOption}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3 form-group">
+                                            <label for="level">Level</label>
+                                            <select class="form-control" id="level" name="level" th:with="levelList = ${ {'any', 'trace', 'debug', 'info', 'warn', 'error'} }">
+                                                <option th:each="levelOption : ${levelList}"
+                                                        th:selected="${#request.getParameter('level') != null and #request.getParameter('level') == levelOption}"
+                                                        th:value="${levelOption == 'any'} ? null : ${levelOption}"
+                                                        th:text="${levelOption}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3 form-group">
+                                            <label for="from">From date</label>
+                                            <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="from" name="from" placeholder="From date" th:value="${#request.getParameter('from')}" />
+                                        </div>
+                                        <div class="col-sm-3 form-group">
+                                            <label for="to">By date</label>
+                                            <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="to" name="to" placeholder="By date" th:value="${#request.getParameter('to')}" />
+                                        </div>
                                     </div>
-                                    <div class="col-sm-4 form-group">
-                                        <label for="orderDirection">Order direction</label>
-                                        <select class="form-control" id="orderDirection" name="orderDirection">
-                                            <option th:each="direction : ${orderDirectionOptions}"
-                                                    th:selected="${(#request.getParameter('orderDirection') != null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).valueOf(#request.getParameter('orderDirection')))
-                                                                or (#request.getParameter('orderDirection') == null and direction == T(hu.psprog.leaflet.tlp.api.domain.OrderDirection).DESC)}"
-                                                    th:value="${direction}"
-                                                    th:text="${direction}">
-                                            </option>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-sm-12 form-group">
+                                            <label for="content">Content</label>
+                                            <input class="form-control" type="text" id="content" name="content" placeholder="Content" th:value="${#request.getParameter('content')}" />
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-3 form-group">
-                                        <label for="source">Source application</label>
-                                        <select class="form-control" id="source" name="source" th:with="sourceList = ${ {'any', 'leaflet', 'lms', 'cbfs', 'lcfa', 'domino'} }">
-                                            <option th:each="sourceOption : ${sourceList}"
-                                                    th:selected="${#request.getParameter('source') != null and #request.getParameter('source') == sourceOption}"
-                                                    th:value="${sourceOption == 'any'} ? null : ${sourceOption}"
-                                                    th:text="${sourceOption}">
-                                            </option>
-                                        </select>
+                                    <div class="row">
+                                        <div class="col-sm-12 form-group">
+                                            <button class="btn btn-primary">Query logs</button>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3 form-group">
-                                        <label for="level">Level</label>
-                                        <select class="form-control" id="level" name="level" th:with="levelList = ${ {'any', 'trace', 'debug', 'info', 'warn', 'error'} }">
-                                            <option th:each="levelOption : ${levelList}"
-                                                    th:selected="${#request.getParameter('level') != null and #request.getParameter('level') == levelOption}"
-                                                    th:value="${levelOption == 'any'} ? null : ${levelOption}"
-                                                    th:text="${levelOption}">
-                                            </option>
-                                        </select>
+                                </fieldset>
+                            </form>
+                            <form method="get" th:action="@{''}">
+                                <fieldset class="form-group">
+                                    <input type="hidden" name="queried" value="true" />
+                                    <input type="hidden" name="api" value="V2" />
+                                    <div class="row">
+                                        <legend class="col-form-label col-sm-12 pt-0">TLP v2 / TLQL</legend>
+                                        <div class="col-sm-12 form-group">
+                                            <label for="query">Query</label>
+                                            <textarea class="form-control" id="query" name="query" placeholder="Query" required="required" th:text="${#request.getParameter('query')}"></textarea>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3 form-group">
-                                        <label for="from">From date</label>
-                                        <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="from" name="from" placeholder="From date" th:value="${#request.getParameter('from')}" />
+                                    <div class="row">
+                                        <div class="col-sm-12 form-group">
+                                            <button class="btn btn-primary">Query logs</button>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-3 form-group">
-                                        <label for="to">By date</label>
-                                        <input class="form-control" type="date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" id="to" name="to" placeholder="By date" th:value="${#request.getParameter('to')}" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12 form-group">
-                                        <label for="content">Content</label>
-                                        <input class="form-control" type="text" id="content" name="content" placeholder="Content" th:value="${#request.getParameter('content')}" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12 form-group">
-                                        <button class="btn btn-primary">Query logs</button>
-                                    </div>
-                                </div>
-                            </div>
+                                </fieldset>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </section>
         <th:block th:if="${logs != null}">
             <section class="content-header">
@@ -241,7 +262,7 @@
                     <div class="col-md-12">
                         <div class="card-footer text-xs-center">
                             <ul class="pagination pagination-sm m-0"
-                                    th:if="${logs.pageCount > 1}"
+                                    th:if="${pagination != null and logs.pageCount > 1}"
                                     th:with="currentPage=${T(Integer).parseInt(#request.getParameter('page') ?: '1')},
                                              startPage=${currentPage > logs.pageCount ? 1 : T(Math).max(1, currentPage - 6)},
                                              endPage=${T(Math).min(logs.pageCount, startPage + 7)}">

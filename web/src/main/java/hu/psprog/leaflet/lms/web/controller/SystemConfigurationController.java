@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 /**
  * System configuration management controller for LMS.
@@ -177,7 +178,7 @@ public class SystemConfigurationController extends BaseController {
     }
 
     /**
-     * Shows log filter form.
+     * Shows log filter form for TLP v1 requests.
      * If a query has already been sent via the form, applicable logs will be retrieved and listed.
      *
      * @param logRequest paging and filtering parameters (from query parameters) collected as {@link LogRequest} object
@@ -196,9 +197,33 @@ public class SystemConfigurationController extends BaseController {
                 .build();
     }
 
+    /**
+     * Shows log filter form for TLP v2 requests.
+     * If a query has already been sent via the form, applicable logs will be retrieved and listed.
+     *
+     * @param logRequest TLQL log request string
+     * @return populated {@link ModelAndView} object
+     * @throws CommunicationFailureException on communication failure with TLP
+     */
+    @RequestMapping(method = RequestMethod.GET, path = PATH_LOGS, params = "api=V2")
+    public ModelAndView showRetrievedLogs(@RequestParam("query") Optional<String> logRequest) throws CommunicationFailureException {
+
+        return modelAndViewFactory.createForView(VIEW_SYSTEM_LOGS)
+                .withAttribute("orderByOptions", OrderBy.values())
+                .withAttribute("orderDirectionOptions", OrderDirection.values())
+                .withAttribute("logs", getLogs(logRequest))
+                .build();
+    }
+
     private LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException {
         return logRequest.isQueried()
                 ? systemConfigurationFacade.getLogs(logRequest)
+                : null;
+    }
+
+    private LogEventPage getLogs(Optional<String> logRequest) throws CommunicationFailureException {
+        return logRequest.isPresent()
+                ? systemConfigurationFacade.getLogs(logRequest.get())
                 : null;
     }
 }

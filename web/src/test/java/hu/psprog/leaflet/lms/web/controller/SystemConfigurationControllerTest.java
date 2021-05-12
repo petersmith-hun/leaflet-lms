@@ -14,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Optional;
+
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -50,6 +52,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String REGISTRY_ID = "registry-1";
     private static final String REPOSITORY_ID = "repository-1";
     private static final String TAG = "1.0";
+    private static final String TLQL_LOG_QUERY = "search with conditions";
 
     @Mock
     private SystemConfigurationFacade systemConfigurationFacade;
@@ -123,6 +126,18 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
         // then
         verifyViewCreated(VIEW_LOGS);
+        verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS, FIELD_PAGINATION);
+        verifyZeroInteractions(systemConfigurationFacade);
+    }
+
+    @Test
+    public void shouldShowLogQueryFormV2() throws CommunicationFailureException {
+
+        // when
+        systemConfigurationController.showRetrievedLogs(Optional.empty());
+
+        // then
+        verifyViewCreated(VIEW_LOGS);
         verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS);
         verifyZeroInteractions(systemConfigurationFacade);
     }
@@ -142,6 +157,18 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS, FIELD_PAGINATION);
         verify(systemConfigurationFacade).getLogs(logRequest);
         verify(logViewerPaginationHelper).extractPaginationAttributes(request);
+    }
+
+    @Test
+    public void shouldShowLogQueryFormV2WithRetrievedLogs() throws CommunicationFailureException {
+
+        // when
+        systemConfigurationController.showRetrievedLogs(Optional.of(TLQL_LOG_QUERY));
+
+        // then
+        verifyViewCreated(VIEW_LOGS);
+        verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS);
+        verify(systemConfigurationFacade).getLogs(TLQL_LOG_QUERY);
     }
 
     @Test

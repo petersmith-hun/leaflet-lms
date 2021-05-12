@@ -92,4 +92,13 @@ public interface SystemConfigurationFacade {
      * @throws CommunicationFailureException if LMS fails to reach TLP
      */
     LogEventPage getLogs(LogRequest logRequest) throws CommunicationFailureException;
+
+    /**
+     * Calls TLP v2 logs endpoint for retrieving stored logs.
+     *
+     * @param logRequest TLQL log query string
+     * @return response of TLP application containing paged list of logs
+     * @throws CommunicationFailureException if LMS fails to reach TLP
+     */
+    LogEventPage getLogs(String logRequest) throws CommunicationFailureException;
 }

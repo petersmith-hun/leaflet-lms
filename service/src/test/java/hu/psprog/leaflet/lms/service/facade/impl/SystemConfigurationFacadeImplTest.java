@@ -37,6 +37,7 @@ public class SystemConfigurationFacadeImplTest {
             .withStatus(FailoverStatus.STANDBY)
             .build();
     private static final LogRequest LOG_REQUEST = new LogRequest();
+    private static final String TLQL_LOG_REQUEST = "search with conditions source='leaflet'";
     private static final LogEventPage LOG_EVENT_PAGE_RESPONSE = LogEventPage.getBuilder().build();
     private static final List<Container> EXISTING_CONTAINERS_RESPONSE = Collections.singletonList(Container.getBuilder().build());
     private static final String REGISTRY_ID = "registry-1";
@@ -162,6 +163,19 @@ public class SystemConfigurationFacadeImplTest {
 
         // when
         LogEventPage result = systemConfigurationFacade.getLogs(LOG_REQUEST);
+
+        // then
+        assertThat(result, equalTo(LOG_EVENT_PAGE_RESPONSE));
+    }
+
+    @Test
+    public void shouldGetLogsV2() throws CommunicationFailureException {
+
+        // given
+        given(tlpClient.getLogs(TLQL_LOG_REQUEST)).willReturn(LOG_EVENT_PAGE_RESPONSE);
+
+        // when
+        LogEventPage result = systemConfigurationFacade.getLogs(TLQL_LOG_REQUEST);
 
         // then
         assertThat(result, equalTo(LOG_EVENT_PAGE_RESPONSE));
