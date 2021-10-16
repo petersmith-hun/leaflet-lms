@@ -5,7 +5,7 @@
     <parent>
         <artifactId>lms</artifactId>
         <groupId>hu.psprog.leaflet</groupId>
-        <version>1.5.0-dev</version>
+        <version>1.6.0-dev</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -74,7 +74,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
                 <configuration>
                     <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9992</jvmArguments>
                     <arguments>

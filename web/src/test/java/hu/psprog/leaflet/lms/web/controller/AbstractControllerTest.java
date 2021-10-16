@@ -3,9 +3,8 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageListResponse;
 import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageResponse;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -65,28 +64,27 @@ public abstract class AbstractControllerTest {
         VALIDATION_RESULTS_MAP.put(INVALID_FIELD_NAME, INVALID_FIELD_VIOLATION);
     }
 
-    @Mock
+    @Mock(lenient = true)
     HttpServletRequest request;
 
-    @Mock
+    @Mock(lenient = true)
     RedirectAttributes redirectAttributes;
 
-    @Mock
+    @Mock(lenient = true)
     Response response;
 
-    @Mock
+    @Mock(lenient = true)
     ModelAndViewFactory modelAndViewFactory;
 
-    @Mock
+    @Mock(lenient = true)
     private ModelAndViewFactory.ModelAndViewWrapper modelAndViewWrapper;
 
-    @Mock
+    @Mock(lenient = true)
     private ModelAndView modelAndView;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         given(modelAndViewFactory.createForView(anyString())).willReturn(modelAndViewWrapper);
         given(modelAndViewFactory.createRedirectionTo(anyString())).willReturn(modelAndView);
         given(modelAndViewWrapper.withAttribute(anyString(), nullable(Object.class))).willReturn(modelAndViewWrapper);

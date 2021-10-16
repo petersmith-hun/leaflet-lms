@@ -18,14 +18,13 @@ import hu.psprog.leaflet.lms.service.facade.AttachmentFacade;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.TagFacade;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
 
 import java.util.Collections;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EntryFacadeImplTest {
 
     private static final long ENTRY_ID = 1L;
@@ -74,11 +73,6 @@ public class EntryFacadeImplTest {
     @InjectMocks
     private EntryFacadeImpl entryFacade;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
-
     @Test
     public void shouldGetEntries() throws CommunicationFailureException {
 
@@ -109,8 +103,8 @@ public class EntryFacadeImplTest {
         assertThat(result, equalTo(response));
     }
 
-    @Test
-    @Parameters({"true", "false"})
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
     public void shouldFillForm(boolean withEntryData) throws CommunicationFailureException {
 
         // given

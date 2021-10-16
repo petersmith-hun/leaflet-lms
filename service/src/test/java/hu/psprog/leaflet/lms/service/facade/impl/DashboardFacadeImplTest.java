@@ -3,11 +3,11 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 import hu.psprog.leaflet.lms.service.config.StackStatusConfigModel;
 import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
 import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,14 +16,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
  * Unit tests for {@link DashboardFacadeImpl}.
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DashboardFacadeImplTest {
 
     private static final List<String> REGISTERED_SERVICES = Arrays.asList("SVC1", "SVC2", "SVC3");
@@ -76,6 +76,6 @@ public class DashboardFacadeImplTest {
 
         // then
         assertThat(result, equalTo(Collections.emptyList()));
-        verifyZeroInteractions(stackAdminServiceClient);
+        verifyNoInteractions(stackAdminServiceClient);
     }
 }

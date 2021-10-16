@@ -1,10 +1,11 @@
 package hu.psprog.leaflet.lms.service.extraction;
 
 import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommonExtractorTest {
 
     private static final String PATH_IDENTIFIER = "dc63ced6-bf36-34da-ad3a-519c0041c316";
@@ -54,14 +55,14 @@ public class CommonExtractorTest {
         assertThat(result, equalTo(UUID.fromString(PATH_IDENTIFIER)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldThrowIllegalArgumentExceptionWithNonWellFormedReferenceString() {
 
         // given
         String reference = prepareReference(false);
 
         // when
-        commonExtractor.extractPathUUIDFromReference(reference);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> commonExtractor.extractPathUUIDFromReference(reference));
 
         // then
         // exception expected

@@ -6,22 +6,22 @@ import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
 import hu.psprog.leaflet.api.rest.response.file.FileListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.FileBridgeService;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,7 +33,7 @@ import static org.mockito.BDDMockito.given;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileBrowserTest {
 
     private static final String REFERENCE_PATTERN = "/%s/image.jpg";
@@ -48,12 +48,15 @@ public class FileBrowserTest {
     private static final String ROOT_OTHERS = "others";
     private static final String SUB_1 = "sub1";
     private static final String SUB_2 = "sub2";
+    private static final String SUB_3 = "sub3";
+    private static final String SUB_4 = "sub4";
+    private static final String SUB_5 = "sub5";
     private static final String SUB1_SUB3 = "sub1/sub3";
     private static final String SUB1_SUB4 = "sub1/sub4";
     private static final String SUB2_SUB5= "sub2/sub5";
     private static final String SUB2_SUB5_SUB6 = "sub2/sub5/sub6";
 
-    @Mock
+    @Mock(lenient = true)
     private FileBridgeService fileBridgeService;
 
     @Spy
@@ -62,13 +65,8 @@ public class FileBrowserTest {
     @InjectMocks
     private FileBrowser fileBrowser;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
-
-    @Test
-    @Parameters(source = FileBrowserParameterProvider.class, method = "forFiles")
+    @ParameterizedTest
+    @MethodSource("filesDataProvider")
     public void shouldGetFilesUnderPath(String path, List<String> expectedFiles) throws CommunicationFailureException {
 
         // given
@@ -82,8 +80,8 @@ public class FileBrowserTest {
         assertThat(result.stream().map(FileDataModel::getPath).collect(Collectors.toList()).containsAll(expectedFiles), is(true));
     }
 
-    @Test
-    @Parameters(source = FileBrowserParameterProvider.class, method = "forFolders")
+    @ParameterizedTest
+    @MethodSource("foldersDataProvider")
     public void shouldGetFoldersUnderPath(String path, List<String> expectedFolders) throws CommunicationFailureException {
 
         // given
@@ -130,37 +128,32 @@ public class FileBrowserTest {
                 .build();
     }
 
-    public static class FileBrowserParameterProvider {
+    private static Stream<Arguments> filesDataProvider() {
+        
+        return Stream.of(
+                Arguments.of("images", Arrays.asList(IMAGES_IMAGE2_JPG, IMAGES_IMAGE3_JPG)),
+                Arguments.of("images/part1", Arrays.asList(IMAGES_PART1_IMAGE1_JPG, IMAGES_PART1_IMAGE4_JPG, IMAGES_PART1_IMAGE5_JPG, IMAGES_PART1_IMAGE6_JPG)),
+                Arguments.of("images/part2", Collections.singletonList(IMAGES_PART2_IMAGE7_JPG)),
+                Arguments.of("/images/", Arrays.asList(IMAGES_IMAGE2_JPG, IMAGES_IMAGE3_JPG)),
+                Arguments.of(StringUtils.EMPTY, Collections.emptyList()),
+                Arguments.of("/non/existing/path", Collections.emptyList()),
+                Arguments.of(null, Collections.emptyList())
+        );
+    }
 
-        private static final String SUB_3 = "sub3";
-        private static final String SUB_4 = "sub4";
-        private static final String SUB_5 = "sub5";
-
-        public static Object[] forFiles() {
-            return new Object[] {
-                    new Object[] {"images", Arrays.asList(IMAGES_IMAGE2_JPG, IMAGES_IMAGE3_JPG)},
-                    new Object[] {"images/part1", Arrays.asList(IMAGES_PART1_IMAGE1_JPG, IMAGES_PART1_IMAGE4_JPG, IMAGES_PART1_IMAGE5_JPG, IMAGES_PART1_IMAGE6_JPG)},
-                    new Object[] {"images/part2", Collections.singletonList(IMAGES_PART2_IMAGE7_JPG)},
-                    new Object[] {"/images/", Arrays.asList(IMAGES_IMAGE2_JPG, IMAGES_IMAGE3_JPG)},
-                    new Object[] {StringUtils.EMPTY, Collections.emptyList()},
-                    new Object[] {"/non/existing/path", Collections.emptyList()},
-                    new Object[] {null, Collections.emptyList()}
-            };
-        }
-
-        public static Object[] forFolders() {
-            return new Object[] {
-                    new Object[] {null, Arrays.asList(ROOT_IMAGES, ROOT_OTHERS)},
-                    new Object[] {StringUtils.EMPTY, Arrays.asList(ROOT_IMAGES, ROOT_OTHERS)},
-                    new Object[] {ROOT_IMAGES, Arrays.asList(SUB_1, SUB_2)},
-                    new Object[] {"/" + ROOT_IMAGES + "/", Arrays.asList(SUB_1, SUB_2)},
-                    new Object[] {ROOT_IMAGES + "/" + SUB_1, Arrays.asList(SUB_3, SUB_4)},
-                    new Object[] {ROOT_OTHERS + "/" + SUB_2, Collections.singletonList(SUB_5)},
-                    new Object[] {"/" + ROOT_OTHERS + "/" + SUB_2 + "/", Collections.singletonList(SUB_5)},
-                    new Object[] {ROOT_OTHERS + "/" + SUB2_SUB5_SUB6, Collections.emptyList()},
-                    new Object[] {"non-existing-root", Collections.emptyList()},
-                    new Object[] {"non-existing-root/non-existing-sub", Collections.emptyList()},
-            };
-        }
+    private static Stream<Arguments> foldersDataProvider() {
+        
+        return Stream.of(
+                Arguments.of(null, Arrays.asList(ROOT_IMAGES, ROOT_OTHERS)),
+                Arguments.of(StringUtils.EMPTY, Arrays.asList(ROOT_IMAGES, ROOT_OTHERS)),
+                Arguments.of(ROOT_IMAGES, Arrays.asList(SUB_1, SUB_2)),
+                Arguments.of("/" + ROOT_IMAGES + "/", Arrays.asList(SUB_1, SUB_2)),
+                Arguments.of(ROOT_IMAGES + "/" + SUB_1, Arrays.asList(SUB_3, SUB_4)),
+                Arguments.of(ROOT_OTHERS + "/" + SUB_2, Collections.singletonList(SUB_5)),
+                Arguments.of("/" + ROOT_OTHERS + "/" + SUB_2 + "/", Collections.singletonList(SUB_5)),
+                Arguments.of(ROOT_OTHERS + "/" + SUB2_SUB5_SUB6, Collections.emptyList()),
+                Arguments.of("non-existing-root", Collections.emptyList()),
+                Arguments.of("non-existing-root/non-existing-sub", Collections.emptyList())
+        );
     }
 }

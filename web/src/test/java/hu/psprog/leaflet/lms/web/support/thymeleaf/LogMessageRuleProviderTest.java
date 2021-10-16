@@ -1,11 +1,14 @@
 package hu.psprog.leaflet.lms.web.support.thymeleaf;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,18 +18,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogMessageRuleProviderTest {
 
+    @InjectMocks
     private LogMessageRuleProvider logMessageRuleProvider;
 
-    @Before
-    public void setup() {
-        logMessageRuleProvider = new LogMessageRuleProvider();
-    }
-
-    @Test
-    @Parameters(source = LogMessageRuleProviderDataSource.class)
+    @ParameterizedTest
+    @MethodSource("logMessageRuleProviderDataProvider")
     public void shouldGetRuleReturnRuleName(String logLevel, String expectedRuleName) {
 
         // when
@@ -36,20 +35,18 @@ public class LogMessageRuleProviderTest {
         assertThat(result, equalTo(expectedRuleName));
     }
 
-    public static class LogMessageRuleProviderDataSource {
+    private static Stream<Arguments> logMessageRuleProviderDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {"ERROR", "box box-danger"},
-                    new Object[] {"error", "box box-danger"},
-                    new Object[] {"WARN", "box box-warning"},
-                    new Object[] {"warn", "box box-warning"},
-                    new Object[] {"INFO", "box box-success"},
-                    new Object[] {"info", "box box-success"},
-                    new Object[] {"anything-else", "box box-default"},
-                    new Object[] {StringUtils.EMPTY, "box box-default"},
-                    new Object[] {null, "box box-default"},
-            };
-        }
+        return Stream.of(
+                Arguments.of("ERROR", "box box-danger"),
+                Arguments.of("error", "box box-danger"),
+                Arguments.of("WARN", "box box-warning"),
+                Arguments.of("warn", "box box-warning"),
+                Arguments.of("INFO", "box box-success"),
+                Arguments.of("info", "box box-success"),
+                Arguments.of("anything-else", "box box-default"),
+                Arguments.of(StringUtils.EMPTY, "box box-default"),
+                Arguments.of(null, "box box-default")
+        );
     }
 }

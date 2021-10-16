@@ -6,11 +6,11 @@ import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StackAdminServiceClientImplTest {
 
     private static final RegisteredServices REGISTERED_SERVICES = new RegisteredServices(Arrays.asList("SVC1", "SVC2", "SVC3"));

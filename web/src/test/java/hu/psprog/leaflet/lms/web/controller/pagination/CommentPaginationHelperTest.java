@@ -1,13 +1,16 @@
 package hu.psprog.leaflet.lms.web.controller.pagination;
 
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_BY;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -18,14 +21,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * 
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommentPaginationHelperTest extends PaginationHelperBaseTest {
 
     @InjectMocks
     private CommentPaginationHelper commentPaginationHelper;
 
-    @Test
-    @Parameters(source = OrderByMappingParameterProvider.class, method = "fromOptional")
+    @ParameterizedTest
+    @MethodSource("fromOptionalDataProvider")
     public void shouldMapOrderByFromOptional(Optional<String> orderBy, OrderBy.Comment expected) {
 
         // when
@@ -35,8 +38,8 @@ public class CommentPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = OrderByMappingParameterProvider.class, method = "fromHttpServletRequest")
+    @ParameterizedTest
+    @MethodSource("fromHttpServletRequestDataProvider")
     public void shouldMapOrderByFromHttpServletRequest(String orderBy, OrderBy.Comment expected) {
 
         // given
@@ -62,27 +65,26 @@ public class CommentPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(DEFAULT_ORDER_BY));
     }
 
-    public static class OrderByMappingParameterProvider {
+    private static Stream<Arguments> fromOptionalDataProvider() {
+        
+        return Stream.of(
+                Arguments.of(Optional.of("id"), OrderBy.Comment.ID),
+                Arguments.of(Optional.of("ID"), OrderBy.Comment.ID),
+                Arguments.of(Optional.of("CREATED"), OrderBy.Comment.CREATED),
+                Arguments.of(Optional.of("non-existing"), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(Optional.empty(), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(Optional.ofNullable(null), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY))
+        );
+    }
 
-        public static Object[] fromOptional() {
-            return new Object[] {
-                    new Object[] {Optional.of("id"), OrderBy.Comment.ID},
-                    new Object[] {Optional.of("ID"), OrderBy.Comment.ID},
-                    new Object[] {Optional.of("CREATED"), OrderBy.Comment.CREATED},
-                    new Object[] {Optional.of("non-existing"), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {Optional.empty(), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {Optional.ofNullable(null), OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)},
-            };
-        }
+    private static Stream<Arguments> fromHttpServletRequestDataProvider() {
 
-        public static Object[] fromHttpServletRequest() {
-            return new Object[] {
-                    new Object[] {"id", OrderBy.Comment.ID},
-                    new Object[] {"ID", OrderBy.Comment.ID},
-                    new Object[] {"CREATED", OrderBy.Comment.CREATED},
-                    new Object[] {"non-existing", OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {null, OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)}
-            };
-        }
+        return Stream.of(
+                Arguments.of("id", OrderBy.Comment.ID),
+                Arguments.of("ID", OrderBy.Comment.ID),
+                Arguments.of("CREATED", OrderBy.Comment.CREATED),
+                Arguments.of("non-existing", OrderBy.Comment.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(null, OrderBy.Comment.valueOf(DEFAULT_ORDER_BY))
+        );
     }
 }
