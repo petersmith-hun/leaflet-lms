@@ -12,20 +12,21 @@ import hu.psprog.leaflet.bridge.service.FileBridgeService;
 import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.FileBrowser;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,14 +36,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
  * Unit tests for {@link FileFacadeImpl}.
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FileFacadeImplTest {
 
     private static final String REFERENCE = "file-ref-1";
@@ -69,11 +70,6 @@ public class FileFacadeImplTest {
 
     @InjectMocks
     private FileFacadeImpl fileFacade;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void shouldGetUploadedFiles() throws CommunicationFailureException {
@@ -159,8 +155,8 @@ public class FileFacadeImplTest {
         assertThat(result.getReference(), equalTo(REFERENCE));
     }
 
-    @Test
-    @Parameters(source = AcceptableMimeTypesParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("acceptableMimeTypesDataProvider")
     public void shouldGetAcceptanceMimeTypes(String path, List<String> expectedMimeTypes) throws CommunicationFailureException {
 
         // given
@@ -201,7 +197,7 @@ public class FileFacadeImplTest {
 
         // then
         assertThat(result, nullValue());
-        verifyZeroInteractions(urlUtilities);
+        verifyNoInteractions(urlUtilities);
     }
 
     @Test
@@ -264,15 +260,13 @@ public class FileFacadeImplTest {
         return rootType + "/" + subType;
     }
 
-    public static class AcceptableMimeTypesParameterProvider {
-
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {IMAGES_ROOT, Arrays.asList(FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG)},
-                    new Object[] {OTHERS_ROOT, Arrays.asList(FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR)},
-                    new Object[] {IMAGES_ROOT + "/sub1", Arrays.asList(FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG)},
-                    new Object[] {OTHERS_ROOT + "/sub2/sub3", Arrays.asList(FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR)}
-            };
-        }
+    private static Stream<Arguments> acceptableMimeTypesDataProvider() {
+        
+        return Stream.of(
+                Arguments.of(IMAGES_ROOT, Arrays.asList(FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG)),
+                Arguments.of(OTHERS_ROOT, Arrays.asList(FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR)),
+                Arguments.of(IMAGES_ROOT + "/sub1", Arrays.asList(FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG)),
+                Arguments.of(OTHERS_ROOT + "/sub2/sub3", Arrays.asList(FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR))
+        );
     }
 }

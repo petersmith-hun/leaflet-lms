@@ -6,26 +6,30 @@ import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.LogViewerPaginationHelper;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Optional;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
  * Unit tests for {@link SystemConfigurationController}.
  *
  * @author Peter Smith
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@Extensions({
+        @ExtendWith(MockitoExtension.class),
+        @ExtendWith(SpringExtension.class)
+})
 public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
     private static final String SYSTEM = "system";
@@ -127,7 +131,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         // then
         verifyViewCreated(VIEW_LOGS);
         verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS, FIELD_PAGINATION);
-        verifyZeroInteractions(systemConfigurationFacade);
+        verifyNoInteractions(systemConfigurationFacade);
     }
 
     @Test
@@ -139,7 +143,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
         // then
         verifyViewCreated(VIEW_LOGS);
         verifyFieldsSet(FIELD_ORDER_BY_OPTIONS, FIELD_ORDER_DIRECTION_OPTIONS, FIELD_LOGS);
-        verifyZeroInteractions(systemConfigurationFacade);
+        verifyNoInteractions(systemConfigurationFacade);
     }
 
     @Test

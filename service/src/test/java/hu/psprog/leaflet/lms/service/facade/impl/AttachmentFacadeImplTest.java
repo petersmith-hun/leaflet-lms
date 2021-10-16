@@ -8,12 +8,11 @@ import hu.psprog.leaflet.bridge.service.AttachmentBridgeService;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import hu.psprog.leaflet.lms.service.extraction.CommonExtractor;
 import hu.psprog.leaflet.lms.service.util.EntityConnectionDifferenceCalculator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AttachmentFacadeImplTest {
 
     private static final UUID PATH_UUID_TO_ATTACH = UUID.randomUUID();
@@ -57,17 +56,12 @@ public class AttachmentFacadeImplTest {
     @InjectMocks
     private AttachmentFacadeImpl attachmentFacade;
 
-    @Before
-    public void setup() {
-
-        given(calculator.createContextFor(eq(MODIFY_ENTRY_REQUEST.getAttachments()), eq(EDIT_ENTRY_DATA_MODEL.getAttachments()), any()))
-                .willReturn(context);
-    }
-
     @Test
     public void shouldHandleAssignmentsWithChanges() throws CommunicationFailureException {
 
         // given
+        given(calculator.createContextFor(eq(MODIFY_ENTRY_REQUEST.getAttachments()), eq(EDIT_ENTRY_DATA_MODEL.getAttachments()), any()))
+                .willReturn(context);
         given(context.collectForAttach()).willReturn(Collections.singletonList(PATH_UUID_TO_ATTACH));
         given(context.collectForDetach()).willReturn(Collections.singletonList(PATH_UUID_TO_DETACH));
 

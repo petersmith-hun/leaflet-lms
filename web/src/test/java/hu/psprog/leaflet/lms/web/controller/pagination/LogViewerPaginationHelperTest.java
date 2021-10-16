@@ -2,11 +2,11 @@ package hu.psprog.leaflet.lms.web.controller.pagination;
 
 import hu.psprog.leaflet.lms.web.controller.pagination.model.LogViewerPaginationAttributes;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +20,7 @@ import static org.mockito.BDDMockito.given;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogViewerPaginationHelperTest extends PaginationHelperBaseTest {
 
     private static final String LIMIT = "10";

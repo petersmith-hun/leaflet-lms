@@ -1,16 +1,17 @@
 package hu.psprog.leaflet.lms.service.facade.impl.utility;
 
 import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class URLUtilitiesTest {
 
     private static final String NORMALIZED_URL = "part1/part2/part3/part4";
@@ -31,11 +32,6 @@ public class URLUtilitiesTest {
 
     @InjectMocks
     private URLUtilities urlUtilities;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void shouldExtractSubPathByPattern() {
@@ -65,8 +61,8 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(StringUtils.EMPTY));
     }
 
-    @Test
-    @Parameters(source = ExtractionIntervalParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("extractionIntervalDataProvider")
     public void shouldExtractSubPathBySub(String source, int from, int to, String expected) {
 
         // when
@@ -76,8 +72,8 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = FilePathUUIDParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("filePathUUIDDataProvider")
     public void shouldExtractFilePathUUID(String reference) {
 
         // given
@@ -92,8 +88,8 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(UUID.fromString(PATH_IDENTIFIER)));
     }
 
-    @Test
-    @Parameters(source = NormalizationParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("normalizationDataProvider")
     public void shouldNormalize(String source) {
 
         // when
@@ -103,8 +99,8 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(NORMALIZED_URL));
     }
 
-    @Test
-    @Parameters(source = UpUrlParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("upUrlDataProvider")
     public void shouldGepUpUrl(String source, int disableAtLevel, String expected) {
 
         // when
@@ -114,8 +110,8 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = NormalizationParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("normalizationDataProvider")
     public void shouldSplitUrl(String source) {
 
         // when
@@ -126,57 +122,49 @@ public class URLUtilitiesTest {
         assertThat(result, equalTo(NORMALIZED_URL.split("/")));
     }
 
-    public static class UpUrlParameterProvider {
+    private static Stream<Arguments> upUrlDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {NORMALIZED_URL, 0, "part1/part2/part3"},
-                    new Object[] {"part1/part2/", 0, "part1"},
-                    new Object[] {"part1", 0, StringUtils.EMPTY},
-                    new Object[] {StringUtils.EMPTY, 0, StringUtils.EMPTY},
-                    new Object[] {"part1/part2/part3", 3, "part1/part2/part3"},
-                    new Object[] {"part1/part2/part3/", 3, "part1/part2/part3"},
-                    new Object[] {"part1/part2/part3", 2, "part1/part2"},
-            };
-        }
+        return Stream.of(
+                Arguments.of(NORMALIZED_URL, 0, "part1/part2/part3"),
+                Arguments.of("part1/part2/", 0, "part1"),
+                Arguments.of("part1", 0, StringUtils.EMPTY),
+                Arguments.of(StringUtils.EMPTY, 0, StringUtils.EMPTY),
+                Arguments.of("part1/part2/part3", 3, "part1/part2/part3"),
+                Arguments.of("part1/part2/part3/", 3, "part1/part2/part3"),
+                Arguments.of("part1/part2/part3", 2, "part1/part2")
+        );
     }
 
-    public static class NormalizationParameterProvider {
+    private static Stream<Arguments> normalizationDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {NORMALIZED_URL},
-                    new Object[] {"/" + NORMALIZED_URL},
-                    new Object[] {NORMALIZED_URL + "/"},
-                    new Object[] {"/" + NORMALIZED_URL + "/"}
-            };
-        }
+        return Stream.of(
+                Arguments.of(NORMALIZED_URL),
+                Arguments.of("/" + NORMALIZED_URL),
+                Arguments.of(NORMALIZED_URL + "/"),
+                Arguments.of("/" + NORMALIZED_URL + "/")
+        );
     }
 
-    public static class FilePathUUIDParameterProvider {
+    private static Stream<Arguments> filePathUUIDDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {NON_NORMALIZED_FILE_REFERENCE},
-                    new Object[] {NORMALIZED_FILE_REFERENCE}
-            };
-        }
+        return Stream.of(
+                Arguments.of(NON_NORMALIZED_FILE_REFERENCE),
+                Arguments.of(NORMALIZED_FILE_REFERENCE)
+        );
     }
 
-    public static class ExtractionIntervalParameterProvider {
+    private static Stream<Arguments> extractionIntervalDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {NORMALIZED_URL, 2, 1, "part3"},
-                    new Object[] {NON_NORMALIZED_URL, 2, 1, "part3"},
-                    new Object[] {NORMALIZED_URL, 1, 1, "part2/part3"},
-                    new Object[] {NON_NORMALIZED_URL, 1, 1, "part2/part3"},
-                    new Object[] {NORMALIZED_URL, 0, 0, NORMALIZED_URL},
-                    new Object[] {NORMALIZED_URL, 0, 2, "part1/part2"},
-                    new Object[] {NORMALIZED_URL, 2, 0, "part3/part4"},
-                    new Object[] {NORMALIZED_URL, 0, 5, StringUtils.EMPTY},
-                    new Object[] {NORMALIZED_URL, 5, 0, StringUtils.EMPTY},
-            };
-        }
+        return Stream.of(
+                Arguments.of(NORMALIZED_URL, 2, 1, "part3"),
+                Arguments.of(NON_NORMALIZED_URL, 2, 1, "part3"),
+                Arguments.of(NORMALIZED_URL, 1, 1, "part2/part3"),
+                Arguments.of(NON_NORMALIZED_URL, 1, 1, "part2/part3"),
+                Arguments.of(NORMALIZED_URL, 0, 0, NORMALIZED_URL),
+                Arguments.of(NORMALIZED_URL, 0, 2, "part1/part2"),
+                Arguments.of(NORMALIZED_URL, 2, 0, "part3/part4"),
+                Arguments.of(NORMALIZED_URL, 0, 5, StringUtils.EMPTY),
+                Arguments.of(NORMALIZED_URL, 5, 0, StringUtils.EMPTY)
+        );
     }
 }

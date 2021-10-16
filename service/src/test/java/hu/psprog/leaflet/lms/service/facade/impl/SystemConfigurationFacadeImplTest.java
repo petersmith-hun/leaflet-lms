@@ -11,11 +11,11 @@ import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
 import hu.psprog.leaflet.tlp.api.client.TLPClient;
 import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SystemConfigurationFacadeImplTest {
 
     private static final StatusResponse FAILOVER_STATUS_RESPONSE = StatusResponse.getBuilder()

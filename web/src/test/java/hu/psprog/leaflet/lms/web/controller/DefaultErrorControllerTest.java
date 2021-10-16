@@ -1,12 +1,15 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.bridge.client.exception.UnauthorizedAccessException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.WebRequest;
@@ -17,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 /**
@@ -27,7 +30,7 @@ import static org.mockito.BDDMockito.given;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultErrorControllerTest {
 
     private static final String MESSAGE = "message";
@@ -41,6 +44,9 @@ public class DefaultErrorControllerTest {
 
     @Mock
     private HttpServletRequest request;
+
+    @Captor
+    private ArgumentCaptor<ErrorAttributeOptions> errorAttributesArgumentCaptor;
 
     @InjectMocks
     private DefaultErrorController defaultErrorController;
@@ -58,6 +64,7 @@ public class DefaultErrorControllerTest {
         assertThat(result.getViewName(), equalTo(BaseController.DEFAULT_ERROR_PAGE));
         assertThat(result.getStatus(), equalTo(HttpStatus.UNAUTHORIZED));
         assertThat(result.getModel().get(MESSAGE), equalTo("Authorization error: Unauthorized access"));
+        assertErrorAttributeOptions();
     }
 
     @Test
@@ -73,6 +80,7 @@ public class DefaultErrorControllerTest {
         assertThat(result.getViewName(), equalTo(BaseController.DEFAULT_ERROR_PAGE));
         assertThat(result.getStatus(), equalTo(HttpStatus.NOT_FOUND));
         assertThat(result.getModel().get(MESSAGE), equalTo("Not found: Resource not found"));
+        assertErrorAttributeOptions();
     }
 
     @Test
@@ -88,6 +96,7 @@ public class DefaultErrorControllerTest {
         assertThat(result.getViewName(), equalTo(BaseController.DEFAULT_ERROR_PAGE));
         assertThat(result.getStatus(), equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
         assertThat(result.getModel().get(MESSAGE), equalTo("Exception caught: Something went wrong"));
+        assertErrorAttributeOptions();
     }
 
     private Map<String, Object> prepareAuthorizationError() {
@@ -121,6 +130,10 @@ public class DefaultErrorControllerTest {
     }
 
     private BDDMockito.BDDMyOngoingStubbing<Map<String, Object>> getErrorAttributesMock() {
-        return given(errorAttributes.getErrorAttributes(any(WebRequest.class), eq(true)));
+        return given(errorAttributes.getErrorAttributes(any(WebRequest.class), errorAttributesArgumentCaptor.capture()));
+    }
+
+    private void assertErrorAttributeOptions() {
+        assertThat(errorAttributesArgumentCaptor.getValue().getIncludes(), hasItems(ErrorAttributeOptions.Include.values()));
     }
 }

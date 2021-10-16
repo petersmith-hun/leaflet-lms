@@ -4,6 +4,7 @@ import hu.psprog.leaflet.bridge.client.exception.UnauthorizedAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
@@ -65,13 +66,8 @@ public class DefaultErrorController implements ErrorController {
         return modelAndView;
     }
 
-    @Override
-    public String getErrorPath() {
-        return PATH_ERROR;
-    }
-
     private Map<String, Object> extractErrorAttributes(HttpServletRequest request) {
-        return errorAttributes.getErrorAttributes(new ServletWebRequest(request), true);
+        return errorAttributes.getErrorAttributes(new ServletWebRequest(request), ErrorAttributeOptions.of(ErrorAttributeOptions.Include.values()));
     }
 
     private HttpStatus extractStatus(Map<String, Object> errorAttributes) {

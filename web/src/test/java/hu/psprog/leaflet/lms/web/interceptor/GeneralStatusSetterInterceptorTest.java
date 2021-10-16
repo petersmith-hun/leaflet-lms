@@ -1,18 +1,19 @@
 package hu.psprog.leaflet.lms.web.interceptor;
 
 import hu.psprog.leaflet.lms.service.domain.common.ResponseStatus;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor.VALIDATION_FAILED_ATTRIBUTE;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,26 +27,21 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GeneralStatusSetterInterceptorTest {
 
     private static final String REDIRECTION_VIEW = "redirect:/home";
     private static final String NON_REDIRECTION_VIEW = "/home";
     private static final String STATUS_ATTRIBUTE = "generalStatus";
 
-    @Mock
+    @Mock(lenient = true)
     private ModelAndView modelAndView;
 
-    @Mock
+    @Mock(lenient = true)
     private Map<String, Object> model;
 
     @InjectMocks
     private GeneralStatusSetterInterceptor generalStatusSetterInterceptor;
-
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void shouldNotSetGeneralStatusWhenModelAndViewIsNull() throws Exception {
@@ -70,8 +66,8 @@ public class GeneralStatusSetterInterceptorTest {
         verify(modelAndView, never()).addObject(anyString(), any());
     }
 
-    @Test
-    @Parameters(source = GeneralStatusSetterInterceptorParameters.class)
+    @ParameterizedTest
+    @MethodSource("generalStatusSetterInterceptorDataProvider")
     public void shouldSetGeneralStatus(HttpStatus status, boolean isValidationFailureSet, ResponseStatus expectedResponseStatus) throws Exception {
 
         // given
@@ -91,19 +87,17 @@ public class GeneralStatusSetterInterceptorTest {
         given(modelAndView.getStatus()).willReturn(status);
     }
 
-    public static class GeneralStatusSetterInterceptorParameters {
+    private static Stream<Arguments> generalStatusSetterInterceptorDataProvider() {
 
-        public static Object[][] provideParameters() {
-
-            return new Object[][] {
-                    {null,                              false,  ResponseStatus.OK},
-                    {HttpStatus.PERMANENT_REDIRECT,     false,  ResponseStatus.OK},
-                    {HttpStatus.NOT_FOUND,              false,  ResponseStatus.ERROR},
-                    {HttpStatus.INTERNAL_SERVER_ERROR,  false,  ResponseStatus.ERROR},
-                    {null,                              true,   ResponseStatus.VALIDATION_FAILURE},
-                    {HttpStatus.BAD_REQUEST,            false,  ResponseStatus.VALIDATION_FAILURE},
-                    {HttpStatus.NOT_FOUND,              true,   ResponseStatus.VALIDATION_FAILURE},
-                    {HttpStatus.INTERNAL_SERVER_ERROR,  true,   ResponseStatus.VALIDATION_FAILURE}};
-        }
+        return Stream.of(
+                Arguments.of(null,                              false,  ResponseStatus.OK),
+                Arguments.of(HttpStatus.PERMANENT_REDIRECT,     false,  ResponseStatus.OK),
+                Arguments.of(HttpStatus.NOT_FOUND,              false,  ResponseStatus.ERROR),
+                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR,  false,  ResponseStatus.ERROR),
+                Arguments.of(null,                              true,   ResponseStatus.VALIDATION_FAILURE),
+                Arguments.of(HttpStatus.BAD_REQUEST,            false,  ResponseStatus.VALIDATION_FAILURE),
+                Arguments.of(HttpStatus.NOT_FOUND,              true,   ResponseStatus.VALIDATION_FAILURE),
+                Arguments.of(HttpStatus.INTERNAL_SERVER_ERROR,  true,   ResponseStatus.VALIDATION_FAILURE)
+        );
     }
 }

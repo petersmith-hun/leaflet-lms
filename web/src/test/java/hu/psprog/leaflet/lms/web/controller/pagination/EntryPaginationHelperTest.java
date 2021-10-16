@@ -5,13 +5,16 @@ import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import hu.psprog.leaflet.lms.web.controller.pagination.model.PaginationAttributes;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_LIMIT;
 import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_BY;
@@ -25,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author Peter Smith
  */
-@RunWith(JUnitParamsRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
 
     private static final int PAGE_COUNT = 3;
@@ -47,8 +50,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
     @InjectMocks
     private EntryPaginationHelper entryPaginationHelper;
 
-    @Test
-    @Parameters(source = OrderByMappingParameterProvider.class, method = "fromOptional")
+    @ParameterizedTest
+    @MethodSource("orderByMappingFromOptionalDataProvider")
     public void shouldMapOrderByFromOptional(Optional<String> orderBy, OrderBy.Entry expected) {
 
         // when
@@ -58,8 +61,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = OrderByMappingParameterProvider.class, method = "fromHttpServletRequest")
+    @ParameterizedTest
+    @MethodSource("orderByMappingFromHttpServletRequestDataProvider")
     public void shouldMapOrderByFromHttpServletRequest(String orderBy, OrderBy.Entry expected) {
 
         // given
@@ -85,8 +88,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(DEFAULT_ORDER_BY));
     }
 
-    @Test
-    @Parameters(source = PageNumberParameterProvider.class)
+    @ParameterizedTest
+    @MethodSource("pageNumberDataProvider")
     public void shouldExtractPage(Optional<Integer> page, int expected) {
 
         // when
@@ -96,8 +99,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = OrderDirectionMappingParameterProvider.class, method = "fromOptional")
+    @ParameterizedTest
+    @MethodSource("orderDirectionMappingFromOptionalDataProvider")
     public void shouldMapOrderDirectionFromOptional(Optional<String> direction, OrderDirection expected) {
 
         // when
@@ -107,8 +110,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = OrderDirectionMappingParameterProvider.class, method = "fromHttpServletRequest")
+    @ParameterizedTest
+    @MethodSource("orderDirectionMappingFromHttpServletRequestDataProvider")
     public void shouldMapOrderDirectionFromHttpServletRequest(String direction, OrderDirection expected) {
 
         // given
@@ -134,8 +137,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(DEFAULT_ORDER_DIRECTION.name()));
     }
 
-    @Test
-    @Parameters(source = LimitParameterProvider.class, method = "fromOptional")
+    @ParameterizedTest
+    @MethodSource("limitFromOptionalDataProvider")
     public void shouldGetLimitFromOptional(Optional<Integer> limit, int expected) {
 
         // when
@@ -145,8 +148,8 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result, equalTo(expected));
     }
 
-    @Test
-    @Parameters(source = LimitParameterProvider.class, method = "fromHttpServletRequest")
+    @ParameterizedTest
+    @MethodSource("limitFromHttpServletRequestDataProvider")
     public void shouldGetLimitFromHttpServletRequest(String limit, int expected) {
 
         // given
@@ -194,80 +197,75 @@ public class EntryPaginationHelperTest extends PaginationHelperBaseTest {
         assertThat(result.isHasPrevious(), equalTo(HAS_PREVIOUS));
     }
 
-    public static class PageNumberParameterProvider {
+    private static Stream<Arguments> pageNumberDataProvider() {
 
-        public static Object[] provide() {
-            return new Object[] {
-                    new Object[] {Optional.of(10), 10},
-                    new Object[] {Optional.of(1), 1},
-                    new Object[] {Optional.empty(), 1},
-                    new Object[] {Optional.ofNullable(null), 1},
-            };
-        }
+        return Stream.of(
+                Arguments.of(Optional.of(10), 10),
+                Arguments.of(Optional.of(1), 1),
+                Arguments.of(Optional.empty(), 1),
+                Arguments.of(Optional.ofNullable(null), 1)
+        );
     }
 
-    public static class LimitParameterProvider {
+    private static Stream<Arguments> limitFromOptionalDataProvider() {
 
-        public static Object[] fromOptional() {
-            return new Object[] {
-                    new Object[] {Optional.of(30), 30},
-                    new Object[] {Optional.ofNullable(null), DEFAULT_LIMIT},
-                    new Object[] {Optional.empty(), DEFAULT_LIMIT}
-            };
-        }
-
-        public static Object[] fromHttpServletRequest() {
-            return new Object[] {
-                    new Object[] {"30", 30},
-                    new Object[] {null, DEFAULT_LIMIT},
-            };
-        }
+        return Stream.of(
+                Arguments.of(Optional.of(30), 30),
+                Arguments.of(Optional.ofNullable(null), DEFAULT_LIMIT),
+                Arguments.of(Optional.empty(), DEFAULT_LIMIT)
+        );
     }
 
-    public static class OrderDirectionMappingParameterProvider {
+    private static Stream<Arguments> limitFromHttpServletRequestDataProvider() {
 
-        public static Object[] fromOptional() {
-            return new Object[] {
-                    new Object[] {Optional.of("desc"), OrderDirection.DESC},
-                    new Object[] {Optional.of("DESC"), OrderDirection.DESC},
-                    new Object[] {Optional.of("non-existing"), OrderDirection.ASC},
-                    new Object[] {Optional.ofNullable(null), DEFAULT_ORDER_DIRECTION},
-                    new Object[] {Optional.empty(), DEFAULT_ORDER_DIRECTION}
-            };
-        }
-
-        public static Object[] fromHttpServletRequest() {
-            return new Object[] {
-                    new Object[] {"desc", OrderDirection.DESC},
-                    new Object[] {"DESC", OrderDirection.DESC},
-                    new Object[] {"asc", OrderDirection.ASC},
-                    new Object[] {"non-existing", DEFAULT_ORDER_DIRECTION},
-                    new Object[] {null, DEFAULT_ORDER_DIRECTION}
-            };
-        }
+        return Stream.of(
+                Arguments.of("30", 30),
+                Arguments.of(null, DEFAULT_LIMIT)
+        );
     }
 
-    public static class OrderByMappingParameterProvider {
+    private static Stream<Arguments> orderDirectionMappingFromOptionalDataProvider() {
 
-        public static Object[] fromOptional() {
-            return new Object[] {
-                    new Object[] {Optional.of("title"), OrderBy.Entry.TITLE},
-                    new Object[] {Optional.of("TITLE"), OrderBy.Entry.TITLE},
-                    new Object[] {Optional.of("CREATED"), OrderBy.Entry.CREATED},
-                    new Object[] {Optional.of("non-existing"), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {Optional.empty(), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {Optional.ofNullable(null), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)},
-            };
-        }
+        return Stream.of(
+                Arguments.of(Optional.of("desc"), OrderDirection.DESC),
+                Arguments.of(Optional.of("DESC"), OrderDirection.DESC),
+                Arguments.of(Optional.of("non-existing"), OrderDirection.ASC),
+                Arguments.of(Optional.ofNullable(null), DEFAULT_ORDER_DIRECTION),
+                Arguments.of(Optional.empty(), DEFAULT_ORDER_DIRECTION)
+        );
+    }
 
-        public static Object[] fromHttpServletRequest() {
-            return new Object[] {
-                    new Object[] {"title", OrderBy.Entry.TITLE},
-                    new Object[] {"TITLE", OrderBy.Entry.TITLE},
-                    new Object[] {"CREATED", OrderBy.Entry.CREATED},
-                    new Object[] {"non-existing", OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)},
-                    new Object[] {null, OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)}
-            };
-        }
+    private static Stream<Arguments> orderDirectionMappingFromHttpServletRequestDataProvider() {
+
+        return Stream.of(
+                Arguments.of("desc", OrderDirection.DESC),
+                Arguments.of("DESC", OrderDirection.DESC),
+                Arguments.of("asc", OrderDirection.ASC),
+                Arguments.of("non-existing", DEFAULT_ORDER_DIRECTION),
+                Arguments.of(null, DEFAULT_ORDER_DIRECTION)
+        );
+    }
+
+    private static Stream<Arguments> orderByMappingFromOptionalDataProvider() {
+
+        return Stream.of(
+                Arguments.of(Optional.of("title"), OrderBy.Entry.TITLE),
+                Arguments.of(Optional.of("TITLE"), OrderBy.Entry.TITLE),
+                Arguments.of(Optional.of("CREATED"), OrderBy.Entry.CREATED),
+                Arguments.of(Optional.of("non-existing"), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(Optional.empty(), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(Optional.ofNullable(null), OrderBy.Entry.valueOf(DEFAULT_ORDER_BY))
+        );
+    }
+
+    private static Stream<Arguments> orderByMappingFromHttpServletRequestDataProvider() {
+
+        return Stream.of(
+                Arguments.of("title", OrderBy.Entry.TITLE),
+                Arguments.of("TITLE", OrderBy.Entry.TITLE),
+                Arguments.of("CREATED", OrderBy.Entry.CREATED),
+                Arguments.of("non-existing", OrderBy.Entry.valueOf(DEFAULT_ORDER_BY)),
+                Arguments.of(null, OrderBy.Entry.valueOf(DEFAULT_ORDER_BY))
+        );
     }
 }

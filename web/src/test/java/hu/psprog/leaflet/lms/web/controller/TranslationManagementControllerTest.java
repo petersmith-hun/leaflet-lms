@@ -4,11 +4,13 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;
 
@@ -21,7 +23,10 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@Extensions({
+        @ExtendWith(MockitoExtension.class),
+        @ExtendWith(SpringExtension.class)
+})
 public class TranslationManagementControllerTest extends AbstractControllerTest {
 
     private static final TranslationPackUploadRequestModel TRANSLATION_PACK_UPLOAD_REQUEST_MODEL = new TranslationPackUploadRequestModel();
@@ -92,7 +97,6 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     public void shouldProcessPackCreationHandleValidationFailure() throws CommunicationFailureException {
 
         // given
-        given(translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL)).willReturn(PACK_ID);
         doThrow(new ValidationFailureException(response)).when(translationManagementFacade).processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL);
 
         // when

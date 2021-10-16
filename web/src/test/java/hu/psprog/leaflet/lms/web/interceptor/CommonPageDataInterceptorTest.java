@@ -1,17 +1,15 @@
 package hu.psprog.leaflet.lms.web.interceptor;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,7 +23,7 @@ import static org.mockito.BDDMockito.given;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommonPageDataInterceptorTest {
 
     private static final String APPLICATION_VERSION = "appVersion";
@@ -39,9 +37,8 @@ public class CommonPageDataInterceptorTest {
     @Mock
     private BuildProperties buildProperties;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         given(buildProperties.getVersion()).willReturn(APPLICATION_VERSION);
         commonPageDataInterceptor = new CommonPageDataInterceptor(Optional.of(buildProperties));
     }

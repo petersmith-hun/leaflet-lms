@@ -5,13 +5,14 @@ import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRe
 import hu.psprog.leaflet.translation.api.domain.TranslationPack;
 import hu.psprog.leaflet.translation.api.domain.TranslationPackCreationRequest;
 import hu.psprog.leaflet.translation.client.TranslationServiceClient;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TranslationManagementFacadeImplTest {
 
     private static final UUID PACK_ID = UUID.randomUUID();
@@ -108,21 +109,21 @@ public class TranslationManagementFacadeImplTest {
         assertThat(translationPackCreationRequest.getValue().getDefinitions(), equalTo(EXPECTED_DEFINITION_MAP));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldProcessCreatePackWithExceptionOnInvalidInputCSV() throws CommunicationFailureException {
+    @Test
+    public void shouldProcessCreatePackWithExceptionOnInvalidInputCSV() {
 
         // given
         TRANSLATION_PACK_UPLOAD_REQUEST_MODEL.setDefinitions(INVALID_MOCK_MULTIPART_FILE);
 
         // when
-        translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL));
 
         // then
         // exception expected
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldProcessCreatePackWithExceptionOnInputCSVReadFailure() throws IOException, CommunicationFailureException {
+    @Test
+    public void shouldProcessCreatePackWithExceptionOnInputCSVReadFailure() throws IOException {
 
         // given
         doThrow(IOException.class).when(multipartFile).getInputStream();
@@ -130,7 +131,7 @@ public class TranslationManagementFacadeImplTest {
         translationPackUploadRequestModel.setDefinitions(multipartFile);
 
         // when
-        translationManagementFacade.processCreatePack(translationPackUploadRequestModel);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> translationManagementFacade.processCreatePack(translationPackUploadRequestModel));
 
         // then
         // exception expected

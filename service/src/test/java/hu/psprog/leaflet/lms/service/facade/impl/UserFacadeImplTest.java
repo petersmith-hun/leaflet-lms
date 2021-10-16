@@ -13,19 +13,20 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
 import hu.psprog.leaflet.jwt.auth.support.service.AuthenticationService;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.util.List;
@@ -43,7 +44,10 @@ import static org.mockito.Mockito.verify;
  *
  * @author Peter Smith
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@Extensions({
+        @ExtendWith(MockitoExtension.class),
+        @ExtendWith(SpringExtension.class)
+})
 @TestExecutionListeners(listeners = {
         DirtiesContextTestExecutionListener.class,
         WithSecurityContextTestExecutionListener.class})
@@ -61,7 +65,7 @@ public class UserFacadeImplTest {
     @Mock
     private AuthenticationService authenticationService;
 
-    @Mock
+    @Mock(lenient = true)
     private Authentication authentication;
 
     @Mock
@@ -73,9 +77,8 @@ public class UserFacadeImplTest {
     @InjectMocks
     private UserFacadeImpl userFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         given(authentication.getPrincipal()).willReturn(USERNAME);
         given(authentication.getCredentials()).willReturn(CREDENTIALS);
     }
@@ -108,9 +111,6 @@ public class UserFacadeImplTest {
 
     @Test
     public void shouldRenewToken() throws CommunicationFailureException {
-
-        // given
-        given(userBridgeService.renewToken()).willReturn(prepareLoginResponseDataModel(true));
 
         // when
         userFacade.renewToken(authentication);
@@ -261,7 +261,6 @@ public class UserFacadeImplTest {
         // given
         given(userBridgeService.getUserByID(USER_ID)).willReturn(prepareExtendedUserDataModel());
         given(authenticationService.claimToken(any(Authentication.class))).willReturn(jwtAuthentication);
-        given(userBridgeService.claimToken(prepareLoginRequestModel())).willReturn(prepareLoginResponseDataModel(true));
         given(jwtAuthentication.getPrincipal()).willReturn(EMAIL);
 
         // when
