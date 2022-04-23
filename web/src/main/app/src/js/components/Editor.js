@@ -1,5 +1,5 @@
 import Calmdown from 'calmdown/src/js/Calmdown';
-import TextareaEditor from "calmdown/src/js/TextareaEditor";
+import ShowdownConverter from "calmdown/src/js/ShowdownConverter";
 
 const _RESOURCE_SERVER_URL_PATTERN = /{resource-server-url}/g
 
@@ -16,9 +16,12 @@ class Editor {
 
 	init() {
 		if (document.querySelector(".calmdown")) {
-			TextareaEditor.prototype.getContent = function () {
+			ShowdownConverter.prototype.makeHtml = function (markdown) {
 				/* eslint-disable no-undef */
-				return this.element.value.replace(_RESOURCE_SERVER_URL_PATTERN, calmdownEditorAdditionalConfig.resourceServerUrl);
+				const updatedMarkdown = markdown.replace(_RESOURCE_SERVER_URL_PATTERN, calmdownEditorAdditionalConfig.resourceServerUrl);
+				const html = this.converter.makeHtml(updatedMarkdown);
+
+				return this.codeHighlighter == null ? html : this.addCodeHighlighting(html);
 			}
 			this.calmdown = new Calmdown(this.configuration);
 		}
