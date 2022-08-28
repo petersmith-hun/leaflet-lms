@@ -35,7 +35,6 @@ public class AccountControllerTest extends AbstractControllerTest {
 
     private static final String FIELD_USER = "user";
 
-    private static final String PATH_ROOT = "/";
     private static final String PATH_LOGIN = "/login";
 
     private static final String VIEW_PROFILE = "profile";
@@ -146,14 +145,11 @@ public class AccountControllerTest extends AbstractControllerTest {
     @Test
     public void shouldProcessDeleteAccount() throws ServletException, CommunicationFailureException {
 
-        // given
-        String password = "test-pw";
-
         // when
-        accountController.processDeleteAccount(password, redirectAttributes, request);
+        accountController.processDeleteAccount(redirectAttributes, request);
 
         // then
-        verify(userFacade).processAccountDeletion(USER_ID, password);
+        verify(userFacade).processAccountDeletion(USER_ID);
         verifyFlashMessageSet();
         verifyUserLoggedOut();
         verifyRedirectionCreated(PATH_LOGIN);

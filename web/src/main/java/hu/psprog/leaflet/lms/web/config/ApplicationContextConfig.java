@@ -1,6 +1,8 @@
 package hu.psprog.leaflet.lms.web.config;
 
+import hu.psprog.leaflet.bridge.client.request.RequestAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.web.filter.RequestContextFilter;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -36,5 +39,11 @@ public class ApplicationContextConfig {
         conversionServiceFactoryBean.setConverters(converters);
 
         return conversionServiceFactoryBean;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RequestAuthentication.class)
+    public RequestAuthentication defaultRequestAuthentication() {
+        return Collections::emptyMap;
     }
 }

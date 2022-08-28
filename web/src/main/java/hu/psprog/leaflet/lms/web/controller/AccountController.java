@@ -42,8 +42,6 @@ public class AccountController extends BaseController {
     private static final String YOUR_PASSWORD_HAS_BEEN_CHANGED_PLEASE_RE_LOGIN = "Your password has been changed. Please re-login.";
     private static final String YOUR_ACCOUNT_HAS_BEEN_DELETED = "Your account has been deleted.";
 
-    private static final String MODEL_ATTRIBUTE_PASSWORD = "password";
-
     static final String PATH_ACCOUNT = "/account";
     private static final String PATH_ACCOUNT_UPDATE_PROFILE = PATH_ACCOUNT + PATH_UPDATE_PROFILE;
     private static final String PATH_ACCOUNT_CHANGE_PASSWORD = PATH_ACCOUNT + PATH_CHANGE_PASSWORD;
@@ -142,16 +140,14 @@ public class AccountController extends BaseController {
     /**
      * Processes account deletion request.
      *
-     * @param password user's current password to confirm deletion
      * @return populated {@link ModelAndView} object, redirection to logout
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.POST, path = PATH_DELETE_ACCOUNT)
-    public ModelAndView processDeleteAccount(@ModelAttribute(MODEL_ATTRIBUTE_PASSWORD) String password,
-                                             RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest)
+    public ModelAndView processDeleteAccount(RedirectAttributes redirectAttributes, HttpServletRequest httpServletRequest)
             throws CommunicationFailureException, ServletException {
 
-        userFacade.processAccountDeletion(currentUserID(), password);
+        userFacade.processAccountDeletion(currentUserID());
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, YOUR_ACCOUNT_HAS_BEEN_DELETED);
         httpServletRequest.logout();
 
