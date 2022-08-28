@@ -5,8 +5,6 @@ import hu.psprog.leaflet.bridge.client.domain.error.ValidationErrorMessageRespon
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.DefaultNonSuccessfulResponseException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
-import hu.psprog.leaflet.jwt.auth.support.domain.AuthenticationUserDetailsModel;
-import hu.psprog.leaflet.jwt.auth.support.domain.JWTTokenAuthentication;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ class BaseController {
     private static final String SUBMITTED_FORM_VALUES = "submittedFormValues";
     private static final String VALIDATION_FAILED_MESSAGE = "Validation failed - please see violations";
     private static final String VALIDATION_RESULTS_ATTRIBUTE = "validationResults";
+    private static final String SUBJECT_JWT_ATTRIBUTE = "sub";
 
     static final String DEFAULT_ERROR_PAGE = "view/error/default";
 
@@ -73,8 +75,12 @@ class BaseController {
 
         Long userID = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof JWTTokenAuthentication) {
-            userID = ((AuthenticationUserDetailsModel) authentication.getDetails()).getId();
+        if (authentication instanceof OAuth2AuthenticationToken) {
+            OAuth2User principal = ((OAuth2AuthenticationToken) authentication).getPrincipal();
+            userID = Optional.ofNullable(principal.getAttribute(SUBJECT_JWT_ATTRIBUTE))
+                    .filter(subject -> subject instanceof String)
+                    .map(subject -> Long.valueOf((String) subject))
+                    .orElse(0L);
         }
 
         return userID;

@@ -1,29 +1,22 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
-import hu.psprog.leaflet.api.rest.request.user.LoginRequestModel;
-import hu.psprog.leaflet.api.rest.request.user.PasswordResetDemandRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateRoleRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UserPasswordRequestModel;
 import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
-import hu.psprog.leaflet.api.rest.response.user.LoginResponseDataModel;
 import hu.psprog.leaflet.api.rest.response.user.UserListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.UserBridgeService;
-import hu.psprog.leaflet.jwt.auth.support.service.AuthenticationService;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,7 +26,6 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -53,7 +45,6 @@ import static org.mockito.Mockito.verify;
         WithSecurityContextTestExecutionListener.class})
 public class UserFacadeImplTest {
 
-    private static final String TOKEN = "auth-token";
     private static final String USERNAME = "test-user";
     private static final String EMAIL = "test-user@dev.local";
     private static final String CREDENTIALS = "credentials";
@@ -62,17 +53,8 @@ public class UserFacadeImplTest {
     @Mock
     private UserBridgeService userBridgeService;
 
-    @Mock
-    private AuthenticationService authenticationService;
-
     @Mock(lenient = true)
     private Authentication authentication;
-
-    @Mock
-    private Authentication jwtAuthentication;
-
-    @Captor
-    private ArgumentCaptor<Authentication> authenticationCaptor;
 
     @InjectMocks
     private UserFacadeImpl userFacade;
@@ -81,65 +63,6 @@ public class UserFacadeImplTest {
     public void setup() {
         given(authentication.getPrincipal()).willReturn(USERNAME);
         given(authentication.getCredentials()).willReturn(CREDENTIALS);
-    }
-
-    @Test
-    public void shouldDemandPasswordReset() throws CommunicationFailureException {
-
-        // given
-        PasswordResetDemandRequestModel passwordResetDemandRequestModel = new PasswordResetDemandRequestModel();
-
-        // when
-        userFacade.demandPasswordReset(passwordResetDemandRequestModel);
-
-        // then
-        verify(authenticationService).demandPasswordReset(passwordResetDemandRequestModel);
-    }
-
-    @Test
-    public void shouldConfirmPasswordReset() throws CommunicationFailureException {
-
-        // given
-        UserPasswordRequestModel userPasswordRequestModel = new UserPasswordRequestModel();
-
-        // when
-        userFacade.confirmPasswordReset(userPasswordRequestModel, TOKEN);
-
-        // then
-        verify(authenticationService).confirmPasswordReset(userPasswordRequestModel, TOKEN);
-    }
-
-    @Test
-    public void shouldRenewToken() throws CommunicationFailureException {
-
-        // when
-        userFacade.renewToken(authentication);
-
-        // then
-        verify(authenticationService).renewToken(authentication);
-    }
-
-    @Test
-    public void shouldRevokeToken() throws CommunicationFailureException {
-
-        // when
-        userFacade.revokeToken();
-
-        // then
-        verify(authenticationService).revokeToken();
-    }
-
-    @Test
-    public void shouldClaimTokenWithSuccess() throws CommunicationFailureException {
-
-        // given
-        given(authenticationService.claimToken(authentication)).willReturn(jwtAuthentication);
-
-        // when
-        Authentication result = userFacade.claimToken(authentication);
-
-        // then
-        assertThat(result, equalTo(jwtAuthentication));
     }
 
     @Test
@@ -258,24 +181,11 @@ public class UserFacadeImplTest {
     @Test
     public void shouldProcessAccountDeletion() throws CommunicationFailureException {
 
-        // given
-        given(userBridgeService.getUserByID(USER_ID)).willReturn(prepareExtendedUserDataModel());
-        given(authenticationService.claimToken(any(Authentication.class))).willReturn(jwtAuthentication);
-        given(jwtAuthentication.getPrincipal()).willReturn(EMAIL);
-
         // when
-        userFacade.processAccountDeletion(USER_ID, CREDENTIALS);
+        userFacade.processAccountDeletion(USER_ID);
 
         // then
-        verify(authenticationService).revokeToken();
         verify(userBridgeService).deleteUser(USER_ID);
-        verify(authenticationService).claimToken(authenticationCaptor.capture());
-
-        Authentication result = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(result, notNullValue());
-        assertThat(result.getPrincipal(), equalTo(EMAIL));
-        assertThat(authenticationCaptor.getValue().getPrincipal(), equalTo(EMAIL));
-        assertThat(authenticationCaptor.getValue().getCredentials(), equalTo(CREDENTIALS));
     }
 
     private UpdateRoleRequestModel prepareUpdateToAdminRoleRequestModel() {
@@ -297,25 +207,6 @@ public class UserFacadeImplTest {
                 .withId(USER_ID)
                 .withUsername(USERNAME)
                 .withEmail(EMAIL)
-                .build();
-    }
-
-    private LoginRequestModel prepareLoginRequestModel() {
-
-        LoginRequestModel loginRequestModel = new LoginRequestModel();
-        loginRequestModel.setEmail(USERNAME);
-        loginRequestModel.setPassword(CREDENTIALS);
-
-        return loginRequestModel;
-    }
-
-    private LoginResponseDataModel prepareLoginResponseDataModel(boolean withSuccess) {
-
-        return LoginResponseDataModel.getBuilder()
-                .withToken(TOKEN)
-                .withStatus(withSuccess
-                        ? LoginResponseDataModel.AuthenticationResult.AUTH_SUCCESS
-                        : LoginResponseDataModel.AuthenticationResult.INVALID_CREDENTIALS)
                 .build();
     }
 }
