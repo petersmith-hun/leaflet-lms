@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "admin-lte": "^2.4.8",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "bootstrap-sass": "^3.3.7",
     "calmdown": "^0.6.2",
     "choices.js": "^3.0.4",
