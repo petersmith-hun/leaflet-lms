@@ -34,6 +34,7 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
     private static final GenericType<Map<String, String>> REGISTRY_MAP_GENERIC_TYPE = new GenericType<>() {};
 
     private static final String PATH_PARAMETER_REGISTRY_ID = "registryID";
+    private static final String PATH_PARAMETER_GROUP_ID = "groupID";
     private static final String PATH_PARAMETER_REPOSITORY_ID = "repositoryID";
     private static final String PATH_PARAMETER_TAG_ID = "tagID";
 
@@ -101,11 +102,16 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
     @Override
     public DockerRepository getDockerRepositoryTags(String registryID, String repositoryID) {
 
+        RepositoryID repository = new RepositoryID(repositoryID);
+
         RESTRequest request = RESTRequest.getBuilder()
                 .method(RequestMethod.GET)
-                .path(LSASPath.REGISTRY_REPOSITORIES_TAGS)
+                .path(repository.useGroupPath
+                        ? LSASPath.REGISTRY_GROUPED_REPOSITORIES_TAGS
+                        : LSASPath.REGISTRY_REPOSITORIES_TAGS)
                 .addPathParameter(PATH_PARAMETER_REGISTRY_ID, registryID)
-                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repositoryID)
+                .addPathParameter(PATH_PARAMETER_GROUP_ID, repository.groupID)
+                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repository.repositoryID)
                 .authenticated()
                 .build();
 
@@ -117,11 +123,16 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
     @Override
     public void deleteDockerImageByTag(String registryID, String repositoryID, String tag) {
 
+        RepositoryID repository = new RepositoryID(repositoryID);
+
         RESTRequest request = RESTRequest.getBuilder()
                 .method(RequestMethod.DELETE)
-                .path(LSASPath.REGISTRY_REPOSITORIES_TAGS_TAG)
+                .path(repository.useGroupPath
+                        ? LSASPath.REGISTRY_GROUPED_REPOSITORIES_TAGS_TAG
+                        : LSASPath.REGISTRY_REPOSITORIES_TAGS_TAG)
                 .addPathParameter(PATH_PARAMETER_REGISTRY_ID, registryID)
-                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repositoryID)
+                .addPathParameter(PATH_PARAMETER_GROUP_ID, repository.groupID)
+                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repository.repositoryID)
                 .addPathParameter(PATH_PARAMETER_TAG_ID, tag)
                 .authenticated()
                 .build();
@@ -158,5 +169,26 @@ public class StackAdminServiceClientImpl implements StackAdminServiceClient {
 
     interface BridgeRunnable {
         void run() throws CommunicationFailureException;
+    }
+
+    static class RepositoryID {
+
+        private final boolean useGroupPath;
+        private final String groupID;
+        private final String repositoryID;
+
+        RepositoryID(String repositoryID) {
+
+            String[] repositoryIDParts = repositoryID.split("/");
+            if (repositoryIDParts.length == 2) {
+                this.useGroupPath = true;
+                this.groupID = repositoryIDParts[0];
+                this.repositoryID = repositoryIDParts[1];
+            } else {
+                this.useGroupPath = false;
+                this.groupID = null;
+                this.repositoryID = repositoryID;
+            }
+        }
     }
 }

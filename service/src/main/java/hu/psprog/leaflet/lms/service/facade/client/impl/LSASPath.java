@@ -13,7 +13,9 @@ public enum LSASPath implements Path {
     REGISTRY("/registry"),
     REGISTRY_REPOSITORIES("/registry/{registryID}"),
     REGISTRY_REPOSITORIES_TAGS("/registry/{registryID}/{repositoryID}"),
+    REGISTRY_GROUPED_REPOSITORIES_TAGS("/registry/{registryID}/{groupID}/{repositoryID}"),
     REGISTRY_REPOSITORIES_TAGS_TAG("/registry/{registryID}/{repositoryID}/{tagID}"),
+    REGISTRY_GROUPED_REPOSITORIES_TAGS_TAG("/registry/{registryID}/{groupID}/{repositoryID}/{tagID}"),
     CONTAINERS("/containers");
 
     private final String uri;
