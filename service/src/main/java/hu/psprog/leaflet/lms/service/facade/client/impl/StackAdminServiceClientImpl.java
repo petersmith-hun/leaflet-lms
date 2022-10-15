@@ -1,8 +1,10 @@
 package hu.psprog.leaflet.lms.service.facade.client.impl;
 
-import hu.psprog.leaflet.lms.service.config.ClientConfigModel;
-import hu.psprog.leaflet.lms.service.config.DockerClusterStatusConfigModel;
-import hu.psprog.leaflet.lms.service.config.StackStatusConfigModel;
+import hu.psprog.leaflet.bridge.client.BridgeClient;
+import hu.psprog.leaflet.bridge.client.domain.BridgeService;
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.request.RESTRequest;
+import hu.psprog.leaflet.bridge.client.request.RequestMethod;
 import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
@@ -11,165 +13,150 @@ import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.SyncInvoker;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Jersey-based implementation of {@link StackAdminServiceClient}.
  *
  * @author Peter Smith
  */
-@Component
+@BridgeService(client = "lsas")
 public class StackAdminServiceClientImpl implements StackAdminServiceClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StackAdminServiceClientImpl.class);
 
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
     private static final GenericType<Map<String, String>> REGISTRY_MAP_GENERIC_TYPE = new GenericType<>() {};
-    private static final GenericType<DockerRegistryContent> DOCKER_REGISTRY_CONTENT_GENERIC_TYPE = new GenericType<>() {};
-    private static final GenericType<DockerRepository> DOCKER_REPOSITORY_GENERIC_TYPE = new GenericType<>() {};
-    private static final GenericType<Void> VOID_GENERIC_TYPE = new GenericType<>() {};
 
-    private static final String X_API_KEY_HEADER = "X-Api-Key";
-    private static final DockerRegistryContent FALLBACK_DOCKER_REGISTRY_CONTENT =
-            new DockerRegistryContent("unknown", Collections.emptyList());
-    private static final DockerRepository FALLBACK_DOCKER_REPOSITORY =
-            new DockerRepository("unknown", "unknown", Collections.emptyList());
+    private static final String PATH_PARAMETER_REGISTRY_ID = "registryID";
+    private static final String PATH_PARAMETER_REPOSITORY_ID = "repositoryID";
+    private static final String PATH_PARAMETER_TAG_ID = "tagID";
 
-    private final Client client;
-    private final StackStatusConfigModel stackStatusConfigModel;
-    private final DockerClusterStatusConfigModel dockerClusterStatusConfigModel;
+    private final BridgeClient bridgeClient;
 
     @Autowired
-    public StackAdminServiceClientImpl(Client client, StackStatusConfigModel stackStatusConfigModel,
-                                       DockerClusterStatusConfigModel dockerClusterStatusConfigModel) {
-        this.client = client;
-        this.stackStatusConfigModel = stackStatusConfigModel;
-        this.dockerClusterStatusConfigModel = dockerClusterStatusConfigModel;
+    public StackAdminServiceClientImpl(BridgeClient bridgeClient) {
+        this.bridgeClient = bridgeClient;
     }
 
     @Override
     public RegisteredServices getRegisteredServices() {
 
-        RegisteredServices registeredServices = null;
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.GET)
+                .path(LSASPath.REGISTERED_SERVICES)
+                .authenticated()
+                .build();
 
-        try {
-            Response response = callLSAS(stackStatusConfigModel);
-            if (isSuccessful(response)) {
-                registeredServices = response.readEntity(RegisteredServices.class);
-            } else {
-                LOGGER.error("Response status returned by LSAS is {}", response.getStatus());
-            }
-            response.close();
-        } catch (Exception e) {
-            LOGGER.error("Failed to retrieve list of registered services.", e);
-        }
-
-        return registeredServices;
+        return safeCall(() -> bridgeClient.call(request, RegisteredServices.class),
+                () -> "Failed to retrieve list of registered services", null);
     }
 
     @Override
     public List<Container> getExistingContainers() {
 
-        List<Container> runningContainers = Collections.emptyList();
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.GET)
+                .path(LSASPath.CONTAINERS)
+                .authenticated()
+                .build();
 
-        try {
-            Response response = callLSAS(dockerClusterStatusConfigModel);
-            if (isSuccessful(response)) {
-                runningContainers = response.readEntity(CONTAINER_LIST_GENERIC_TYPE);
-            } else {
-                LOGGER.error("Response status returned by LSAS is {}", response.getStatus());
-            }
-            response.close();
-        } catch (Exception e) {
-            LOGGER.error("Failed to retrieve list of running containers.", e);
-        }
-
-        return runningContainers;
+        return safeCall(() -> bridgeClient.call(request, CONTAINER_LIST_GENERIC_TYPE),
+                () -> "Failed to retrieve list of running containers", Collections.emptyList());
     }
 
     @Override
     public Map<String, String> getConfiguredRegistries() {
 
-        return callDockerRegistryBrowser(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint(), REGISTRY_MAP_GENERIC_TYPE, Collections.emptyMap());
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.GET)
+                .path(LSASPath.REGISTRY)
+                .authenticated()
+                .build();
+
+        return safeCall(() -> bridgeClient.call(request, REGISTRY_MAP_GENERIC_TYPE),
+                () -> "Failed to retrieve configured registries", Collections.emptyMap());
     }
 
     @Override
     public DockerRegistryContent getDockerRepositories(String registryID) {
 
-        String endpoint = createEndpoint(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint(), registryID);
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.GET)
+                .path(LSASPath.REGISTRY_REPOSITORIES)
+                .addPathParameter(PATH_PARAMETER_REGISTRY_ID, registryID)
+                .authenticated()
+                .build();
 
-        return callDockerRegistryBrowser(endpoint, DOCKER_REGISTRY_CONTENT_GENERIC_TYPE, FALLBACK_DOCKER_REGISTRY_CONTENT);
+        return safeCall(() -> bridgeClient.call(request, DockerRegistryContent.class),
+                () -> String.format("Failed to retrieve repositories in registry=%s", registryID),
+                DockerRegistryContent.FALLBACK_DOCKER_REGISTRY_CONTENT);
     }
 
     @Override
     public DockerRepository getDockerRepositoryTags(String registryID, String repositoryID) {
 
-        String endpoint = createEndpoint(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint(), registryID, repositoryID);
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.GET)
+                .path(LSASPath.REGISTRY_REPOSITORIES_TAGS)
+                .addPathParameter(PATH_PARAMETER_REGISTRY_ID, registryID)
+                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repositoryID)
+                .authenticated()
+                .build();
 
-        return callDockerRegistryBrowser(endpoint, DOCKER_REPOSITORY_GENERIC_TYPE, FALLBACK_DOCKER_REPOSITORY);
+        return safeCall(() -> bridgeClient.call(request, DockerRepository.class),
+                () -> String.format("Failed to retrieve tags of repository=%s in registry=%s", repositoryID, registryID),
+                DockerRepository.FALLBACK_DOCKER_REPOSITORY);
     }
 
     @Override
     public void deleteDockerImageByTag(String registryID, String repositoryID, String tag) {
 
-        String endpoint = createEndpoint(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint(), registryID, repositoryID, tag);
+        RESTRequest request = RESTRequest.getBuilder()
+                .method(RequestMethod.DELETE)
+                .path(LSASPath.REGISTRY_REPOSITORIES_TAGS_TAG)
+                .addPathParameter(PATH_PARAMETER_REGISTRY_ID, registryID)
+                .addPathParameter(PATH_PARAMETER_REPOSITORY_ID, repositoryID)
+                .addPathParameter(PATH_PARAMETER_TAG_ID, tag)
+                .authenticated()
+                .build();
 
-        callDockerRegistryBrowser(endpoint, VOID_GENERIC_TYPE, null, SyncInvoker::delete);
+        safeCall(() -> bridgeClient.call(request),
+                () -> String.format("Failed to delete tag=%s of repository=%s in registry=%s", tag, repositoryID, registryID));
     }
 
-    private String createEndpoint(String... endpointParts) {
-        return String.join("/", endpointParts);
-    }
+    private <T> T safeCall(BridgeSupplier<T> bridgeCall, Supplier<String> fallbackMessageSupplier, T fallbackValue) {
 
-    private <T> T callDockerRegistryBrowser(String endpoint, GenericType<T> returnType, T fallbackValue) {
-        return callDockerRegistryBrowser(endpoint, returnType, fallbackValue, SyncInvoker::get);
-    }
-
-    private <T> T callDockerRegistryBrowser(String endpoint, GenericType<T> returnType, T fallbackValue, Function<Invocation.Builder, Response> requestMethodFunction) {
-
-        T returnValue = fallbackValue;
+        T returnValue;
         try {
-            Response response = callLSAS(endpoint, stackStatusConfigModel.getApiKey(), requestMethodFunction);
-            if (isSuccessful(response)) {
-                if (!VOID_GENERIC_TYPE.equals(returnType)) {
-                    returnValue = response.readEntity(returnType);
-                }
-            } else {
-                LOGGER.error("Response status returned by LSAS is {}", response.getStatus());
-            }
-            response.close();
+            returnValue = bridgeCall.get();
         } catch (Exception e) {
-            LOGGER.error("Docker Registry Browser request failed", e);
+            returnValue = fallbackValue;
+            LOGGER.error(fallbackMessageSupplier.get(), e);
         }
 
         return returnValue;
     }
 
-    private Response callLSAS(ClientConfigModel clientConfig) {
+    private void safeCall(BridgeRunnable bridgeCall, Supplier<String> fallbackMessageSupplier) {
 
-        return callLSAS(clientConfig.getDefaultEndpoint(), clientConfig.getApiKey(), SyncInvoker::get);
+        try {
+            bridgeCall.run();
+        } catch (Exception e) {
+            LOGGER.error(fallbackMessageSupplier.get(), e);
+        }
     }
 
-    private Response callLSAS(String endpoint, String apiKey, Function<Invocation.Builder, Response> requestMethodFunction) {
-
-        Invocation.Builder invocationBuilder = client.target(endpoint)
-                .request()
-                .header(X_API_KEY_HEADER, apiKey);
-
-        return requestMethodFunction.apply(invocationBuilder);
+    interface BridgeSupplier<T> {
+        T get() throws CommunicationFailureException;
     }
 
-    private boolean isSuccessful(Response response) {
-        return response.getStatusInfo().getFamily() == Response.Status.Family.SUCCESSFUL;
+    interface BridgeRunnable {
+        void run() throws CommunicationFailureException;
     }
 }

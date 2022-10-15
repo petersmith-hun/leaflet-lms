@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.failover.api.client.FailoverClient;
 import hu.psprog.leaflet.failover.api.domain.StatusResponse;
+import hu.psprog.leaflet.lms.service.domain.dashboard.DockerStatusJSClientHelperModel;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRepository;
@@ -10,6 +11,7 @@ import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.service.facade.adapter.dcp.impl.SEOConfigurationDCPAdapter;
 import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
+import hu.psprog.leaflet.lms.service.facade.client.factory.JSClientHelperModelFactory;
 import hu.psprog.leaflet.tlp.api.client.TLPClient;
 import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
@@ -31,14 +33,17 @@ public class SystemConfigurationFacadeImpl implements SystemConfigurationFacade 
     private final FailoverClient failoverClient;
     private final StackAdminServiceClient stackAdminServiceClient;
     private final TLPClient tlpClient;
+    private final JSClientHelperModelFactory<DockerStatusJSClientHelperModel> jsClientHelperModelFactory;
 
     @Autowired
     public SystemConfigurationFacadeImpl(SEOConfigurationDCPAdapter seoConfigurationDCPAdapter, FailoverClient failoverClient,
-                                         StackAdminServiceClient stackAdminServiceClient, TLPClient tlpClient) {
+                                         StackAdminServiceClient stackAdminServiceClient, TLPClient tlpClient,
+                                         JSClientHelperModelFactory<DockerStatusJSClientHelperModel> jsClientHelperModelFactory) {
         this.seoConfigurationDCPAdapter = seoConfigurationDCPAdapter;
         this.failoverClient = failoverClient;
         this.stackAdminServiceClient = stackAdminServiceClient;
         this.tlpClient = tlpClient;
+        this.jsClientHelperModelFactory = jsClientHelperModelFactory;
     }
 
     @Override
@@ -59,6 +64,11 @@ public class SystemConfigurationFacadeImpl implements SystemConfigurationFacade 
     @Override
     public List<Container> getExistingContainers() {
         return stackAdminServiceClient.getExistingContainers();
+    }
+
+    @Override
+    public DockerStatusJSClientHelperModel getJSClientHelperModel() {
+        return jsClientHelperModelFactory.getJSClientHelperModel();
     }
 
     @Override

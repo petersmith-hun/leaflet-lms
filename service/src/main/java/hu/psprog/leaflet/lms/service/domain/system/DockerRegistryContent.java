@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,6 +13,9 @@ import java.util.List;
  * @author Peter Smith
  */
 public class DockerRegistryContent {
+
+    public static final DockerRegistryContent FALLBACK_DOCKER_REGISTRY_CONTENT =
+            new DockerRegistryContent("unknown", Collections.emptyList());
 
     private final String registryName;
     private final List<String> repositories;

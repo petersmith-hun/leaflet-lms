@@ -42,6 +42,7 @@ public class ApplicationContextConfig {
     }
 
     @Bean
+    @Primary
     @ConditionalOnMissingBean(RequestAuthentication.class)
     public RequestAuthentication defaultRequestAuthentication() {
         return Collections::emptyMap;
