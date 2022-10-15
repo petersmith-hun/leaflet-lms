@@ -49,7 +49,9 @@ public class StackAdminServiceClientImplTest {
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
     private static final GenericType<Map<String, String>> REGISTRIES_GENERIC_TYPE = new GenericType<>() {};
     private static final String REGISTRY_ID = "registry-1";
+    private static final String GROUP_ID = "group1";
     private static final String REPOSITORY_ID = "repository-1";
+    private static final String GROUPED_REPOSITORY_ID = "group1/repository-1";
     private static final String TAG = "1.0";
 
     @Mock
@@ -248,7 +250,7 @@ public class StackAdminServiceClientImplTest {
     }
 
     @Test
-    public void shouldGetDockerRepositoryTagsReturnWithSuccess() throws CommunicationFailureException {
+    public void shouldGetDockerRepositoryTagsReturnWithSuccessForNonGroupedRepository() throws CommunicationFailureException {
 
         // given
         DockerRepository responseBody = new DockerRepository(REGISTRY_ID, REPOSITORY_ID, Collections.emptyList());
@@ -265,8 +267,34 @@ public class StackAdminServiceClientImplTest {
         RESTRequest request = restRequestCaptor.getValue();
         assertThat(request.getMethod(), equalTo(RequestMethod.GET));
         assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_REPOSITORIES_TAGS));
-        assertThat(request.getPathParameters().size(), equalTo(2));
+        assertThat(request.getPathParameters().size(), equalTo(3));
         assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("groupID"), nullValue());
+        assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
+        assertThat(request.isAuthenticationRequired(), is(true));
+    }
+
+    @Test
+    public void shouldGetDockerRepositoryTagsReturnWithSuccessForGroupedRepository() throws CommunicationFailureException {
+
+        // given
+        DockerRepository responseBody = new DockerRepository(REGISTRY_ID, GROUPED_REPOSITORY_ID, Collections.emptyList());
+
+        given(bridgeClient.call(any(RESTRequest.class), eq(DockerRepository.class))).willReturn(responseBody);
+
+        // when
+        DockerRepository result = stackAdminServiceClient.getDockerRepositoryTags(REGISTRY_ID, GROUPED_REPOSITORY_ID);
+
+        // then
+        assertThat(result, equalTo(responseBody));
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(DockerRepository.class));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_GROUPED_REPOSITORIES_TAGS));
+        assertThat(request.getPathParameters().size(), equalTo(3));
+        assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("groupID"), equalTo(GROUP_ID));
         assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
         assertThat(request.isAuthenticationRequired(), is(true));
     }
@@ -298,7 +326,7 @@ public class StackAdminServiceClientImplTest {
     }
 
     @Test
-    public void shouldDeleteDockerImageByTagProcessRequestWithSuccess() throws CommunicationFailureException {
+    public void shouldDeleteDockerImageByTagProcessRequestWithSuccessForNonGroupedRepository() throws CommunicationFailureException {
 
         // when
         stackAdminServiceClient.deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
@@ -308,8 +336,28 @@ public class StackAdminServiceClientImplTest {
         RESTRequest request = restRequestCaptor.getValue();
         assertThat(request.getMethod(), equalTo(RequestMethod.DELETE));
         assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_REPOSITORIES_TAGS_TAG));
-        assertThat(request.getPathParameters().size(), equalTo(3));
+        assertThat(request.getPathParameters().size(), equalTo(4));
         assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("groupID"), nullValue());
+        assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
+        assertThat(request.getPathParameters().get("tagID"), equalTo(TAG));
+        assertThat(request.isAuthenticationRequired(), is(true));
+    }
+
+    @Test
+    public void shouldDeleteDockerImageByTagProcessRequestWithSuccessForGroupedRepository() throws CommunicationFailureException {
+
+        // when
+        stackAdminServiceClient.deleteDockerImageByTag(REGISTRY_ID, GROUPED_REPOSITORY_ID, TAG);
+
+        // then
+        verify(bridgeClient).call(restRequestCaptor.capture());
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.DELETE));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_GROUPED_REPOSITORIES_TAGS_TAG));
+        assertThat(request.getPathParameters().size(), equalTo(4));
+        assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("groupID"), equalTo(GROUP_ID));
         assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
         assertThat(request.getPathParameters().get("tagID"), equalTo(TAG));
         assertThat(request.isAuthenticationRequired(), is(true));
