@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,6 +13,9 @@ import java.util.List;
  * @author Peter Smith
  */
 public class DockerRepository {
+
+    public static final DockerRepository FALLBACK_DOCKER_REPOSITORY =
+            new DockerRepository("unknown", "unknown", Collections.emptyList());
 
     private final String registry;
     private final String name;

@@ -1,34 +1,40 @@
 package hu.psprog.leaflet.lms.service.facade.client.impl;
 
-import hu.psprog.leaflet.lms.service.config.DockerClusterStatusConfigModel;
-import hu.psprog.leaflet.lms.service.config.StackStatusConfigModel;
+import hu.psprog.leaflet.bridge.client.BridgeClient;
+import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+import hu.psprog.leaflet.bridge.client.exception.RequestProcessingFailureException;
+import hu.psprog.leaflet.bridge.client.exception.ResourceNotFoundException;
+import hu.psprog.leaflet.bridge.client.request.RESTRequest;
+import hu.psprog.leaflet.bridge.client.request.RequestMethod;
 import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent.FALLBACK_DOCKER_REGISTRY_CONTENT;
+import static hu.psprog.leaflet.lms.service.domain.system.DockerRepository.FALLBACK_DOCKER_REPOSITORY;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Unit tests for {@link StackAdminServiceClientImpl}.
@@ -41,101 +47,44 @@ public class StackAdminServiceClientImplTest {
     private static final RegisteredServices REGISTERED_SERVICES = new RegisteredServices(Arrays.asList("SVC1", "SVC2", "SVC3"));
     private static final List<Container> CONTAINER_LIST = Collections.singletonList(Container.getBuilder().withId("1234").build());
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
+    private static final GenericType<Map<String, String>> REGISTRIES_GENERIC_TYPE = new GenericType<>() {};
     private static final String REGISTRY_ID = "registry-1";
     private static final String REPOSITORY_ID = "repository-1";
     private static final String TAG = "1.0";
-    private static final String REGISTERED_SERVICES_ENDPOINT = "/registered/services/endpoint";
-    private static final String EXISTING_CONTAINERS_ENDPOINT = "/existing/containers/endpoint";
-    private static final String DOCKER_REGISTRY_BROWSER_ENDPOINT = "/docker/registry/browser/endpoint";
-    private static final String DOCKER_REGISTRY_BROWSER_REGISTRY_ENDPOINT =
-            String.format("%s/%s", DOCKER_REGISTRY_BROWSER_ENDPOINT, REGISTRY_ID);
-    private static final String DOCKER_REGISTRY_BROWSER_REPOSITORY_ENDPOINT =
-            String.format("%s/%s/%s", DOCKER_REGISTRY_BROWSER_ENDPOINT, REGISTRY_ID, REPOSITORY_ID);
-    private static final String DOCKER_REGISTRY_BROWSER_TAG_ENDPOINT =
-            String.format("%s/%s/%s/%s", DOCKER_REGISTRY_BROWSER_ENDPOINT, REGISTRY_ID, REPOSITORY_ID, TAG);
-    private static final String API_KEY_FOR_REGISTERED_SERVICES = "api-key-for-registered-services";
-    private static final String API_KEY_FOR_CONTAINERS = "api-key-for-stack-status";
-    private static final String API_KEY_HEADER = "X-Api-Key";
-    private static final DockerRegistryContent FALLBACK_DOCKER_REGISTRY_CONTENT =
-            new DockerRegistryContent("unknown", Collections.emptyList());
-    private static final DockerRepository FALLBACK_DOCKER_REPOSITORY =
-            new DockerRepository("unknown", "unknown", Collections.emptyList());
-
 
     @Mock
-    private Client client;
+    private BridgeClient bridgeClient;
 
-    @Mock
-    private Response response;
-
-    @Mock
-    private WebTarget webTarget;
-
-    @Mock
-    private Invocation.Builder builder;
-
-    @Mock
-    private StackStatusConfigModel stackStatusConfigModel;
-
-    @Mock
-    private DockerClusterStatusConfigModel dockerClusterStatusConfigModel;
+    @Captor
+    private ArgumentCaptor<RESTRequest> restRequestCaptor;
 
     @InjectMocks
     private StackAdminServiceClientImpl stackAdminServiceClient;
 
     @Test
-    public void shouldGetRegisteredServicesReturnWithSuccess() {
+    public void shouldGetRegisteredServicesReturnWithSuccess() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
-        given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
-        given(response.readEntity(RegisteredServices.class)).willReturn(REGISTERED_SERVICES);
+        given(bridgeClient.call(any(RESTRequest.class), eq(RegisteredServices.class))).willReturn(REGISTERED_SERVICES);
 
         // when
         RegisteredServices result = stackAdminServiceClient.getRegisteredServices();
 
         // then
         assertThat(result, equalTo(REGISTERED_SERVICES));
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(RegisteredServices.class));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTERED_SERVICES));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldGetRegisteredServicesReturnNullForNonSuccessfulResponse() {
+    public void shouldGetRegisteredServicesReturnNullForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
-        given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.INTERNAL_SERVER_ERROR);
-
-        // when
-        RegisteredServices result = stackAdminServiceClient.getRegisteredServices();
-
-        // then
-        assertThat(result, nullValue());
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
-    }
-
-    @Test
-    public void shouldGetRegisteredServicesReturnNullWhenClientThrowsException() {
-
-        // given
-        given(stackStatusConfigModel.getDefaultEndpoint()).willReturn(REGISTERED_SERVICES_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_REGISTERED_SERVICES);
-        given(client.target(REGISTERED_SERVICES_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_REGISTERED_SERVICES)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).get();
+        doThrow(RequestProcessingFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(RegisteredServices.class));
 
         // when
         RegisteredServices result = stackAdminServiceClient.getRegisteredServices();
@@ -145,317 +94,250 @@ public class StackAdminServiceClientImplTest {
     }
 
     @Test
-    public void shouldGetExistingContainersReturnWithSuccess() {
+    public void shouldGetRegisteredServicesReturnNullWhenClientThrowsException() throws CommunicationFailureException {
 
         // given
-        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
-        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
-        given(response.readEntity(CONTAINER_LIST_GENERIC_TYPE)).willReturn(CONTAINER_LIST);
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(RegisteredServices.class));
+
+        // when
+        RegisteredServices result = stackAdminServiceClient.getRegisteredServices();
+
+        // then
+        assertThat(result, nullValue());
+    }
+
+    @Test
+    public void shouldGetExistingContainersReturnWithSuccess() throws CommunicationFailureException {
+
+        // given
+        given(bridgeClient.call(any(RESTRequest.class), eq(CONTAINER_LIST_GENERIC_TYPE))).willReturn(CONTAINER_LIST);
 
         // when
         List<Container> result = stackAdminServiceClient.getExistingContainers();
 
         // then
         assertThat(result, equalTo(CONTAINER_LIST));
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(CONTAINER_LIST_GENERIC_TYPE));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.CONTAINERS));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldGetExistingContainersReturnEmptyListForNonSuccessfulResponse() {
+    public void shouldGetExistingContainersReturnEmptyListForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
-        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.INTERNAL_SERVER_ERROR);
+        doThrow(RequestProcessingFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(CONTAINER_LIST_GENERIC_TYPE));
 
         // when
         List<Container> result = stackAdminServiceClient.getExistingContainers();
 
         // then
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
         assertThat(result, equalTo(Collections.emptyList()));
     }
 
     @Test
-    public void shouldGetExistingContainersReturnEmptyListWhenClientThrowsException() {
+    public void shouldGetExistingContainersReturnEmptyListWhenClientThrowsException() throws CommunicationFailureException {
 
         // given
-        given(dockerClusterStatusConfigModel.getDefaultEndpoint()).willReturn(EXISTING_CONTAINERS_ENDPOINT);
-        given(dockerClusterStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(EXISTING_CONTAINERS_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).get();
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(CONTAINER_LIST_GENERIC_TYPE));
 
         // when
         List<Container> result = stackAdminServiceClient.getExistingContainers();
 
         // then
-        verifyNoMoreInteractions(response);
         assertThat(result, equalTo(Collections.emptyList()));
     }
 
     @Test
-    public void shouldGetConfiguredRegistriesReturnWithSuccess() {
+    public void shouldGetConfiguredRegistriesReturnWithSuccess() throws CommunicationFailureException {
 
         // given
         Map<String, String> responseBody = Map.of("registry-1", "http://localhost");
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
-        given(response.readEntity(new GenericType<Map<String, String>>(){})).willReturn(responseBody);
+
+        given(bridgeClient.call(any(RESTRequest.class), eq(REGISTRIES_GENERIC_TYPE))).willReturn(responseBody);
 
         // when
         Map<String, String> result = stackAdminServiceClient.getConfiguredRegistries();
 
         // then
         assertThat(result, equalTo(responseBody));
-        verify(response).close();
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(REGISTRIES_GENERIC_TYPE));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldGetConfiguredRegistriesReturnFallbackValueForNonSuccessfulResponse() {
+    public void shouldGetConfiguredRegistriesReturnFallbackValueForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.NOT_FOUND);
+        doThrow(ResourceNotFoundException.class).when(bridgeClient).call(any(RESTRequest.class), eq(REGISTRIES_GENERIC_TYPE));
 
         // when
         Map<String, String> result = stackAdminServiceClient.getConfiguredRegistries();
 
         // then
         assertThat(result, equalTo(Collections.emptyMap()));
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldGetConfiguredRegistriesReturnFallbackValueOnException() {
+    public void shouldGetConfiguredRegistriesReturnFallbackValueOnException() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).get();
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(REGISTRIES_GENERIC_TYPE));
 
         // when
         Map<String, String> result = stackAdminServiceClient.getConfiguredRegistries();
 
         // then
         assertThat(result, equalTo(Collections.emptyMap()));
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldGetDockerRepositoriesReturnWithSuccess() {
+    public void shouldGetDockerRepositoriesReturnWithSuccess() throws CommunicationFailureException {
 
         // given
         DockerRegistryContent responseBody = new DockerRegistryContent(REGISTRY_ID, Collections.emptyList());
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REGISTRY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
-        given(response.readEntity(new GenericType<DockerRegistryContent>(){})).willReturn(responseBody);
+
+        given(bridgeClient.call(any(RESTRequest.class), eq(DockerRegistryContent.class))).willReturn(responseBody);
 
         // when
         DockerRegistryContent result = stackAdminServiceClient.getDockerRepositories(REGISTRY_ID);
 
         // then
         assertThat(result, equalTo(responseBody));
-        verify(response).close();
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(DockerRegistryContent.class));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_REPOSITORIES));
+        assertThat(request.getPathParameters().size(), equalTo(1));
+        assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldGetDockerRepositoriesReturnFallbackValueForNonSuccessfulResponse() {
+    public void shouldGetDockerRepositoriesReturnFallbackValueForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REGISTRY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.NOT_FOUND);
+        doThrow(ResourceNotFoundException.class).when(bridgeClient).call(any(RESTRequest.class), eq(DockerRegistryContent.class));
 
         // when
         DockerRegistryContent result = stackAdminServiceClient.getDockerRepositories(REGISTRY_ID);
 
         // then
         assertThat(result, equalTo(FALLBACK_DOCKER_REGISTRY_CONTENT));
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldGetDockerRepositoriesReturnFallbackValueOnException() {
+    public void shouldGetDockerRepositoriesReturnFallbackValueOnException() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REGISTRY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).get();
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(DockerRegistryContent.class));
 
         // when
         DockerRegistryContent result = stackAdminServiceClient.getDockerRepositories(REGISTRY_ID);
 
         // then
         assertThat(result, equalTo(FALLBACK_DOCKER_REGISTRY_CONTENT));
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldGetDockerRepositoryTagsReturnWithSuccess() {
+    public void shouldGetDockerRepositoryTagsReturnWithSuccess() throws CommunicationFailureException {
 
         // given
         DockerRepository responseBody = new DockerRepository(REGISTRY_ID, REPOSITORY_ID, Collections.emptyList());
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REPOSITORY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
-        given(response.readEntity(new GenericType<DockerRepository>(){})).willReturn(responseBody);
+
+        given(bridgeClient.call(any(RESTRequest.class), eq(DockerRepository.class))).willReturn(responseBody);
 
         // when
         DockerRepository result = stackAdminServiceClient.getDockerRepositoryTags(REGISTRY_ID, REPOSITORY_ID);
 
         // then
         assertThat(result, equalTo(responseBody));
-        verify(response).close();
+
+        verify(bridgeClient).call(restRequestCaptor.capture(), eq(DockerRepository.class));
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.GET));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_REPOSITORIES_TAGS));
+        assertThat(request.getPathParameters().size(), equalTo(2));
+        assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldGetDockerRepositoryTagsReturnFallbackValueForNonSuccessfulResponse() {
+    public void shouldGetDockerRepositoryTagsReturnFallbackValueForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REPOSITORY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.get()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.NOT_FOUND);
+        doThrow(ResourceNotFoundException.class).when(bridgeClient).call(any(RESTRequest.class), eq(DockerRepository.class));
 
         // when
         DockerRepository result = stackAdminServiceClient.getDockerRepositoryTags(REGISTRY_ID, REPOSITORY_ID);
 
         // then
         assertThat(result, equalTo(FALLBACK_DOCKER_REPOSITORY));
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldGetDockerRepositoryTagsReturnFallbackValueOnException() {
+    public void shouldGetDockerRepositoryTagsReturnFallbackValueOnException() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_REPOSITORY_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).get();
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class), eq(DockerRepository.class));
 
         // when
         DockerRepository result = stackAdminServiceClient.getDockerRepositoryTags(REGISTRY_ID, REPOSITORY_ID);
 
         // then
         assertThat(result, equalTo(FALLBACK_DOCKER_REPOSITORY));
-        verifyNoMoreInteractions(response);
     }
 
     @Test
-    public void shouldDeleteDockerImageByTagProcessRequestWithSuccess() {
-
-        // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_TAG_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.delete()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.OK);
+    public void shouldDeleteDockerImageByTagProcessRequestWithSuccess() throws CommunicationFailureException {
 
         // when
         stackAdminServiceClient.deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
 
         // then
-        verify(response).getStatusInfo();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
+        verify(bridgeClient).call(restRequestCaptor.capture());
+        RESTRequest request = restRequestCaptor.getValue();
+        assertThat(request.getMethod(), equalTo(RequestMethod.DELETE));
+        assertThat(request.getPath(), equalTo(LSASPath.REGISTRY_REPOSITORIES_TAGS_TAG));
+        assertThat(request.getPathParameters().size(), equalTo(3));
+        assertThat(request.getPathParameters().get("registryID"), equalTo(REGISTRY_ID));
+        assertThat(request.getPathParameters().get("repositoryID"), equalTo(REPOSITORY_ID));
+        assertThat(request.getPathParameters().get("tagID"), equalTo(TAG));
+        assertThat(request.isAuthenticationRequired(), is(true));
     }
 
     @Test
-    public void shouldDeleteDockerImageByTagSilentlyFailForNonSuccessfulResponse() {
+    public void shouldDeleteDockerImageByTagSilentlyFailForNonSuccessfulResponse() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_TAG_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        given(builder.delete()).willReturn(response);
-        given(response.getStatusInfo()).willReturn(Response.Status.NOT_FOUND);
+        doThrow(ResourceNotFoundException.class).when(bridgeClient).call(any(RESTRequest.class));
 
         // when
         stackAdminServiceClient.deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
 
         // then
-        verify(response).getStatusInfo();
-        verify(response).getStatus();
-        verify(response).close();
-        verifyNoMoreInteractions(response);
+        // failing silently
     }
 
     @Test
-    public void shouldDeleteDockerImageByTagSilentlyFailOnException() {
+    public void shouldDeleteDockerImageByTagSilentlyFailOnException() throws CommunicationFailureException {
 
         // given
-        given(stackStatusConfigModel.getDockerRepositoryBrowserEndpoint()).willReturn(DOCKER_REGISTRY_BROWSER_ENDPOINT);
-        given(stackStatusConfigModel.getApiKey()).willReturn(API_KEY_FOR_CONTAINERS);
-        given(client.target(DOCKER_REGISTRY_BROWSER_TAG_ENDPOINT)).willReturn(webTarget);
-        given(webTarget.request()).willReturn(builder);
-        given(builder.header(API_KEY_HEADER, API_KEY_FOR_CONTAINERS)).willReturn(builder);
-        doThrow(RuntimeException.class).when(builder).delete();
+        doThrow(CommunicationFailureException.class).when(bridgeClient).call(any(RESTRequest.class));
 
         // when
         stackAdminServiceClient.deleteDockerImageByTag(REGISTRY_ID, REPOSITORY_ID, TAG);
 
         // then
-        verifyNoMoreInteractions(response);
+        // failing silently
     }
 }

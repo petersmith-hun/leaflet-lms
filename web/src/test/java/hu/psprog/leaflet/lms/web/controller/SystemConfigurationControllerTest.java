@@ -52,6 +52,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     private static final String FIELD_TAGS = "tags";
     private static final String FIELD_CURRENT_REGISTRY = "currentRegistry";
     private static final String FIELD_CURRENT_REPOSITORY = "currentRepository";
+    private static final String FIELD_STACK_ADMIN_CLIENT = "stackAdminClient";
 
     private static final String REGISTRY_ID = "registry-1";
     private static final String REPOSITORY_ID = "repository-1";
@@ -183,7 +184,7 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
 
         // then
         verifyViewCreated(VIEW_DOCKER);
-        verifyFieldsSet(FIELD_EXISTING_CONTAINERS);
+        verifyFieldsSet(FIELD_EXISTING_CONTAINERS, FIELD_STACK_ADMIN_CLIENT);
         verify(systemConfigurationFacade).getExistingContainers();
     }
 

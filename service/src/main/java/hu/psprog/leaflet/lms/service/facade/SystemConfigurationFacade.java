@@ -2,6 +2,7 @@ package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.failover.api.domain.StatusResponse;
+import hu.psprog.leaflet.lms.service.domain.dashboard.DockerStatusJSClientHelperModel;
 import hu.psprog.leaflet.lms.service.domain.system.Container;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRegistryContent;
 import hu.psprog.leaflet.lms.service.domain.system.DockerRepository;
@@ -50,6 +51,13 @@ public interface SystemConfigurationFacade {
      * @return existing Docker containers as {@link List} of {@link Container} objects.
      */
     List<Container> getExistingContainers();
+
+    /**
+     * Returns a JavaScript client helper object for Docker status monitoring.
+     *
+     * @return JS client helper object of type {@link DockerStatusJSClientHelperModel}
+     */
+    DockerStatusJSClientHelperModel getJSClientHelperModel();
 
     /**
      * Calls LSAS list configured Docker registries endpoint.

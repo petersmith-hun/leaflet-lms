@@ -20,8 +20,8 @@ public class DashboardController {
 
     private static final String VIEW_DASHBOARD_HOME = "view/dashboard/home";
 
-    private DashboardFacade dashboardFacade;
-    private ModelAndViewFactory modelAndViewFactory;
+    private final DashboardFacade dashboardFacade;
+    private final ModelAndViewFactory modelAndViewFactory;
 
     @Autowired
     public DashboardController(DashboardFacade dashboardFacade, ModelAndViewFactory modelAndViewFactory) {
@@ -39,6 +39,7 @@ public class DashboardController {
 
         return modelAndViewFactory.createForView(VIEW_DASHBOARD_HOME)
                 .withAttribute("registeredServices", dashboardFacade.getRegisteredServices())
+                .withAttribute("stackAdminClient", dashboardFacade.getJSClientHelperModel())
                 .build();
     }
 }

@@ -2,8 +2,10 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.lms.service.config.StackStatusConfigModel;
 import hu.psprog.leaflet.lms.service.domain.dashboard.RegisteredServices;
+import hu.psprog.leaflet.lms.service.domain.dashboard.StackStatusJSClientHelperModel;
 import hu.psprog.leaflet.lms.service.facade.DashboardFacade;
 import hu.psprog.leaflet.lms.service.facade.client.StackAdminServiceClient;
+import hu.psprog.leaflet.lms.service.facade.client.factory.JSClientHelperModelFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +22,16 @@ import java.util.Optional;
 @Service
 public class DashboardFacadeImpl implements DashboardFacade {
 
-    private StackAdminServiceClient stackAdminServiceClient;
-    private StackStatusConfigModel stackStatusConfigModel;
+    private final StackAdminServiceClient stackAdminServiceClient;
+    private final StackStatusConfigModel stackStatusConfigModel;
+    private final JSClientHelperModelFactory<StackStatusJSClientHelperModel> jsClientHelperModelFactory;
 
     @Autowired
-    public DashboardFacadeImpl(StackAdminServiceClient stackAdminServiceClient, StackStatusConfigModel stackStatusConfigModel) {
+    public DashboardFacadeImpl(StackAdminServiceClient stackAdminServiceClient, StackStatusConfigModel stackStatusConfigModel,
+                               JSClientHelperModelFactory<StackStatusJSClientHelperModel> jsClientHelperModelFactory) {
         this.stackAdminServiceClient = stackAdminServiceClient;
         this.stackStatusConfigModel = stackStatusConfigModel;
+        this.jsClientHelperModelFactory = jsClientHelperModelFactory;
     }
 
     @Override
@@ -35,6 +40,11 @@ public class DashboardFacadeImpl implements DashboardFacade {
         return stackStatusConfigModel.isEnabled()
                 ? getListOfRegisteredServices()
                 : Collections.emptyList();
+    }
+
+    @Override
+    public StackStatusJSClientHelperModel getJSClientHelperModel() {
+        return jsClientHelperModelFactory.getJSClientHelperModel();
     }
 
     private List<String> getListOfRegisteredServices() {

@@ -77,10 +77,10 @@ public abstract class AbstractControllerTest {
     ModelAndViewFactory modelAndViewFactory;
 
     @Mock(lenient = true)
-    private ModelAndViewFactory.ModelAndViewWrapper modelAndViewWrapper;
+    ModelAndViewFactory.ModelAndViewWrapper modelAndViewWrapper;
 
     @Mock(lenient = true)
-    private ModelAndView modelAndView;
+    ModelAndView modelAndView;
 
 
     @BeforeEach

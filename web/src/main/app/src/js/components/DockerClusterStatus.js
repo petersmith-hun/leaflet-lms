@@ -16,15 +16,13 @@ class DockerClusterStatus {
 		};
 		/* eslint-disable no-undef */
 		this.dockerClusterStatusConfig = typeof dockerClusterStatusConfig === 'undefined'
-			? {enabled: false, apiKey: null}
+			? {enabled: false, authorization: {}}
 			: dockerClusterStatusConfig;
 		this.eventSourceInitDict = {
 			https: {
 				rejectUnauthorized: false
 			},
-			headers: {
-				"X-Api-Key": this.dockerClusterStatusConfig.apiKey
-			}
+			headers: this.dockerClusterStatusConfig.authorization
 		};
 	}
 

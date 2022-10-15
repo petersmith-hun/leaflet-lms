@@ -112,6 +112,7 @@ public class SystemConfigurationController extends BaseController {
 
         return modelAndViewFactory.createForView(VIEW_SYSTEM_DOCKER)
                 .withAttribute("existingContainers", systemConfigurationFacade.getExistingContainers())
+                .withAttribute("stackAdminClient", systemConfigurationFacade.getJSClientHelperModel())
                 .build();
     }
 

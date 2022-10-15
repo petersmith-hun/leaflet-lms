@@ -7,15 +7,13 @@ class ServiceStackStatus {
 		this.selector = "#dashboard";
 		/* eslint-disable no-undef */
 		this.stackStatusConfig = typeof stackStatusConfig === 'undefined'
-			? {enabled: false, apiKey: null}
+			? {enabled: false, authorization: {}}
 			: stackStatusConfig;
 		this.eventSourceInitDict = {
 			https: {
 				rejectUnauthorized: false
 			},
-			headers: {
-				"X-Api-Key": this.stackStatusConfig.apiKey
-			}
+			headers: this.stackStatusConfig.authorization
 		};
 	}
 
