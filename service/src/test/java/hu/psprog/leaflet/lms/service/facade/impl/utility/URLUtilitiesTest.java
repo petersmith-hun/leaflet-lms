@@ -1,6 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade.impl.utility;
 
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,8 +77,8 @@ public class URLUtilitiesTest {
     public void shouldExtractFilePathUUID(String reference) {
 
         // given
-        FileDataModel fileDataModel = FileDataModel.getBuilder()
-                .withReference(reference)
+        FileDataModel fileDataModel = FileDataModel.builder()
+                .reference(reference)
                 .build();
 
         // when

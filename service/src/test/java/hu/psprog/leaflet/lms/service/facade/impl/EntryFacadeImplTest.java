@@ -6,7 +6,6 @@ import hu.psprog.leaflet.api.rest.response.common.BaseBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
 import hu.psprog.leaflet.api.rest.response.tag.TagDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
@@ -18,6 +17,7 @@ import hu.psprog.leaflet.lms.service.facade.AttachmentFacade;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.TagFacade;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -189,7 +189,7 @@ public class EntryFacadeImplTest {
 
         given(categoryFacade.getAllCategories()).willReturn(Collections.singletonList(new CategoryDataModel()));
         given(tagFacade.getAllTags()).willReturn(Collections.singletonList(new TagDataModel()));
-        given(fileFacade.getUploadedFiles()).willReturn(Collections.singletonList(new FileDataModel()));
+        given(fileFacade.getUploadedFiles()).willReturn(Collections.singletonList(FileDataModel.builder().build()));
         if (withEntryData) {
             given(entryBridgeService.getEntryByID(ENTRY_ID)).willReturn(wrapResponse(prepareEditEntryDataModel()));
         }

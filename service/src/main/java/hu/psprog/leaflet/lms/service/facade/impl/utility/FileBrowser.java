@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.service.facade.impl.utility;
 
-import hu.psprog.leaflet.api.rest.response.file.DirectoryDataModel;
-import hu.psprog.leaflet.api.rest.response.file.DirectoryListDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.bridge.service.FileBridgeService;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryDataModel;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryListDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileListDataModel;
+import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

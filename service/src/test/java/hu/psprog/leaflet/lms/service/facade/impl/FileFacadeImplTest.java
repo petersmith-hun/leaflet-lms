@@ -1,17 +1,17 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
-import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
-import hu.psprog.leaflet.api.rest.response.file.DirectoryDataModel;
-import hu.psprog.leaflet.api.rest.response.file.DirectoryListDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.bridge.service.FileBridgeService;
 import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.FileBrowser;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
+import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryDataModel;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryListDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileListDataModel;
+import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -75,8 +75,8 @@ public class FileFacadeImplTest {
     public void shouldGetUploadedFiles() throws CommunicationFailureException {
 
         // given
-        given(fileBridgeService.getUploadedFiles()).willReturn(FileListDataModel.getBuilder()
-                .withItem(prepareFileDataModel())
+        given(fileBridgeService.getUploadedFiles()).willReturn(FileListDataModel.builder()
+                .files(List.of(prepareFileDataModel()))
                 .build());
 
         // when
@@ -91,7 +91,7 @@ public class FileFacadeImplTest {
     public void shouldReturnEmptyListOnEmptyResponse() throws CommunicationFailureException {
 
         // given
-        given(fileBridgeService.getUploadedFiles()).willReturn(FileListDataModel.getBuilder().build());
+        given(fileBridgeService.getUploadedFiles()).willReturn(FileListDataModel.builder().build());
 
         // when
         List<FileDataModel> result = fileFacade.getUploadedFiles();
@@ -180,7 +180,7 @@ public class FileFacadeImplTest {
         given(urlUtilities.extractFilePathUUID(fileDataModel)).willReturn(PATH_UUID);
 
         // when
-        UUID result = fileFacade.processFileUpload(new FileUploadRequestModel());
+        UUID result = fileFacade.processFileUpload(FileUploadRequestModel.builder().build());
 
         // then
         assertThat(result, equalTo(PATH_UUID));
@@ -193,7 +193,7 @@ public class FileFacadeImplTest {
         given(fileBridgeService.uploadFile(any(FileUploadRequestModel.class))).willReturn(null);
 
         // when
-        UUID result = fileFacade.processFileUpload(new FileUploadRequestModel());
+        UUID result = fileFacade.processFileUpload(FileUploadRequestModel.builder().build());
 
         // then
         assertThat(result, nullValue());
@@ -204,7 +204,7 @@ public class FileFacadeImplTest {
     public void shouldProcessUpdateFileMetaInfo() throws CommunicationFailureException {
 
         // given
-        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = new UpdateFileMetaInfoRequestModel();
+        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = UpdateFileMetaInfoRequestModel.builder().build();
 
         // when
         fileFacade.processUpdateFileMetaInfo(PATH_UUID, updateFileMetaInfoRequestModel);
@@ -217,7 +217,7 @@ public class FileFacadeImplTest {
     public void shouldProcessCreateDirectory() throws CommunicationFailureException {
 
         // given
-        DirectoryCreationRequestModel directoryCreationRequestModel = new DirectoryCreationRequestModel();
+        DirectoryCreationRequestModel directoryCreationRequestModel = DirectoryCreationRequestModel.builder().build();
 
         // when
         fileFacade.processCreateDirectory(directoryCreationRequestModel);
@@ -237,22 +237,24 @@ public class FileFacadeImplTest {
     }
 
     private DirectoryListDataModel prepareDirectoryListDataModel() {
-        return DirectoryListDataModel.getBuilder()
-                .withItem(prepareDirectoryDataModel(IMAGES_ROOT, FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG))
-                .withItem(prepareDirectoryDataModel(OTHERS_ROOT, FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR))
+        return DirectoryListDataModel.builder()
+                .acceptors(List.of(
+                        prepareDirectoryDataModel(IMAGES_ROOT, FAKE_MIME_IMAGE_JPG, FAKE_MIME_IMAGE_PNG),
+                        prepareDirectoryDataModel(OTHERS_ROOT, FAKE_MIME_OTHER_EXE, FAKE_MIME_OTHER_JAR)
+                ))
                 .build();
     }
 
     private DirectoryDataModel prepareDirectoryDataModel(String root, String... mime) {
-        return DirectoryDataModel.getBuilder()
-                .withRoot(root)
-                .withAcceptableMimeTypes(Arrays.asList(mime))
+        return DirectoryDataModel.builder()
+                .root(root)
+                .acceptableMimeTypes(Arrays.asList(mime))
                 .build();
     }
 
     private FileDataModel prepareFileDataModel() {
-        return FileDataModel.getBuilder()
-                .withReference(REFERENCE)
+        return FileDataModel.builder()
+                .reference(REFERENCE)
                 .build();
     }
 
