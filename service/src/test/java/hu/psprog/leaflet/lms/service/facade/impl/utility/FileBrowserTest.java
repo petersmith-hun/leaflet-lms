@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.service.facade.impl.utility;
 
-import hu.psprog.leaflet.api.rest.response.file.DirectoryDataModel;
-import hu.psprog.leaflet.api.rest.response.file.DirectoryListDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
-import hu.psprog.leaflet.api.rest.response.file.FileListDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.bridge.service.FileBridgeService;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryDataModel;
+import hu.psprog.leaflet.lsrs.api.response.DirectoryListDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileListDataModel;
+import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -96,35 +96,39 @@ public class FileBrowserTest {
     }
 
     private DirectoryListDataModel prepareDirectoryListDataModel() {
-        return DirectoryListDataModel.getBuilder()
-                .withItem(prepareDirectoryDataModel(ROOT_IMAGES))
-                .withItem(prepareDirectoryDataModel(ROOT_OTHERS))
+        return DirectoryListDataModel.builder()
+                .acceptors(List.of(
+                        prepareDirectoryDataModel(ROOT_IMAGES),
+                        prepareDirectoryDataModel(ROOT_OTHERS)
+                ))
                 .build();
     }
 
     private DirectoryDataModel prepareDirectoryDataModel(String root) {
-        return DirectoryDataModel.getBuilder()
-                .withRoot(root)
-                .withChildren(Arrays.asList(SUB_1, SUB_2, SUB1_SUB3, SUB1_SUB4, SUB2_SUB5, SUB2_SUB5_SUB6))
+        return DirectoryDataModel.builder()
+                .root(root)
+                .children(Arrays.asList(SUB_1, SUB_2, SUB1_SUB3, SUB1_SUB4, SUB2_SUB5, SUB2_SUB5_SUB6))
                 .build();
     }
 
     private FileListDataModel prepareFileListDataModel() {
-        return FileListDataModel.getBuilder()
-                .withItem(prepareFileDataModel(IMAGES_PART1_IMAGE1_JPG))
-                .withItem(prepareFileDataModel(IMAGES_IMAGE2_JPG))
-                .withItem(prepareFileDataModel(IMAGES_IMAGE3_JPG))
-                .withItem(prepareFileDataModel(IMAGES_PART1_IMAGE4_JPG))
-                .withItem(prepareFileDataModel(IMAGES_PART1_IMAGE5_JPG))
-                .withItem(prepareFileDataModel(IMAGES_PART1_IMAGE6_JPG))
-                .withItem(prepareFileDataModel(IMAGES_PART2_IMAGE7_JPG))
+        return FileListDataModel.builder()
+                .files(List.of(
+                        prepareFileDataModel(IMAGES_PART1_IMAGE1_JPG),
+                        prepareFileDataModel(IMAGES_IMAGE2_JPG),
+                        prepareFileDataModel(IMAGES_IMAGE3_JPG),
+                        prepareFileDataModel(IMAGES_PART1_IMAGE4_JPG),
+                        prepareFileDataModel(IMAGES_PART1_IMAGE5_JPG),
+                        prepareFileDataModel(IMAGES_PART1_IMAGE6_JPG),
+                        prepareFileDataModel(IMAGES_PART2_IMAGE7_JPG)
+                ))
                 .build();
     }
 
     private FileDataModel prepareFileDataModel(String path) {
-        return FileDataModel.getBuilder()
-                .withReference(String.format(REFERENCE_PATTERN, UUID.randomUUID()))
-                .withPath(path)
+        return FileDataModel.builder()
+                .reference(String.format(REFERENCE_PATTERN, UUID.randomUUID()))
+                .path(path)
                 .build();
     }
 

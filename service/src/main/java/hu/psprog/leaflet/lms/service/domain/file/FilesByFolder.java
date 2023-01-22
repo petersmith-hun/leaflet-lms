@@ -1,6 +1,6 @@
 package hu.psprog.leaflet.lms.service.domain.file;
 
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

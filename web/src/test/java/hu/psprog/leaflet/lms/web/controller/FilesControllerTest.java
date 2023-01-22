@@ -1,12 +1,12 @@
 package hu.psprog.leaflet.lms.web.controller;
 
-import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
+import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
@@ -114,7 +114,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessEditFileMetaInfo() throws CommunicationFailureException {
 
         // given
-        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = new UpdateFileMetaInfoRequestModel();
+        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = UpdateFileMetaInfoRequestModel.builder().build();
 
         // when
         filesController.processEditFileMetaInfo(PATH_UUID, updateFileMetaInfoRequestModel, redirectAttributes);
@@ -129,7 +129,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessEditFileMetaInfoHandleValidationFailure() throws CommunicationFailureException {
 
         // given
-        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = new UpdateFileMetaInfoRequestModel();
+        UpdateFileMetaInfoRequestModel updateFileMetaInfoRequestModel = UpdateFileMetaInfoRequestModel.builder().build();
         doThrow(new ValidationFailureException(response)).when(fileFacade).processUpdateFileMetaInfo(PATH_UUID, updateFileMetaInfoRequestModel);
 
         // when
@@ -162,7 +162,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessFileUpload() throws CommunicationFailureException {
 
         // given
-        FileUploadRequestModel fileUploadRequestModel = new FileUploadRequestModel();
+        FileUploadRequestModel fileUploadRequestModel = FileUploadRequestModel.builder().build();
         given(fileFacade.processFileUpload(fileUploadRequestModel)).willReturn(PATH_UUID);
 
         // when
@@ -178,7 +178,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessFileUploadHandleValidationFailure() throws CommunicationFailureException {
 
         // given
-        FileUploadRequestModel fileUploadRequestModel = new FileUploadRequestModel();
+        FileUploadRequestModel fileUploadRequestModel = FileUploadRequestModel.builder().build();
         doThrow(new ValidationFailureException(response)).when(fileFacade).processFileUpload(fileUploadRequestModel);
         given(request.getServletPath()).willReturn(SERVLET_PATH);
 
@@ -204,7 +204,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessCreateDirectory() throws CommunicationFailureException {
 
         // given
-        DirectoryCreationRequestModel directoryCreationRequestModel = new DirectoryCreationRequestModel();
+        DirectoryCreationRequestModel directoryCreationRequestModel = DirectoryCreationRequestModel.builder().build();
 
         // when
         filesController.processCreateDirectory(directoryCreationRequestModel, redirectAttributes, request);
@@ -219,7 +219,7 @@ public class FilesControllerTest extends AbstractControllerTest {
     public void shouldProcessCreateDirectoryHandleValidationFailure() throws CommunicationFailureException {
 
         // given
-        DirectoryCreationRequestModel directoryCreationRequestModel = new DirectoryCreationRequestModel();
+        DirectoryCreationRequestModel directoryCreationRequestModel = DirectoryCreationRequestModel.builder().build();
         doThrow(new ValidationFailureException(response)).when(fileFacade).processCreateDirectory(directoryCreationRequestModel);
         given(request.getServletPath()).willReturn(SERVLET_PATH);
 

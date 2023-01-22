@@ -1,15 +1,15 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
-import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.bridge.service.FileBridgeService;
 import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.FileBrowser;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
+import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +33,9 @@ public class FileFacadeImpl implements FileFacade {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileFacadeImpl.class);
 
-    private FileBridgeService fileBridgeService;
-    private FileBrowser fileBrowser;
-    private URLUtilities urlUtilities;
+    private final FileBridgeService fileBridgeService;
+    private final FileBrowser fileBrowser;
+    private final URLUtilities urlUtilities;
 
     @Autowired
     public FileFacadeImpl(FileBridgeService fileBridgeService, FileBrowser fileBrowser, URLUtilities urlUtilities) {

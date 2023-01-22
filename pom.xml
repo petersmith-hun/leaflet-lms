@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>lms</artifactId>
-    <version>2.1.0-dev</version>
+    <version>2.2.0-dev</version>
     <packaging>pom</packaging>
 
     <parent>
@@ -29,7 +29,7 @@
         <java.version>11</java.version>
 
         <!-- overrides for leaflet internal libs -->
-        <leaflet.rcp.version>1.8.0</leaflet.rcp.version>
+        <leaflet.rcp.version>1.10.0</leaflet.rcp.version>
 
         <!-- Docker build configuration -->
         <!--suppress UnresolvedMavenProperty -->
@@ -46,6 +46,16 @@
         <skip.nodeBuild>false</skip.nodeBuild>
 
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>hu.psprog.leaflet</groupId>
+                <artifactId>lsrs-rest-client</artifactId>
+                <version>${leaflet.rcp.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>

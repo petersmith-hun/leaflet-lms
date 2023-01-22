@@ -1,6 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade.impl.utility;
 
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;

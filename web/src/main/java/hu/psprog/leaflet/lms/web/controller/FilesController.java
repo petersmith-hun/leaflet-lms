@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.web.controller;
 
-import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
+import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * File management controller for LMS.
@@ -148,8 +147,7 @@ public class FilesController extends BaseController {
 
         return modelAndViewFactory
                 .createForView(VIEW_FILES_UPLOAD_FORM)
-                .withAttribute("acceptableMimeTypes", fileFacade.getAcceptableMimeTypes(path).stream()
-                        .collect(Collectors.joining(", ")))
+                .withAttribute("acceptableMimeTypes", String.join(", ", fileFacade.getAcceptableMimeTypes(path)))
                 .build();
     }
 

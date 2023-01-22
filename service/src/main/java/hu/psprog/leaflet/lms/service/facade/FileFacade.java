@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.service.facade;
 
-import hu.psprog.leaflet.api.rest.request.file.DirectoryCreationRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.FileUploadRequestModel;
-import hu.psprog.leaflet.api.rest.request.file.UpdateFileMetaInfoRequestModel;
-import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
+import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
+import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
+import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 
 import java.util.List;
 import java.util.UUID;
