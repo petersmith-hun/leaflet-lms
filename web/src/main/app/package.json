@@ -42,7 +42,7 @@
   "dependencies": {
     "admin-lte": "^2.4.8",
     "bootstrap": "^3.3.7",
-    "bootstrap-sass": "^3.3.7",
+    "bootstrap-sass": "^3.4.1",
     "calmdown": "^0.6.2",
     "choices.js": "^3.0.4",
     "clipboard-copy": "^3.0.0",
