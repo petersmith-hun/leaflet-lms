@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
@@ -11,6 +12,8 @@ import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -216,6 +219,19 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).processStatusChange(ENTRY_ID);
         verifyStatusFlashMessage(false);
+        verifyRedirectionCreated(ENTRY_VIEW_PATH);
+    }
+
+    @ParameterizedTest
+    @EnumSource(EntryInitialStatus.class)
+    public void shouldProcessPublicationTransition(EntryInitialStatus publicationStatus) throws CommunicationFailureException {
+
+        // when
+        entriesController.processPublicationTransition(ENTRY_ID, publicationStatus, redirectAttributes);
+
+        // then
+        verify(entryFacade).processPublicationStatusTransition(ENTRY_ID, publicationStatus);
+        verifyFlashMessageSet();
         verifyRedirectionCreated(ENTRY_VIEW_PATH);
     }
 

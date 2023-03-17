@@ -47,17 +47,16 @@ class BaseController {
 
     static final String DEFAULT_ERROR_PAGE = "view/error/default";
 
-    static final String PATH_HOME = "/";
     static final String PATH_CREATE = "/create";
     static final String PATH_VIEW = "/view/{id}";
     static final String PATH_EDIT = "/edit/{id}";
     static final String PATH_STATUS = "/status/{id}";
+    static final String PATH_PUBLICATION = "/publication/{id}";
     static final String PATH_DELETE = "/delete/{id}";
     static final String PATH_OPTIONAL_PAGE_NUMBER = "/{page}";
     static final String PATH_CURRENT = "";
 
     static final String PATH_VARIABLE_ID = "id";
-    static final String PATH_VARIABLE_TOKEN = "token";
 
     static final String FLASH_MESSAGE = "flash";
 

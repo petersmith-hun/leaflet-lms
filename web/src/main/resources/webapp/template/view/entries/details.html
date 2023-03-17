@@ -4,131 +4,285 @@
       layout:decorate="~{_layout/default}">
 <head>
     <script type="text/javascript" th:inline="javascript">
+		let currentWidth = 3;
+
 		const calmdownEditorAdditionalConfig = {
 			resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
 		};
+
+		function switchRenderedContentWidth() {
+
+            stepCurrentWidth();
+			const renderedContentBox = document.querySelector("#rendered-content-box");
+			const className = calculateClassName(currentWidth);
+
+			renderedContentBox.removeAttribute("class");
+			renderedContentBox.setAttribute("class", className);
+        }
+
+		function calculateClassName(currentWidth) {
+			return `col-md-${currentWidth * 3}`;
+        }
+
+		function stepCurrentWidth() {
+
+			currentWidth = currentWidth === 4
+			    ? 1
+			    : currentWidth + 1;
+        }
     </script>
+    <style>
+        #rendered-content-box img {
+            max-width: 95%;
+            margin: auto;
+            display: block;
+        }
+
+        .status-icon-positive {
+            font-size: xxx-large;
+            color: #00a65a;
+        }
+
+        .status-icon-negative {
+            font-size: xxx-large;
+            color: #aa0000;
+        }
+
+        .mb3px {
+            margin-bottom: 3px;
+        }
+
+        .mr5px {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <div class="content-header">
-            <h1>Create / Edit entry</h1>
+            <h1 th:text="${entryData.body.title}">Viewing entry</h1>
         </div>
         <div class="content">
+
             <div class="row">
                 <div class="col-xs-12">
                     <th:block th:replace="_fragment/message :: message(${flash})" />
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-md-9">
-                    <div class="box box-solid">
+                    <div class="box box-success">
                         <div class="box-header">
-                            <h3 class="box-title">Entry</h3>
+                            <div class="box-title">Base information</div>
                         </div>
                         <div class="box-body">
-                            <div class="form-group">
-                                <label>Title</label>
-                                <p class="form-control-static"
-                                   th:text="${entryData == null} ? null : ${entryData.body.title}"></p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <p class="form-control-static">
+                                            <a class="btn btn-primary"
+                                               th:href="@{/categories/view/{id}(id=${entryData.body.category.id})}"
+                                               th:text="${entryData.body.category.title}"></a>
+                                        </p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <p class="form-control-static" th:text="${entryData.body.title}"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Link</label>
+                                        <p class="form-control-static" th:text="${entryData.body.link}"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Language</label>
+                                        <p class="form-control-static" th:text="${entryData.body.locale}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>General status</label>
+                                                <p title="Enabled" th:if="${entryData.body.enabled}">
+                                                    <span class="fa fa-check block status-icon-positive">&nbsp;</span>
+                                                </p>
+                                                <p title="Disabled" th:if="${!entryData.body.enabled}">
+                                                    <span class="fa fa-remove block status-icon-negative">&nbsp;</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Publication status</label>
+                                                <p title="Public" th:if="${entryData.body.entryStatus == 'PUBLIC'}">
+                                                    <span class="fa fa-check block status-icon-positive">&nbsp;</span>
+                                                </p>
+                                                <p title="In review" th:if="${entryData.body.entryStatus == 'REVIEW'}">
+                                                    <span class="fa fa-eye block status-icon-negative">&nbsp;</span>
+                                                </p>
+                                                <p title="Draft" th:if="${entryData.body.entryStatus == 'DRAFT'}">
+                                                    <span class="fa fa-pencil block status-icon-negative">&nbsp;</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Created at</label>
+                                                <p class="form-control-static" th:text="${{entryData.body.created}}"></p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Last modified at</label>
+                                                <p class="form-control-static" th:text="${{entryData.body.lastModified}}"></p>
+                                            </div>
+                                            <div class="form-group" th:if="${entryData.body.published != null}">
+                                                <label>Published at</label>
+                                                <p class="form-control-static" th:text="${{entryData.body.published}}"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Link</label>
-                                <p class="form-control-static"
-                                   th:text="${entryData == null} ? null : ${entryData.body.link}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>Prologue</label>
-                                <p class="form-control-static"
-                                   th:text="${entryData == null} ? null : ${entryData.body.prologue}"></p>
-                            </div>
-                            <div class="calmdown cd-theme-default"
-                                 th:text="${entryData == null} ? null : ${entryData.body.rawContent}"></div>
-                            <div class="form-group">
-                                <label>Files</label>
-                                <p class="form-control-static" th:text="${entryData.body.attachments}"></p>
+
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <div class="form-group">
+                                        <label>Prologue</label>
+                                        <blockquote style="font-size: unset;" th:text="${entryData.body.prologue}"></blockquote>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="box box-solid">
+                    <div class="box box-success">
                         <div class="box-header">
-                            <h3 class="box-title">Attributes</h3>
+                            <div class="box-title">Article operations</div>
                         </div>
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label th:if="${entryData != null and entryData.body.enabled}">
-                                    Enabled
-                                </label>
-                                <label th:if="${entryData == null or !entryData.body.enabled}">
-                                   Disabled
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <p class="form-control-static"
-                                   th:text="${T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).valueOf(entryData.body.entryStatus)}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>Language</label>
-                                <p class="form-control-static" th:text="${entryData.body.locale}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>Category</label>
-                                <p class="form-control-static" th:text="${entryData.body.category.title}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>Tags</label>
-                                <p class="form-control-static" th:text="${entryData.body.tags}"></p>
-                            </div>
+                        <div class="box-footer">
+                            <a th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
+                                <i class="fa fa-commenting-o"></i> Handle comments
+                            </a>
+                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social mb3px">
+                                <i class="fa fa-pencil"></i> Edit
+                            </a>
+                            <form method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
+                                <button class="btn btn-block btn-social btn-danger" th:if="${entryData.body.enabled}">
+                                    <i class="fa fa-toggle-off"></i> Disable
+                                </button>
+                                <button class="btn btn-block btn-social btn-success" th:if="${!entryData.body.enabled}">
+                                    <i class="fa fa-toggle-on"></i> Enable
+                                </button>
+                            </form>
+                            <form method="post" th:action="@{/entries/publication/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
+                                <th:block th:if="${entryData.body.entryStatus == 'PUBLIC'}">
+                                    <input type="hidden" name="status" value="DRAFT" />
+                                    <button class="btn btn-block btn-social btn-danger">
+                                        <i class="fa fa-remove"></i> Unpublish
+                                    </button>
+                                </th:block>
+                                <th:block th:if="${entryData.body.entryStatus == 'REVIEW'}">
+                                    <input type="hidden" name="status" value="PUBLIC" />
+                                    <button class="btn btn-block btn-social btn-success">
+                                        <i class="fa fa-check"></i> Publish
+                                    </button>
+                                </th:block>
+                                <th:block th:if="${entryData.body.entryStatus == 'DRAFT'}">
+                                    <input type="hidden" name="status" value="REVIEW" />
+                                    <button class="btn btn-block btn-social btn-warning">
+                                        <i class="fa fa-eye"></i> Request review
+                                    </button>
+                                </th:block>
+                            </form>
+                            <form method="post" th:action="@{/entries/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                                <button class="btn btn-block btn-social btn-danger">
+                                    <i class="fa fa-trash"></i>  Delete entry
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <div class="box box-solid">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box box-success">
                         <div class="box-header">
                             <h3 class="box-title">SEO Attributes</h3>
                         </div>
                         <div class="box-body">
-                            <div class="form-group">
-                                <label>SEO Title</label>
-                                <p class="form-control-static" th:text="${entryData == null} ? '' : ${entryData.seo.metaTitle}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>SEO Description</label>
-                                <p class="form-control-static" th:text="${entryData.seo.metaDescription}"></p>
-                            </div>
-                            <div class="form-group">
-                                <label>SEO Keywords</label>
-                                <p class="form-control-static" th:text="${entryData.seo.metaKeywords}"></p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>SEO Title</label>
+                                        <p class="form-control-static" th:text="${entryData == null} ? '' : ${entryData.seo.metaTitle}"></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SEO Keywords</label>
+                                        <p class="form-control-static" th:text="${entryData.seo.metaKeywords == ''} ? 'None specified' : ${entryData.seo.metaKeywords}"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>SEO Description</label>
+                                        <blockquote style="font-size: unset;" class="form-control-static" th:text="${entryData.seo.metaDescription}"></blockquote>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-solid">
-                        <div class="box-footer">
-                            <a th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-sm btn-social">
-                                <i class="fa fa-commenting-o"></i> Handle comments
-                            </a>
-                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}"
-                               href="#" class="btn btn-sm btn-info">
-                                <i class="fa fa-pencil"></i> Edit
-                            </a>
-                            <form class="inline" method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}">
-                                <button class="btn btn-info">
-                                    <i class="fa fa-folder-open" th:if="${entryData != null and entryData.body.enabled}"></i>
-                                    <i class="fa fa-folder" th:if="${entryData == null or !entryData.body.enabled}"></i>
-                                    Change status
-                                </button>
-                            </form>
-                            <form class="inline" method="post" th:action="@{/entries/delete/{id}(id=__${#request.getAttribute('id')}__)}">
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-times"></i>  Delete entry
-                                </button>
-                            </form>
+                <div class="col-md-9" id="rendered-content-box">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <h3 class="box-title">Rendered content</h3>
+                            <span onclick="switchRenderedContentWidth()" title="Change width" class="fa fa-arrows-h pull-right btn btn-default"></span>
+                        </div>
+                        <div class="box-body">
+                            <div th:markdown="${entryData.body.rawContent}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <h3 class="box-title">Tags</h3>
+                        </div>
+                        <div class="box-body">
+                            <a href="#"
+                               class="btn btn-primary mr5px"
+                               th:href="@{/tags/edit/{id}(id=${tag.id})}"
+                               th:text="${tag.name}"
+                               th:each="tag : ${entryData.body.tags}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <h3 class="box-title">Attachments</h3>
+                        </div>
+                        <div class="box-body">
+                            <a href="#"
+                               class="btn btn-primary mr5px"
+                               th:href="@{/files/view/{id}(id=${file.reference.split('/')[1]})}"
+                               th:text="${file.originalFilename}"
+                               th:each="file : ${entryData.body.attachments}"></a>
                         </div>
                     </div>
                 </div>

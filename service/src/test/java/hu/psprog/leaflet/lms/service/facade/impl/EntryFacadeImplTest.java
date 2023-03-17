@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryCreateRequestModel;
+import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import hu.psprog.leaflet.api.rest.response.category.CategoryDataModel;
 import hu.psprog.leaflet.api.rest.response.common.BaseBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
@@ -47,6 +48,7 @@ public class EntryFacadeImplTest {
     private static final long ENTRY_ID = 1L;
     private static final int PAGE = 1;
     private static final int LIMIT = 10;
+    private static final EntryInitialStatus PUBLICATION_STATUS = EntryInitialStatus.PUBLIC;
     private static final OrderBy.Entry ORDER_BY = OrderBy.Entry.CREATED;
     private static final OrderDirection ORDER_DIRECTION = OrderDirection.ASC;
     private static final ModifyEntryRequest MODIFY_ENTRY_REQUEST = new ModifyEntryRequest();
@@ -163,6 +165,16 @@ public class EntryFacadeImplTest {
 
         // then
         assertThat(result, is(true));
+    }
+
+    @Test
+    public void shouldProcessPublicationStatusTransition() throws CommunicationFailureException {
+
+        // when
+        entryFacade.processPublicationStatusTransition(ENTRY_ID, PUBLICATION_STATUS);
+
+        // then
+        verify(entryBridgeService).changePublicationStatus(ENTRY_ID, PUBLICATION_STATUS);
     }
 
     @Test

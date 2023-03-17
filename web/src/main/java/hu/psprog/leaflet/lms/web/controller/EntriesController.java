@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.controller;
 
+import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
@@ -43,14 +44,15 @@ public class EntriesController extends BaseController {
 
     private static final String ENTRY_SUCCESSFULLY_SAVED = "Entry successfully saved.";
     private static final String ENTRY_STATUS_SUCCESSFULLY_CHANGED = "Entry status successfully changed to %s";
+    private static final String ENTRY_PUBLICATION_STATUS_SUCCESSFULLY_CHANGED = "Entry publication status successfully changed to %s";
     private static final String ENTRY_SUCCESSFULLY_DELETED = "Entry successfully deleted.";
 
     static final String PATH_ENTRIES = "/entries";
     private static final String PATH_CREATE_ENTRY = PATH_ENTRIES + PATH_CREATE;
 
-    private EntryFacade entryFacade;
-    private EntryPaginationHelper paginationHelper;
-    private String resourceServerUrl;
+    private final EntryFacade entryFacade;
+    private final EntryPaginationHelper paginationHelper;
+    private final String resourceServerUrl;
 
     @Autowired
     public EntriesController(EntryFacade entryFacade, EntryPaginationHelper paginationHelper,
@@ -207,6 +209,25 @@ public class EntriesController extends BaseController {
                 ? "enabled"
                 : "disabled";
         redirectAttributes.addFlashAttribute(FLASH_MESSAGE, String.format(ENTRY_STATUS_SUCCESSFULLY_CHANGED, currentStatus));
+
+        return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
+    }
+
+    /**
+     * Processes an entry publication status change request.
+     *
+     * @param id ID of the entry to change publication status of
+     * @param status new publication status
+     * @param redirectAttributes redirection attributes
+     * @return populated {@link ModelAndView} object - redirecting to the view entry page
+     * @throws CommunicationFailureException on Bridge communication failure
+     */
+    @RequestMapping(method = RequestMethod.POST, path = PATH_PUBLICATION)
+    public ModelAndView processPublicationTransition(@PathVariable(PATH_VARIABLE_ID) Long id, @RequestParam("status") EntryInitialStatus status,
+                                                     RedirectAttributes redirectAttributes) throws CommunicationFailureException {
+
+        entryFacade.processPublicationStatusTransition(id, status);
+        redirectAttributes.addFlashAttribute(FLASH_MESSAGE, String.format(ENTRY_PUBLICATION_STATUS_SUCCESSFULLY_CHANGED, status.name().toLowerCase()));
 
         return modelAndViewFactory.createRedirectionTo(getRedirectionPath(id));
     }

@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryCreateRequestModel;
+import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
@@ -29,12 +30,12 @@ import java.util.Objects;
 @Service
 public class EntryFacadeImpl implements EntryFacade {
 
-    private EntryBridgeService entryBridgeService;
-    private TagFacade tagFacade;
-    private FileFacade fileFacade;
-    private CategoryFacade categoryFacade;
-    private AttachmentFacade attachmentFacade;
-    private ConversionService conversionService;
+    private final EntryBridgeService entryBridgeService;
+    private final TagFacade tagFacade;
+    private final FileFacade fileFacade;
+    private final CategoryFacade categoryFacade;
+    private final AttachmentFacade attachmentFacade;
+    private final ConversionService conversionService;
 
     @Autowired
     public EntryFacadeImpl(EntryBridgeService entryBridgeService, TagFacade tagFacade, FileFacade fileFacade,
@@ -88,6 +89,11 @@ public class EntryFacadeImpl implements EntryFacade {
     @Override
     public boolean processStatusChange(Long id) throws CommunicationFailureException {
         return entryBridgeService.changeStatus(id).isEnabled();
+    }
+
+    @Override
+    public void processPublicationStatusTransition(Long id, EntryInitialStatus newStatus) throws CommunicationFailureException {
+        entryBridgeService.changePublicationStatus(id, newStatus);
     }
 
     @Override
