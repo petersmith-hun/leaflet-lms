@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade;
 
+import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
@@ -80,6 +81,15 @@ public interface EntryFacade {
      * @throws CommunicationFailureException if Bridge fails to reach Leaflet
      */
     boolean processStatusChange(Long id) throws CommunicationFailureException;
+
+    /**
+     * Processes entity publication status change (draft/review/public) request.
+     *
+     * @param id ID of the changed entry
+     * @param newStatus new publication status
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    void processPublicationStatusTransition(Long id, EntryInitialStatus newStatus) throws CommunicationFailureException;
 
     /**
      * Processes entry deletion request.

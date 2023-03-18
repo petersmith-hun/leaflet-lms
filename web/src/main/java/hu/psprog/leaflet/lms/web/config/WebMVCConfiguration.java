@@ -5,9 +5,15 @@ import hu.psprog.leaflet.lms.web.interceptor.GeneralStatusSetterInterceptor;
 import hu.psprog.leaflet.lms.web.interceptor.ModelAndViewDebuggerInterceptor;
 import hu.psprog.leaflet.lms.web.menu.interceptor.SystemMenuInterceptor;
 import hu.psprog.leaflet.lms.web.support.thymeleaf.ZonedDateTimeFormatter;
+import hu.psprog.leaflet.lms.web.support.thymeleaf.markdown.ExtendedLayoutDialect;
+import hu.psprog.leaflet.lms.web.support.thymeleaf.markdown.ResourcePathResolver;
+import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -88,6 +94,22 @@ public class WebMVCConfiguration implements WebMvcConfigurer {
         messageConverter.setSupportedMediaTypes(supportedMediaTypes());
 
         return messageConverter;
+    }
+
+    @Bean
+    public Parser commonmarkParser() {
+        return Parser.builder().build();
+    }
+
+    @Bean
+    public HtmlRenderer commonmarkHtmlRenderer() {
+        return HtmlRenderer.builder().build();
+    }
+
+    @Bean
+    @Primary
+    public LayoutDialect layoutDialect(Parser commonmarkParser, HtmlRenderer commonmarkHtmlRenderer, ResourcePathResolver resourcePathResolver) {
+        return new ExtendedLayoutDialect(commonmarkParser, commonmarkHtmlRenderer, resourcePathResolver);
     }
 
     private List<MediaType> supportedMediaTypes() {
