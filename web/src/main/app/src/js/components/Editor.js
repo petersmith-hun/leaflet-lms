@@ -8,7 +8,7 @@ class Editor {
 	constructor() {
 		this.configuration = {
 			width: '100%',
-			height: '300px',
+			height: '700px',
 			markdownInputSelector: 'rawContent',
 			htmlInputSelector: 'generatedContent'
 		};

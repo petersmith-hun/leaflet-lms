@@ -4,16 +4,37 @@
       layout:decorate="~{_layout/default}">
 <head>
     <script type="text/javascript" th:inline="javascript">
-		const calmdownEditorAdditionalConfig = {
-			resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
-		};
+        const calmdownEditorAdditionalConfig = {
+            resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
+        };
+
+        function validateInputs() {
+
+            document.querySelectorAll(".tab-pane").forEach((tabPane) => {
+
+                let emptyCount = 0;
+                const paneID = tabPane.getAttribute("id");
+                const tabSelector = document.querySelector(`.nav-tabs > li > a[href='#${paneID}'] > i`);
+
+                tabPane.querySelectorAll("input[required], textarea").forEach((input) => {
+                    if (!input.value) {
+                        emptyCount++;
+                    }
+                });
+
+                tabSelector.setAttribute("class", emptyCount === 0
+                    ? "fa fa-check"
+                    : "fa fa-exclamation");
+            });
+        }
     </script>
 </head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <div class="content-header">
-            <h1>Create / Edit entry</h1>
+            <h1 th:if="${entryData == null}">Compose new article</h1>
+            <h1 th:if="${entryData != null}">Editing article <small th:text="${entryData.body.title}"></small></h1>
         </div>
         <div class="content">
             <div class="row">
@@ -22,132 +43,181 @@
                 </div>
             </div>
             <form method="post" th:action="@{''}">
+
+                <th:block th:if="${entryData != null}">
+                    <input type="hidden" name="enabled" th:value="${entryData.body.enabled} ? 1 : 0" />
+                    <input type="hidden" name="status" th:value="${entryData.body.entryStatus}" />
+                </th:block>
+
                 <div class="row">
                     <div class="col-md-9">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#base-info" onclick="validateInputs()">
+                                    <i th:class="${entryData == null} ? 'fa fa-exclamation' : 'fa fa-check'"></i> Base information
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#seo-data" onclick="validateInputs()">
+                                    <i th:class="${entryData == null} ? 'fa fa-exclamation' : 'fa fa-check'"></i> SEO attributes
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#article-content" onclick="validateInputs()">
+                                    <i th:class="${entryData == null} ? 'fa fa-exclamation' : 'fa fa-check'"></i> Article content
+                                </a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#tags-and-attachments" onclick="validateInputs()">
+                                    <i th:class="${entryData == null} ? 'fa fa-exclamation' : 'fa fa-check'"></i> Tags and attachments
+                                </a>
+                            </li>
+                        </ul>
                         <div class="box box-solid">
-                            <div class="box-header">
-                                <h3 class="box-title">Entry</h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label for="title">Title</label>
-                                    <input class="form-control" id="title" name="title" placeholder="Title" type="text"
-                                           th:value="${entryData == null} ? null : ${entryData.body.title}"/>
+                            <div class="tab-content">
+
+                                <div id="base-info" class="tab-pane fade in active">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Base information</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="category">Category</label>
+                                                    <select class="form-control select--choices" name="categoryID" id="category">
+                                                        <option th:each="category : ${categorySelector}"
+                                                                th:selected="${entryData != null and category.id == entryData.body.category.id}"
+                                                                th:value="${category.id}"
+                                                                th:text="${category.title}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="locale">Language</label>
+                                                    <select class="form-control select--choices" name="locale" id="locale"
+                                                            th:with="localeList = ${ {'HU', 'EN'} }">
+                                                        <option th:each="locale : ${localeList}"
+                                                                th:selected="${entryData != null and locale == entryData.body.locale}"
+                                                                th:value="${locale}"
+                                                                th:text="${locale}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="article-title">Title</label>
+                                            <input class="form-control" id="article-title" name="title" placeholder="Title" type="text" required
+                                                   th:value="${entryData == null} ? null : ${entryData.body.title}"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="article-link">Link</label>
+                                            <br />
+                                            <div style="display: flex">
+                                                <span title="Transform from title" class="fa fa-link btn btn-default" id="transform-link-from-title"
+                                                      style="display: inline-block; padding: 9px 12px !important; margin-right: 3px;"></span>
+                                                <input class="form-control" id="article-link" name="link" placeholder="Link" type="text" required readonly
+                                                       style="display: inline-block;"
+                                                       th:value="${entryData == null} ? null : ${entryData.body.link}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="prologue">Prologue</label>
+                                            <textarea class="form-control" id="prologue" name="prologue" placeholder="Prologue" required rows="4"
+                                                      th:text="${entryData == null} ? null : ${entryData.body.prologue}"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="link">Link</label>
-                                    <input class="form-control" id="link" name="link" placeholder="Link" type="text"
-                                           th:value="${entryData == null} ? null : ${entryData.body.link}"/>
+
+                                <div id="seo-data" class="tab-pane fade">
+                                    <div class="box-header">
+                                        <h3 class="box-title">SEO attributes</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="metaTitle">SEO Title</label>
+                                            <input class="form-control" id="metaTitle" name="metaTitle" placeholder="SEO Title"
+                                                   type="text" required
+                                                   th:value="${entryData == null} ? null : ${entryData.seo.metaTitle}"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="metaDescription">SEO Description</label>
+                                            <textarea class="form-control" id="metaDescription" name="metaDescription"
+                                                      placeholder="SEO Description" required rows="4"
+                                                      th:text="${entryData == null} ? null : ${entryData.seo.metaDescription}">
+                                            </textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="metaKeywords">SEO Keywords</label>
+                                            <input class="form-control" id="metaKeywords" name="metaKeywords"
+                                                   placeholder="SEO Keywords" type="text"
+                                                   th:value="${entryData == null} ? null : ${entryData.seo.metaKeywords}"/>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="prologue">Prologue</label>
-                                    <textarea class="form-control" id="prologue" name="prologue" placeholder="Prologue"
-                                              th:text="${entryData == null} ? null : ${entryData.body.prologue}"></textarea>
+
+                                <div id="article-content" class="tab-pane fade">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Article content</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="calmdown cd-theme-default"
+                                             th:text="${entryData == null} ? null : ${entryData.body.rawContent}"></div>
+                                    </div>
                                 </div>
-                                <div class="calmdown cd-theme-default"
-                                     th:text="${entryData == null} ? null : ${entryData.body.rawContent}"></div>
-                                <div class="form-group">
-                                    <label for="attachments">Files</label>
-                                    <select multiple class="form-control select--choices-multiple" name="attachments"
-                                            id="attachments">
-                                        <option th:each="file : ${fileSelector}"
-                                                th:selected="${entryData != null and entryData.body.attachments.contains(file)}"
-                                                th:value="${@commonExtractor.extractPathUUIDFromReference(file.reference)}"
-                                                th:text="${file.originalFilename}">
-                                        </option>
-                                    </select>
+
+                                <div id="tags-and-attachments" class="tab-pane fade">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Tags and attachments</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="tags">Tags</label>
+                                            <select multiple class="form-control select--choices-multiple" name="tags"
+                                                    id="tags">
+                                                <option th:each="tag : ${tagSelector}"
+                                                        th:selected="${entryData != null and entryData.body.tags.contains(tag)}"
+                                                        th:value="${tag.id}"
+                                                        th:text="${tag.name}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="attachments">Files</label>
+                                            <select multiple class="form-control select--choices-multiple" name="attachments"
+                                                    id="attachments">
+                                                <option th:each="file : ${fileSelector}"
+                                                        th:selected="${entryData != null and entryData.body.attachments.contains(file)}"
+                                                        th:value="${@commonExtractor.extractPathUUIDFromReference(file.reference)}"
+                                                        th:text="${file.originalFilename}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="box box-solid">
+                        <div class="box box-success">
                             <div class="box-header">
-                                <h3 class="box-title">Attributes</h3>
+                                <div class="box-title">Article operations</div>
                             </div>
-                            <div class="box-body">
-                                <div class="checkbox">
-                                    <label for="enabled">
-                                        <input type="checkbox" name="enabled" id="enabled"
-                                               th:checked="${entryData != null and entryData.body.enabled}"/> Enabled
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label for="status">Status</label>
-                                    <select class="form-control select--choices" name="status" id="status">
-                                        <option th:each="status : ${T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).values()}"
-                                                th:selected="${entryData != null and status == T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).valueOf(entryData.body.entryStatus)}"
-                                                th:value="${status}"
-                                                th:text="${status}">
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="locale">Language</label>
-                                    <select class="form-control select--choices" name="locale" id="locale"
-                                            th:with="localeList = ${ {'HU', 'EN'} }">
-                                        <option th:each="locale : ${localeList}"
-                                                th:selected="${entryData != null and locale == entryData.body.locale}"
-                                                th:value="${locale}"
-                                                th:text="${locale}">
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select class="form-control select--choices" name="categoryID" id="category">
-                                        <option th:each="category : ${categorySelector}"
-                                                th:selected="${entryData != null and category.id == entryData.body.category.id}"
-                                                th:value="${category.id}"
-                                                th:text="${category.title}">
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="tags">Tags</label>
-                                    <select multiple class="form-control select--choices-multiple" name="tags"
-                                            id="tags">
-                                        <option th:each="tag : ${tagSelector}"
-                                                th:selected="${entryData != null and entryData.body.tags.contains(tag)}"
-                                                th:value="${tag.id}"
-                                                th:text="${tag.name}">
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box box-solid">
-                            <div class="box-header">
-                                <h3 class="box-title">SEO Attributes</h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label for="metaTitle">SEO Title</label>
-                                    <input class="form-control" id="metaTitle" name="metaTitle" placeholder="SEO Title"
-                                           type="text"
-                                           th:value="${entryData == null} ? null : ${entryData.seo.metaTitle}"/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="metaDescription">SEO Description</label>
-                                    <input class="form-control" id="metaDescription" name="metaDescription"
-                                           placeholder="SEO Description" type="text"
-                                           th:value="${entryData == null} ? null : ${entryData.seo.metaDescription}"/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="metaKeywords">SEO Keywords</label>
-                                    <input class="form-control" id="metaKeywords" name="metaKeywords"
-                                           placeholder="SEO Keywords" type="text"
-                                           th:value="${entryData == null} ? null : ${entryData.seo.metaKeywords}"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-solid">
                             <div class="box-footer">
-                                <button class="btn btn-primary">Save</button>
+                                <a th:href="@{/entries/view/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social"
+                                   th:if="${entryData != null}">
+                                    <i class="fa fa-eye"></i> View article
+                                </a>
+                                <a th:href="@{/entries}" href="#" class="btn btn-block btn-social btn-social">
+                                    <i class="fa fa-list"></i> Back to article manager
+                                </a>
+                                <button class="btn btn-block btn-social btn-success">
+                                    <i class="fa fa-save"></i> Save
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -155,6 +225,12 @@
             </form>
         </div>
     </section>
+    <script type="text/javascript">
+        for (const element of document.querySelectorAll("input, textarea")) {
+			element.addEventListener("focus", validateInputs);
+			element.addEventListener("blur", validateInputs);
+        }
+    </script>
 </th:block>
 </body>
 </html>

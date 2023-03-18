@@ -19,6 +19,7 @@ import Select from './components/Select';
 import Editor from './components/Editor';
 import ServiceStackStatus from "./components/ServiceStackStatus";
 import DockerClusterStatus from "./components/DockerClusterStatus";
+import ArticleLinkFormatter from "./components/ArticleLinkFormatter";
 
 class App {
 	constructor(){
@@ -30,6 +31,7 @@ class App {
 		this.serviceStackStatus = new ServiceStackStatus();
 		this.dockerClusterStatus = new DockerClusterStatus();
 		this.editor = new Editor();
+		this.articleLinkFormatter = new ArticleLinkFormatter();
 	}
 
 	init(){
@@ -41,6 +43,7 @@ class App {
 		this.serviceStackStatus.init();
 		this.dockerClusterStatus.init();
 		this.editor.init();
+		this.articleLinkFormatter.init();
 	}
 }
 
