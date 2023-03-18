@@ -4,38 +4,38 @@
       layout:decorate="~{_layout/default}">
 <head>
     <script type="text/javascript" th:inline="javascript">
-		let currentWidth = 3;
+        let currentWidth = 3;
 
-		const calmdownEditorAdditionalConfig = {
-			resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
-		};
+        const calmdownEditorAdditionalConfig = {
+            resourceServerUrl: /*[[${resourceServerUrl}]]*/ ""
+        };
 
-		function switchRenderedContentWidth() {
+        function switchRenderedContentWidth() {
 
             stepCurrentWidth();
-			const renderedContentBox = document.querySelector("#rendered-content-box");
-			const className = calculateClassName(currentWidth);
+            const renderedContentBox = document.querySelector("#rendered-content-box");
+            const className = calculateClassName(currentWidth);
 
-			renderedContentBox.removeAttribute("class");
-			renderedContentBox.setAttribute("class", className);
+            renderedContentBox.removeAttribute("class");
+            renderedContentBox.setAttribute("class", className);
         }
 
-		function calculateClassName(currentWidth) {
-			return `col-md-${currentWidth * 3}`;
+        function calculateClassName(currentWidth) {
+            return `col-md-${currentWidth * 3}`;
         }
 
-		function stepCurrentWidth() {
+        function stepCurrentWidth() {
 
-			currentWidth = currentWidth === 4
-			    ? 1
-			    : currentWidth + 1;
+            currentWidth = currentWidth === 4
+                ? 1
+                : currentWidth + 1;
         }
 
-		function confirmOperation(button) {
+        function confirmOperation(button) {
 
-			if(confirm("Are you sure you want to proceed?")) {
-				button.parentNode.submit();
-			}
+            if(confirm("Are you sure you want to proceed?")) {
+                button.parentNode.submit();
+            }
         }
     </script>
     <style>
