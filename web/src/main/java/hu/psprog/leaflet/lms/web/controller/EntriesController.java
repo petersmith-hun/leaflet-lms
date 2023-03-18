@@ -50,9 +50,9 @@ public class EntriesController extends BaseController {
     static final String PATH_ENTRIES = "/entries";
     private static final String PATH_CREATE_ENTRY = PATH_ENTRIES + PATH_CREATE;
 
-    private final EntryFacade entryFacade;
-    private final EntryPaginationHelper paginationHelper;
-    private final String resourceServerUrl;
+    private EntryFacade entryFacade;
+    private EntryPaginationHelper paginationHelper;
+    private String resourceServerUrl;
 
     @Autowired
     public EntriesController(EntryFacade entryFacade, EntryPaginationHelper paginationHelper,
