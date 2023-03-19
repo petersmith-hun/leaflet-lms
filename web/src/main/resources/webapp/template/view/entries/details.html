@@ -68,7 +68,7 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <div class="content-header">
-            <h1 th:text="${entryData.body.title}">Viewing entry</h1>
+            <h1>Viewing article <small th:text="${entryData.body.title}"></small></h1>
         </div>
         <div class="content">
 
@@ -178,6 +178,9 @@
                             </a>
                             <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social mb3px">
                                 <i class="fa fa-pencil"></i> Edit
+                            </a>
+                            <a th:href="@{/entries}" href="#" class="btn btn-block btn-social btn-social mb3px">
+                                <i class="fa fa-list"></i> Back to article manager
                             </a>
                             <form method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
                                 <button type="button" class="btn btn-block btn-social btn-danger" th:if="${entryData.body.enabled}" onclick="confirmOperation(this)">
