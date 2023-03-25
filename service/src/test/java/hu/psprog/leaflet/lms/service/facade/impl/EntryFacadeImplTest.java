@@ -2,14 +2,13 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
+import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.category.CategoryDataModel;
 import hu.psprog.leaflet.api.rest.response.common.BaseBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
-import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
+import hu.psprog.leaflet.api.rest.response.entry.EntrySearchResultDataModel;
 import hu.psprog.leaflet.api.rest.response.tag.TagDataModel;
-import hu.psprog.leaflet.bridge.client.domain.OrderBy;
-import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.EntryBridgeService;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
@@ -29,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -46,13 +46,10 @@ import static org.mockito.Mockito.verify;
 public class EntryFacadeImplTest {
 
     private static final long ENTRY_ID = 1L;
-    private static final int PAGE = 1;
-    private static final int LIMIT = 10;
     private static final EntryInitialStatus PUBLICATION_STATUS = EntryInitialStatus.PUBLIC;
-    private static final OrderBy.Entry ORDER_BY = OrderBy.Entry.CREATED;
-    private static final OrderDirection ORDER_DIRECTION = OrderDirection.ASC;
     private static final ModifyEntryRequest MODIFY_ENTRY_REQUEST = new ModifyEntryRequest();
     private static final EntryCreateRequestModel ENTRY_CREATE_REQUEST_MODEL = new EntryCreateRequestModel();
+    private static final EntrySearchParameters ENTRY_SEARCH_PARAMETERS = new EntrySearchParameters();
 
     @Mock
     private EntryBridgeService entryBridgeService;
@@ -79,11 +76,11 @@ public class EntryFacadeImplTest {
     public void shouldGetEntries() throws CommunicationFailureException {
 
         // given
-        WrapperBodyDataModel<EntryListDataModel> response = wrapResponse(prepareEntryListDataModel());
-        given(entryBridgeService.getPageOfEntries(PAGE, LIMIT, ORDER_BY, ORDER_DIRECTION)).willReturn(response);
+        WrapperBodyDataModel<EntrySearchResultDataModel> response = wrapResponse(prepareEntrySearchResultDataModel());
+        given(entryBridgeService.searchEntries(ENTRY_SEARCH_PARAMETERS)).willReturn(response);
 
         // when
-        WrapperBodyDataModel<EntryListDataModel> result = entryFacade.getEntries(PAGE, LIMIT, ORDER_BY, ORDER_DIRECTION);
+        WrapperBodyDataModel<EntrySearchResultDataModel> result = entryFacade.getEntries(ENTRY_SEARCH_PARAMETERS);
 
         // then
         assertThat(result, notNullValue());
@@ -223,9 +220,10 @@ public class EntryFacadeImplTest {
                 .build();
     }
 
-    private EntryListDataModel prepareEntryListDataModel() {
-        return EntryListDataModel.getBuilder()
-                .withItem(prepareEditEntryDataModel())
+    private EntrySearchResultDataModel prepareEntrySearchResultDataModel() {
+
+        return EntrySearchResultDataModel.getBuilder()
+                .withEntries(List.of(prepareEditEntryDataModel()))
                 .build();
     }
 

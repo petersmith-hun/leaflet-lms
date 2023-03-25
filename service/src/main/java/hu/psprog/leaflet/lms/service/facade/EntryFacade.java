@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
+import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
-import hu.psprog.leaflet.bridge.client.domain.OrderBy;
-import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
+import hu.psprog.leaflet.api.rest.response.entry.EntrySearchResultDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
@@ -18,16 +18,13 @@ import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 public interface EntryFacade {
 
     /**
-     * Returns paginated list of entries.
+     * Returns a paginated list of edit-level entry data for the given search request.
      *
-     * @param page page number (page indexing starts at 1)
-     * @param limit number of entries on one page
-     * @param orderBy order by {@link OrderBy.Entry} options
-     * @param orderDirection order direction (ASC|DESC)
+     * @param entrySearchParameters {@link EntrySearchParameters} containing search request parameters
      * @return page of entries wrapped in {@link WrapperBodyDataModel<EntryListDataModel>} object
      * @throws CommunicationFailureException if Bridge fails to reach Leaflet
      */
-    WrapperBodyDataModel<EntryListDataModel> getEntries(int page, int limit, OrderBy.Entry orderBy, OrderDirection orderDirection) throws CommunicationFailureException;
+    WrapperBodyDataModel<EntrySearchResultDataModel> getEntries(EntrySearchParameters entrySearchParameters) throws CommunicationFailureException;
 
     /**
      * Returns entry specified by given ID.

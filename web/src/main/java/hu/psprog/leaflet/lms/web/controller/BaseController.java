@@ -105,7 +105,6 @@ class BaseController {
         } catch (ValidationFailureException e) {
             LOGGER.warn("Server side validation failure");
             modelAndView = failureRedirectionFunction.apply(extractValidationViolations(e.getErrorMessage()));
-            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
         }
 
         return modelAndView;

@@ -1,7 +1,15 @@
 <th:block th:if="${message != null}" th:fragment="message(message)"
           xmlns:th="http://www.thymeleaf.org">
-    <div class="alert alert-success alert-dismissible">
+    <div class="alert alert-success alert-dismissible" th:class="${validationFailed} ? 'alert alert-danger alert-dismissible' : 'alert alert-success alert-dismissible'">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <th:block th:text="${message}"/>
+        <th:block th:if="${validationFailed}">
+            <ul>
+                <li th:each="validationError : ${validationResults.entrySet()}">
+                    <span style="font-weight: bold;" th:text="${validationError.key}"></span>:
+                    <span th:text="${validationError.value}"></span>
+                </li>
+            </ul>
+        </th:block>
     </div>
 </th:block>

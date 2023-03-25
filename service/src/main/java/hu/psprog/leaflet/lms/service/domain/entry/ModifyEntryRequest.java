@@ -52,7 +52,7 @@ public class ModifyEntryRequest implements Serializable {
     private String metaDescription;
     private String metaKeywords;
     private boolean enabled;
-    private EntryInitialStatus status;
+    private EntryInitialStatus status = EntryInitialStatus.DRAFT;
     private List<Long> tags;
     private List<UUID> attachments;
     private Long userID;

@@ -2,11 +2,36 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{_layout/default}">
+<head>
+    <style>
+        .status-icon-positive {
+            font-size: xx-large;
+            color: #00a65a;
+        }
+
+        .status-icon-negative {
+            font-size: xx-large;
+            color: #aa0000;
+        }
+
+        .header-line {
+            text-align: center;
+            color: #7d8b99;
+            font-size: smaller;
+        }
+
+        @media all and (max-width: 991px) {
+            .header-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1>Entries</h1>
+            <h1>Articles</h1>
         </section>
         <section class="content">
             <div class="row">
@@ -15,106 +40,229 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-solid">
-                        <div class="box-body">
-                            <a class="btn btn-primary" th:href="@{/entries/create}" href="#">New entry</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
+                <div class="col-md-9">
+                    <div class="box box-success">
                         <div class="box-header">
-                            <h3 class="box-title">Table of entries</h3>
-                            <div class="box-tools hidden">
-                                <input class="form-control pull-right" type="text" placeholder="Search">
-                            </div>
+                            <h3 class="box-title" th:if="${#request.getParameterMap().isEmpty()}">All articles</h3>
+                            <h3 class="box-title" th:if="${!#request.getParameterMap().isEmpty()}">Articles by filter</h3>
                         </div>
                         <div class="box-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>
-                                            <th:block th:replace="
-                                            _fragment/sort :: sort(
-                                                ${'/entries/{page}'},
-                                                ${'Title'},
-                                                ${pageNum},
-                                                ${'TITLE'},
-                                                ${pagination})" />
-                                        </th>
-                                        <th class="col-sm">
-                                            Author
-                                        </th>
-                                        <th class="col-md">
-                                            <th:block th:replace="
-                                            _fragment/sort :: sort(
-                                                ${'/entries/{page}'},
-                                                ${'Created at'},
-                                                ${pageNum},
-                                                ${'CREATED'},
-                                                ${pagination})" />
-                                        </th>
-                                        <th class="col-md">
-                                            Modified at
-                                        </th>
-                                        <th class="col-sm"></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="entry: ${content.entries}">
-                                        <td>
-                                            <a th:href="@{/entries/view/{id}(id=${entry.id})}"
-                                               th:text="${entry.title}"></a>
-                                        </td>
-                                        <td th:text="${entry.user.username}"></td>
-                                        <td th:text="${{entry.created}}"></td>
-                                        <td th:text="${{entry.lastModified}}"></td>
-                                        <td class="td--table-control">
-                                            <div class="table-control__btn-group">
-                                                <a th:href="@{/comments/{id}(id=${entry.id})}" href="#" class="btn btn-sm btn-social">
-                                                    <i class="fa fa-commenting-o"></i> Handle comments
-                                                </a>
-                                                <a th:href="@{/entries/edit/{id}(id=${entry.id})}"
-                                                   href="#" class="btn btn-sm btn-info">
-                                                    <i class="fa fa-pencil"></i> Edit
-                                                </a>
-                                                <form class="display-inline-block"
-                                                      th:action="@{/entries/delete/{id}(id=${entry.id})}"
-                                                      th:method="post">
-                                                    <button class="btn btn-sm btn-danger" type="submit"
-                                                            onclick="return confirm('Are you sure to delete this entry?')">
-                                                        <i class="fa fa-trash"></i> Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr th:if="${content.entries == null or content.entries.isEmpty()}">
-                                        <td colspan="6">
-                                            There is no entry in the database!
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+
+                            <div class="row" th:if="${content.entries == null or content.entries.isEmpty()}">
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning">There is no entry in the database!</div>
+                                </div>
                             </div>
+
+                            <div class="row header-line">
+                                <div class="col-md-5">
+                                    <p>Title, category, author</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p>Created, last modified, published</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p>General and publication status</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p>Article operations</p>
+                                </div>
+                            </div>
+
+                            <div class="row" th:each="entry: ${content.entries}">
+                                <div class="col-md-12">
+                                    <div class="box box-solid" th:class="${true ? 'box box-success' : 'box box-danger'}">
+                                        <div class="box-body">
+                                            <div class="col-md-5">
+                                                <h4>
+                                                    <a th:href="@{/entries/view/{id}(id=${entry.id})}"
+                                                       th:text="${entry.title}"></a>
+                                                </h4>
+
+                                                <a class="btn btn-sm btn-social" th:href="@{/categories/view/{id}(id=${entry.category.id})}">
+                                                    <i class="fa fa-folder"></i> <th:block th:text="${entry.category.title}"></th:block>
+                                                </a>
+                                                <a class="btn btn-sm btn-social" th:href="@{/users/view/{id}(id=${entry.user.id})}">
+                                                    <i class="fa fa-user"></i> <th:block th:text="${entry.user.username}"></th:block>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-3" style="color: #7d8b99;">
+                                                <div title="Created">
+                                                    <i class="fa fa-edit"></i> &nbsp;<th:block th:text="${{entry.created}}" />
+                                                </div>
+                                                <div title="Last modified" th:if="${entry.lastModified != null}">
+                                                    <i class="fa fa-asterisk"></i> &nbsp;<th:block th:text="${{entry.lastModified}}" />
+                                                </div>
+                                                <div title="Published" th:if="${entry.published != null}">
+                                                    <i class="fa fa-globe"></i> &nbsp;<th:block th:text="${{entry.published}}" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2" style="margin-top: 10px; text-align: center;">
+                                                <span th:if="${entry.enabled}"
+                                                      title="Enabled" class="fa fa-check block status-icon-positive">&nbsp;</span>
+                                                <span th:if="${!entry.enabled}"
+                                                      title="Disabled" class="fa fa-remove block status-icon-negative">&nbsp;</span>
+
+                                                <span th:if="${entry.entryStatus == 'PUBLIC'}"
+                                                      title="Public" class="fa fa-globe block status-icon-positive">&nbsp;</span>
+                                                <span th:if="${entry.entryStatus == 'REVIEW'}"
+                                                      title="In review" class="fa fa-eye block status-icon-negative">&nbsp;</span>
+                                                <span th:if="${entry.entryStatus == 'DRAFT'}"
+                                                      title="Draft" class="fa fa-pencil block status-icon-negative">&nbsp;</span>
+                                            </div>
+                                            <div class="col-md-2" style="margin-top: 20px; text-align: right;">
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn btn-default dropdown-toggle"
+                                                            data-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                            th:id="${'articleOptions' + entry.id}">
+                                                        <i class="fa fa-bars"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" th:aria-labelledby="${'articleOptions' + entry.id}" style="box-shadow: 0 6px 12px #7d8b99;">
+                                                        <li>
+                                                            <div>
+                                                                <a th:href="@{/entries/view/{id}(id=${entry.id})}" href="#" class="btn btn-block btn-social">
+                                                                    <i class="fa fa-eye"></i> View article
+                                                                </a>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div>
+                                                                <a th:href="@{/comments/{id}(id=${entry.id})}" href="#" class="btn btn-block btn-social">
+                                                                    <i class="fa fa-commenting-o"></i> Handle comments
+                                                                </a>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div>
+                                                                <a th:href="@{/entries/edit/{id}(id=${entry.id})}" href="#" class="btn btn-block btn-social">
+                                                                    <i class="fa fa-pencil"></i> Edit
+                                                                </a>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <form class="display-inline-block" style="width: 100%;"
+                                                                  th:action="@{/entries/delete/{id}(id=${entry.id})}"
+                                                                  th:method="post">
+                                                                <button class="btn btn-block btn-social btn-danger" type="submit"
+                                                                        onclick="return confirm('Are you sure to delete this entry?')">
+                                                                    <i class="fa fa-trash"></i> Delete
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="box-footer box-footer--table-control">
                                 <th:block
                                     th:replace="
-                                        _fragment/limit :: limit(
+                                        _fragment/limit :: limitSearch(
                                             ${'/entries/{page}'},
                                             ${pageNum},
-                                            ${pagination})" />
+                                            ${pagination},
+                                            ${searchParameters})" />
                                 <th:block
                                         th:replace="
-                                        _fragment/pagination :: pagination(
+                                        _fragment/pagination :: paginationSearch(
                                             ${'/entries/{page}'},
                                             ${pageNum},
-                                            ${pagination})" />
+                                            ${pagination},
+                                            ${searchParameters})" />
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <div class="box-title">Article operations</div>
+                        </div>
+                        <div class="box-footer">
+                            <a th:href="@{/entries/create}" href="#" class="btn btn-block btn-social btn-social">
+                                <i class="fa fa-edit"></i> New article
+                            </a>
+                            <a th:href="@{/entries}" href="#" class="btn btn-block btn-social btn-social">
+                                <i class="fa fa-list"></i> Show all articles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-success">
+                        <div class="box-header">
+                            <div class="box-title">Article filter</div>
+                        </div>
+                        <div class="box-footer">
+                            <form method="get" th:action="@{''}">
+                                <div class="form-group">
+                                    <label for="orderBy">Order by</label>
+                                    <select class="form-control select--choices" name="orderBy" id="orderBy">
+                                        <option th:each="orderBy : ${T(hu.psprog.leaflet.bridge.client.domain.OrderBy.Entry).values()}"
+                                                th:selected="${pagination.orderBy == orderBy.name()}"
+                                                th:value="${orderBy}"
+                                                th:text="${orderBy}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="orderDirection">Order direction</label>
+                                    <select class="form-control select--choices" name="orderDirection" id="orderDirection">
+                                        <option th:each="orderDirection : ${T(hu.psprog.leaflet.bridge.client.domain.OrderDirection).values()}"
+                                                th:selected="${pagination.orderDirection == orderDirection.name()}"
+                                                th:value="${orderDirection}"
+                                                th:text="${orderDirection}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select class="form-control select--choices" name="categoryID" id="category">
+                                        <option value="">Any</option>
+                                        <option th:each="category : ${categories}"
+                                                th:selected="${searchParameters.getCategoryID().isPresent() && searchParameters.getCategoryID().get() == category.id}"
+                                                th:value="${category.id}"
+                                                th:text="${category.title}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="enabled">General status</label>
+                                    <select class="form-control select--choices" name="enabled" id="enabled">
+                                        <option value="">Any</option>
+                                        <option value="1"
+                                                th:selected="${searchParameters.getEnabled().isPresent() && searchParameters.getEnabled().get()}">Enabled</option>
+                                        <option value="0"
+                                                th:selected="${searchParameters.getEnabled().isPresent() && !searchParameters.getEnabled().get()}">Disabled</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status">Publication status</label>
+                                    <select class="form-control select--choices" name="status" id="status">
+                                        <option value="">Any</option>
+                                        <option th:each="status : ${T(hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus).values()}"
+                                                th:selected="${searchParameters.getStatus().isPresent() && searchParameters.getStatus().get() == status}"
+                                                th:value="${status}"
+                                                th:text="${status}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="content">Content</label>
+                                    <input class="form-control" type="text" placeholder="Content" id="content" name="content"
+                                           th:value="${searchParameters.getContent().orElse('')}"/>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-social btn-primary">
+                                        <i class="fa fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

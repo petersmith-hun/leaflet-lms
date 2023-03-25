@@ -32,3 +32,46 @@
         </li>
     </ul>
 </th:block>
+<th:block th:fragment="paginationSearch(url,pageNum,pagination,searchParameters)"
+          xmlns:th="http://www.thymeleaf.org">
+    <ul class="pagination" th:if="${pagination.pageCount > 1}">
+        <li class="page-item" th:if="${pagination.hasPrevious}">
+            <a class="page-link" href="#"
+               th:href="@{${url}(
+                  page=__${pagination.pageNumber - 1}__,
+                  limit=__${pagination.limit}__,
+                  orderBy=__${pagination.orderBy}__,
+                  orderDirection=__${pagination.orderDirection}__,
+                  categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                  enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                  status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        </li>
+        <li class="page-item"
+            th:each="pageNum : ${#numbers.sequence(1, pagination.pageCount)}">
+            <a class="page-link" href="#" th:text="${pageNum}"
+               th:href="@{${url}(
+                  page=__${pageNum}__,
+                  limit=__${pagination.limit}__,
+                  orderBy=__${pagination.orderBy}__,
+                  orderDirection=__${pagination.orderDirection}__,
+                  categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                  enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                  status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}"></a>
+        </li>
+        <li class="page-item" th:if="${pagination.hasNext}">
+            <a class="page-link" href="#"
+               th:href="@{${url}(
+                  page=__${pagination.pageNumber + 1}__,
+                  limit=__${pagination.limit}__,
+                  orderBy=__${pagination.orderBy}__,
+                  orderDirection=__${pagination.orderDirection}__,
+                  categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                  enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                  status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+    </ul>
+</th:block>

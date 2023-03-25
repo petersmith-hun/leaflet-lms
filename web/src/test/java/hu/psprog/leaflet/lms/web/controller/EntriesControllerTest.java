@@ -1,11 +1,13 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
+import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
+import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
@@ -20,12 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -50,12 +49,17 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_FILE_SELECTOR = "fileSelector";
     private static final String FIELD_ENTRY_DATA = "entryData";
     private static final String FIELD_RESOURCE_SERVER_URL = "resourceServerUrl";
+    private static final String FIELD_CATEGORIES = "categories";
     private static final String PATH_ENTRIES = "/entries";
     private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
+    private static final EntrySearchParameters ENTRY_SEARCH_PARAMETERS = new EntrySearchParameters();
     private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
 
     @Mock
     private EntryFacade entryFacade;
+
+    @Mock
+    private CategoryFacade categoryFacade;
 
     @Mock
     private EntryPaginationHelper entryPaginationHelper;
@@ -70,19 +74,17 @@ public class EntriesControllerTest extends AbstractControllerTest {
     public void shouldListEntries() throws CommunicationFailureException {
 
         // given
-        given(entryPaginationHelper.extractPage(PAGE)).willReturn(PAGE.get());
-        given(entryPaginationHelper.getLimit(LIMIT)).willReturn(LIMIT.get());
-        given(entryFacade.getEntries(eq(PAGE.get()), eq(LIMIT.get()), any(), any()))
-                .willReturn(WRAPPER_BODY_DATA_MODEL);
+        given(entryFacade.getEntries(ENTRY_SEARCH_PARAMETERS)).willReturn(WRAPPER_BODY_DATA_MODEL);
 
         // when
-        entriesController.listEntries(PAGE, LIMIT, Optional.empty(), Optional.empty(), request);
+        entriesController.listEntries(ENTRY_SEARCH_PARAMETERS, request);
 
         // then
-        verify(entryFacade).getEntries(eq(PAGE.get()), eq(LIMIT.get()), any(), any());
+        verify(entryFacade).getEntries(ENTRY_SEARCH_PARAMETERS);
+        verify(categoryFacade).getAllCategories();
         verify(entryPaginationHelper).extractPaginationAttributes(WRAPPER_BODY_DATA_MODEL, request);
         verifyViewCreated(VIEW_LIST);
-        verifyFieldsSet(FIELD_CONTENT, FIELD_PAGINATION);
+        verifyFieldsSet(FIELD_CONTENT, FIELD_CATEGORIES, FIELD_PAGINATION);
     }
 
     @Test
