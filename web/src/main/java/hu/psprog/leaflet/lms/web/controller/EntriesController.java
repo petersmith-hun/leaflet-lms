@@ -1,13 +1,14 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
+import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
-import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
-import hu.psprog.leaflet.bridge.client.domain.OrderBy;
+import hu.psprog.leaflet.api.rest.response.entry.EntrySearchResultDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
+import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
-
-import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_LIMIT;
-import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_BY;
-import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_ORDER_DIRECTION;
-import static hu.psprog.leaflet.lms.web.controller.pagination.PaginationHelper.PARAMETER_PAGE;
 
 /**
  * Entry management controller for LMS.
@@ -51,13 +46,15 @@ public class EntriesController extends BaseController {
     private static final String PATH_CREATE_ENTRY = PATH_ENTRIES + PATH_CREATE;
 
     private EntryFacade entryFacade;
+    private CategoryFacade categoryFacade;
     private EntryPaginationHelper paginationHelper;
     private String resourceServerUrl;
 
     @Autowired
-    public EntriesController(EntryFacade entryFacade, EntryPaginationHelper paginationHelper,
+    public EntriesController(EntryFacade entryFacade, CategoryFacade categoryFacade, EntryPaginationHelper paginationHelper,
                              @Value("${webapp.resource-server-url}") String resourceServerUrl) {
         this.entryFacade = entryFacade;
+        this.categoryFacade = categoryFacade;
         this.paginationHelper = paginationHelper;
         this.resourceServerUrl = resourceServerUrl;
     }
@@ -65,28 +62,23 @@ public class EntriesController extends BaseController {
     /**
      * Returns entries for management interface.
      *
-     * @param page page number (page indexing starts at 1)
-     * @param limit number of entries on one page
-     * @param orderBy order by {@link OrderBy.Entry} options
-     * @param orderDirection order direction (ASC|DESC)
+     * @param entrySearchParameters search parameters
      * @param request {@link HttpServletRequest} object
      * @return populated {@link ModelAndView} object
      * @throws CommunicationFailureException on Bridge communication failure
      */
     @RequestMapping(method = RequestMethod.GET, path = {PATH_CURRENT, PATH_OPTIONAL_PAGE_NUMBER})
-    public ModelAndView listEntries(@PathVariable(value = PARAMETER_PAGE, required = false) Optional<Integer> page,
-                                    @RequestParam(value = PARAMETER_LIMIT, required = false) Optional<Integer> limit,
-                                    @RequestParam(value = PARAMETER_ORDER_BY, required = false) Optional<String> orderBy,
-                                    @RequestParam(value = PARAMETER_ORDER_DIRECTION, required = false) Optional<String> orderDirection,
+    public ModelAndView listEntries(EntrySearchParameters entrySearchParameters,
                                     HttpServletRequest request)
             throws CommunicationFailureException {
 
-        WrapperBodyDataModel<EntryListDataModel> response = entryFacade.getEntries(paginationHelper.extractPage(page),
-                paginationHelper.getLimit(limit), paginationHelper.mapOrderBy(orderBy), paginationHelper.mapOrderDirection(orderDirection));
+        WrapperBodyDataModel<EntrySearchResultDataModel> response = entryFacade.getEntries(entrySearchParameters);
 
         return modelAndViewFactory.createForView(VIEW_ENTRIES_LIST)
                 .withAttribute("content", response.getBody())
+                .withAttribute("categories", categoryFacade.getAllCategories())
                 .withAttribute("pagination", paginationHelper.extractPaginationAttributes(response, request))
+                .withAttribute("searchParameters", entrySearchParameters)
                 .build();
     }
 

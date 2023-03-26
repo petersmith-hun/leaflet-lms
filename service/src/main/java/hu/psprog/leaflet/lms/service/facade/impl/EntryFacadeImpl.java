@@ -2,11 +2,10 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.entry.EntryCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.entry.EntryInitialStatus;
+import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
-import hu.psprog.leaflet.api.rest.response.entry.EntryListDataModel;
-import hu.psprog.leaflet.bridge.client.domain.OrderBy;
-import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
+import hu.psprog.leaflet.api.rest.response.entry.EntrySearchResultDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.EntryBridgeService;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
@@ -49,8 +48,8 @@ public class EntryFacadeImpl implements EntryFacade {
     }
 
     @Override
-    public WrapperBodyDataModel<EntryListDataModel> getEntries(int page, int limit, OrderBy.Entry orderBy, OrderDirection orderDirection) throws CommunicationFailureException {
-        return entryBridgeService.getPageOfEntries(page, limit, orderBy, orderDirection);
+    public WrapperBodyDataModel<EntrySearchResultDataModel> getEntries(EntrySearchParameters entrySearchParameters) throws CommunicationFailureException {
+        return entryBridgeService.searchEntries(entrySearchParameters);
     }
 
     @Override

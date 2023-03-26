@@ -125,7 +125,7 @@
                                             <div class="form-group">
                                                 <label>Publication status</label>
                                                 <p title="Public" th:if="${entryData.body.entryStatus == 'PUBLIC'}">
-                                                    <span class="fa fa-check block status-icon-positive">&nbsp;</span>
+                                                    <span class="fa fa-globe block status-icon-positive">&nbsp;</span>
                                                 </p>
                                                 <p title="In review" th:if="${entryData.body.entryStatus == 'REVIEW'}">
                                                     <span class="fa fa-eye block status-icon-negative">&nbsp;</span>
@@ -200,7 +200,7 @@
                                 <th:block th:if="${entryData.body.entryStatus == 'REVIEW'}">
                                     <input type="hidden" name="status" value="PUBLIC" />
                                     <button type="button" class="btn btn-block btn-social btn-success" onclick="confirmOperation(this)">
-                                        <i class="fa fa-check"></i> Publish
+                                        <i class="fa fa-globe"></i> Publish
                                     </button>
                                 </th:block>
                                 <th:block th:if="${entryData.body.entryStatus == 'DRAFT'}">

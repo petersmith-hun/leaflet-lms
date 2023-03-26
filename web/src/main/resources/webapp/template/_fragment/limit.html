@@ -51,3 +51,68 @@
         </ul>
     </div>
 </th:block>
+<th:block th:fragment="limitSearch(url,pageNum,pagination,searchParameters)"
+          xmlns:th="http://www.thymeleaf.org">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+            <th:block th:text="${pagination.limit}" /> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${10}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__,
+                    categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                    enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                    status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                    10
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${25}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__,
+                    categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                    enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                    status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                    25
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${50}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__,
+                    categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                    enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                    status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                    50
+                </a>
+            </li>
+            <li>
+                <a href="#"
+                   th:href="@{${url}(
+                    page=__${pageNum}__,
+                    limit=__${100}__,
+                    orderBy=__${pagination.orderBy}__,
+                    orderDirection=__${pagination.orderDirection}__,
+                    categoryID=__${searchParameters.getCategoryID().isPresent() ? searchParameters.getCategoryID().get() : ''}__,
+                    enabled=__${searchParameters.getEnabled().isPresent() ? searchParameters.getEnabled().get() : ''}__,
+                    status=__${searchParameters.getStatus().isPresent() ? searchParameters.getStatus().get() : ''}__)}">
+                    100
+                </a>
+            </li>
+        </ul>
+    </div>
+</th:block>
