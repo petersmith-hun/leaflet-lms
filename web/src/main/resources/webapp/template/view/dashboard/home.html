@@ -14,27 +14,113 @@
 <body>
 <th:block layout:fragment="content">
     <section class="content-wrapper">
-        <section class="content-header">
-            <h1>Dashboard</h1>
-        </section>
-        <section class="content">
-            <div>
-                <div class="row" id="dashboard" style="display: flex; flex-wrap: wrap;">
-                    <div class="col-md-12" th:if="${registeredServices.isEmpty()}">
+        <th:block th:if="${!pendingComments.body.comments.isEmpty()}">
+            <section class="content-header">
+                <h1>Pending comments</h1>
+            </section>
+            <section class="content" id="pendingComments">
+                <div class="row" th:each="comment: ${pendingComments.body.comments}">
+                    <div class="col-md-9">
                         <div class="box box-warning">
                             <div class="box-body">
-                                <i class="fa fa-warning"></i> Service stack info is currently unavailable
+                                <div class="col-md-7">
+                                    <blockquote style="font-size: unset;" th:text="${comment.content}"></blockquote>
+
+                                    <a class="btn btn-sm btn-social" th:href="@{/users/view/{id}(id=${comment.owner.id})}">
+                                        <i class="fa fa-user"></i> <th:block th:text="${comment.owner.username}"></th:block>
+                                    </a>
+                                    <a class="btn btn-sm btn-social" th:href="@{/entries/view/{id}(id=${comment.associatedEntry.id})}">
+                                        <i class="fa fa-file-text"></i> <th:block th:text="${comment.associatedEntry.title}"></th:block>
+                                    </a>
+                                </div>
+                                <div class="col-md-3" style="color: #7d8b99;">
+                                    <div title="Created">
+                                        <i class="fa fa-edit"></i> &nbsp;<th:block th:text="${{comment.created}}" />
+                                    </div>
+                                    <div title="Last modified" th:if="${comment.lastModified != null}">
+                                        <i class="fa fa-asterisk"></i> &nbsp;<th:block th:text="${{comment.lastModified}}" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="margin-top: 20px; text-align: right;">
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                th:id="${'articleOptions' + comment.id}">
+                                            <i class="fa fa-bars"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" th:aria-labelledby="${'articleOptions' + comment.id}" style="box-shadow: 0 6px 12px #7d8b99;">
+                                            <li>
+                                                <div>
+                                                    <a th:href="@{/comments/view/{id}(id=${comment.id})}" href="#" class="btn btn-block btn-social">
+                                                        <i class="fa fa-eye"></i> View comment
+                                                    </a>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div>
+                                                    <a th:href="@{/comments/edit/{id}(id=${comment.id})}" href="#" class="btn btn-block btn-social">
+                                                        <i class="fa fa-edit"></i> Moderate comment
+                                                    </a>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <form class="display-inline-block" style="width: 100%;"
+                                                      th:action="@{/comments/status/{id}(id=${comment.id})}"
+                                                      th:method="post">
+                                                    <button class="btn btn-block btn-social btn-success" type="submit"
+                                                            onclick="return confirm('Are you sure to publish this comment?')">
+                                                        <i class="fa fa-globe"></i> Publish
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <div>
+                                                    <a th:href="@{/comments/delete/{id}(id=${comment.id})}" href="#" class="btn btn-block btn-social btn-danger">
+                                                        <i class="fa fa-trash"></i> Delete comment...
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3" th:unless="${registeredServices.isEmpty()}" th:id="'svcStatus_' + ${abbreviation}" th:each="abbreviation : ${registeredServices}">
-                        <div class="box box-warning">
-                            <div class="box-header">
-                                <h3 class="box-title" th:text="${abbreviation}">abbreviation</h3>
-                            </div>
-                            <div class="box-body">
-                                <p>Waiting for response...</p>
-                            </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9" style="text-align: center;">
+                            <th:block
+                                    th:replace="
+                            _fragment/pagination :: pagination(
+                                ${'?commentPage={page}'},
+                                ${pageNum},
+                                ${pagination})" />
+                    </div>
+                </div>
+            </section>
+        </th:block>
+
+        <section class="content-header">
+            <h1>Service dashboard</h1>
+        </section>
+        <section class="content">
+            <div class="row" id="dashboard" style="display: flex; flex-wrap: wrap;">
+                <div class="col-md-12" th:if="${registeredServices.isEmpty()}">
+                    <div class="box box-warning">
+                        <div class="box-body">
+                            <i class="fa fa-warning"></i> Service stack info is currently unavailable
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" th:unless="${registeredServices.isEmpty()}" th:id="'svcStatus_' + ${abbreviation}" th:each="abbreviation : ${registeredServices}">
+                    <div class="box box-warning">
+                        <div class="box-header">
+                            <h3 class="box-title" th:text="${abbreviation}">abbreviation</h3>
+                        </div>
+                        <div class="box-body">
+                            <p>Waiting for response...</p>
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
+import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * Entry management controller for LMS.
@@ -47,14 +49,17 @@ public class EntriesController extends BaseController {
 
     private EntryFacade entryFacade;
     private CategoryFacade categoryFacade;
+    private CommentFacade commentFacade;
     private EntryPaginationHelper paginationHelper;
     private String resourceServerUrl;
 
     @Autowired
-    public EntriesController(EntryFacade entryFacade, CategoryFacade categoryFacade, EntryPaginationHelper paginationHelper,
+    public EntriesController(EntryFacade entryFacade, CategoryFacade categoryFacade,
+                             CommentFacade commentFacade, EntryPaginationHelper paginationHelper,
                              @Value("${webapp.resource-server-url}") String resourceServerUrl) {
         this.entryFacade = entryFacade;
         this.categoryFacade = categoryFacade;
+        this.commentFacade = commentFacade;
         this.paginationHelper = paginationHelper;
         this.resourceServerUrl = resourceServerUrl;
     }
@@ -73,9 +78,11 @@ public class EntriesController extends BaseController {
             throws CommunicationFailureException {
 
         WrapperBodyDataModel<EntrySearchResultDataModel> response = entryFacade.getEntries(entrySearchParameters);
+        Map<Long, Long> pendingCommentsCountMap = commentFacade.getNumberOfPendingCommentsByEntry();
 
         return modelAndViewFactory.createForView(VIEW_ENTRIES_LIST)
                 .withAttribute("content", response.getBody())
+                .withAttribute("pendingComments", pendingCommentsCountMap)
                 .withAttribute("categories", categoryFacade.getAllCategories())
                 .withAttribute("pagination", paginationHelper.extractPaginationAttributes(response, request))
                 .withAttribute("searchParameters", entrySearchParameters)
@@ -93,9 +100,11 @@ public class EntriesController extends BaseController {
     public ModelAndView viewEntry(@PathVariable(PATH_VARIABLE_ID) Long entryID) throws CommunicationFailureException {
 
         WrapperBodyDataModel<EditEntryDataModel> response = entryFacade.getEntry(entryID);
+        Long numberOfPendingComments = commentFacade.getNumberOfPendingCommentsForEntry(entryID);
 
         return modelAndViewFactory.createForView(VIEW_ENTRY_DETAILS)
                 .withAttribute("entryData", response)
+                .withAttribute("pendingCommentCount", numberOfPendingComments)
                 .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }

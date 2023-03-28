@@ -14,6 +14,19 @@
             color: #aa0000;
         }
 
+        .status-icon-warning {
+            font-size: xx-large;
+            color: #f39c12;
+        }
+
+        .status-icon-warning > span {
+            font-size: small;
+            position: relative;
+            top: 5px;
+            left: -8px;
+            font-family: "Source Sans Pro";
+        }
+
         .header-line {
             text-align: center;
             color: #7d8b99;
@@ -62,7 +75,7 @@
                                     <p>Created, last modified, published</p>
                                 </div>
                                 <div class="col-md-2">
-                                    <p>General and publication status</p>
+                                    <p>General and publication status, pending comments</p>
                                 </div>
                                 <div class="col-md-2">
                                     <p>Article operations</p>
@@ -109,6 +122,10 @@
                                                       title="In review" class="fa fa-eye block status-icon-negative">&nbsp;</span>
                                                 <span th:if="${entry.entryStatus == 'DRAFT'}"
                                                       title="Draft" class="fa fa-pencil block status-icon-negative">&nbsp;</span>
+
+                                                <span th:if="${pendingComments.get(entry.id) != null}" title="Pending comments" class="fa fa-commenting block status-icon-warning">
+                                                    <span th:text="${pendingComments.get(entry.id)}"></span>
+                                                </span>
                                             </div>
                                             <div class="col-md-2" style="margin-top: 20px; text-align: right;">
                                                 <div class="dropdown">

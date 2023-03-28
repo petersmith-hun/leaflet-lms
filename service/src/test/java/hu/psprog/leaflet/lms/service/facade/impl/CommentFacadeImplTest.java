@@ -1,18 +1,28 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
+import hu.psprog.leaflet.api.rest.request.comment.CommentSearchParameters;
 import hu.psprog.leaflet.api.rest.request.comment.CommentUpdateRequestModel;
 import hu.psprog.leaflet.api.rest.response.comment.CommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentDataModel;
+import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentListDataModel;
+import hu.psprog.leaflet.api.rest.response.common.PaginationDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
+import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.CommentBridgeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -48,7 +58,7 @@ public class CommentFacadeImplTest {
         // given
         WrapperBodyDataModel<CommentListDataModel> response = WrapperBodyDataModel.getBuilder()
                 .withBody(CommentListDataModel.getBuilder()
-                        .withItem(prepareExtendedCommentDataModel())
+                        .withItem(prepareExtendedCommentDataModel(1))
                         .build())
                 .build();
         given(commentBridgeService.getPageOfCommentsForEntry(ENTRY_ID, PAGE, LIMIT, ORDER_BY, ORDER_DIRECTION)).willReturn(response);
@@ -65,7 +75,7 @@ public class CommentFacadeImplTest {
     public void shouldGetComment() throws CommunicationFailureException {
 
         // given
-        ExtendedCommentDataModel response = prepareExtendedCommentDataModel();
+        ExtendedCommentDataModel response = prepareExtendedCommentDataModel(1);
         given(commentBridgeService.getComment(COMMENT_ID)).willReturn(response);
 
         // when
@@ -73,6 +83,59 @@ public class CommentFacadeImplTest {
 
         // then
         assertThat(result, equalTo(response));
+    }
+
+    @Test
+    public void shouldGetPendingComments() throws CommunicationFailureException {
+
+        // given
+        int pageNumber = 1;
+        int limit = 30;
+        CommentSearchParameters commentSearchParameters = createSearchParameters(pageNumber, limit);
+        WrapperBodyDataModel<ExtendedCommentListDataModel> response = createSearchResponse(false);
+
+        given(commentBridgeService.searchComments(commentSearchParameters)).willReturn(response);
+
+        // when
+        WrapperBodyDataModel<ExtendedCommentListDataModel> result = commentFacade.getPendingComments(pageNumber, limit);
+
+        // then
+        assertThat(result, equalTo(response));
+    }
+
+    @Test
+    public void shouldGetNumberOfPendingCommentsByEntry() throws CommunicationFailureException {
+
+        // given
+        int limit = 100;
+
+        given(commentBridgeService.searchComments(createSearchParameters(1, limit))).willReturn(createSearchResponse(true));
+        given(commentBridgeService.searchComments(createSearchParameters(2, limit))).willReturn(createSearchResponse(true));
+        given(commentBridgeService.searchComments(createSearchParameters(3, limit))).willReturn(createSearchResponse(false));
+
+        // when
+        Map<Long, Long> result = commentFacade.getNumberOfPendingCommentsByEntry();
+
+        // then
+        assertThat(result, equalTo(Map.of(
+                1L, 3L,
+                2L, 9L,
+                3L, 6L
+        )));
+    }
+
+    @ParameterizedTest
+    @MethodSource("pendingCommentCountDataProvider")
+    public void shouldGetNumberOfPendingCommentsForEntry(long entryID, long commentCount) throws CommunicationFailureException {
+
+        // given
+        given(commentBridgeService.searchComments(createSearchParameters(1, 100))).willReturn(createSearchResponse(false));
+
+        // when
+        Long result = commentFacade.getNumberOfPendingCommentsForEntry(entryID);
+
+        // then
+        assertThat(result, equalTo(commentCount));
     }
 
     @Test
@@ -113,7 +176,7 @@ public class CommentFacadeImplTest {
     public void shouldProcessStatusChange() throws CommunicationFailureException {
 
         // given
-        given(commentBridgeService.changeStatus(COMMENT_ID)).willReturn(prepareExtendedCommentDataModel());
+        given(commentBridgeService.changeStatus(COMMENT_ID)).willReturn(prepareExtendedCommentDataModel(1));
 
         // when
         boolean result = commentFacade.processStatusChange(COMMENT_ID);
@@ -122,10 +185,52 @@ public class CommentFacadeImplTest {
         assertThat(result, is(true));
     }
 
-    private ExtendedCommentDataModel prepareExtendedCommentDataModel() {
+    private ExtendedCommentDataModel prepareExtendedCommentDataModel(long entryID) {
+
         return ExtendedCommentDataModel.getExtendedBuilder()
                 .withContent(CONTENT)
                 .withEnabled(true)
+                .withAssociatedEntry(EditEntryDataModel.getBuilder()
+                        .withId(entryID)
+                        .build())
                 .build();
+    }
+
+    private CommentSearchParameters createSearchParameters(int pageNumber, int limit) {
+
+        var commentSearchParameters = new CommentSearchParameters();
+        commentSearchParameters.setPage(pageNumber);
+        commentSearchParameters.setLimit(limit);
+        commentSearchParameters.setEnabled(false);
+        commentSearchParameters.setDeleted(false);
+
+        return commentSearchParameters;
+    }
+
+    private WrapperBodyDataModel createSearchResponse(boolean hasNextPage) {
+
+        return WrapperBodyDataModel.getBuilder()
+                .withBody(ExtendedCommentListDataModel.getBuilder()
+                        .withItem(prepareExtendedCommentDataModel(1))
+                        .withItem(prepareExtendedCommentDataModel(2))
+                        .withItem(prepareExtendedCommentDataModel(2))
+                        .withItem(prepareExtendedCommentDataModel(2))
+                        .withItem(prepareExtendedCommentDataModel(3))
+                        .withItem(prepareExtendedCommentDataModel(3))
+                        .build())
+                .withPagination(PaginationDataModel.getBuilder()
+                        .withHasNext(hasNextPage)
+                        .build())
+                .build();
+    }
+
+    private static Stream<Arguments> pendingCommentCountDataProvider() {
+
+        return Stream.of(
+                Arguments.of(1L, 1L),
+                Arguments.of(2L, 3L),
+                Arguments.of(3L, 2L),
+                Arguments.of(4L, 0L)
+        );
     }
 }
