@@ -90,9 +90,9 @@
                                     <div class="form-group">
                                         <label>Category</label>
                                         <p class="form-control-static">
-                                            <a class="btn btn-primary"
-                                               th:href="@{/categories/view/{id}(id=${entryData.body.category.id})}"
-                                               th:text="${entryData.body.category.title}"></a>
+                                            <a class="btn btn-primary btn-social" th:href="@{/categories/view/{id}(id=${entryData.body.category.id})}">
+                                                <i class="fa fa-folder"></i> <th:block th:text="${entryData.body.category.title}" />
+                                            </a>
                                         </p>
                                     </div>
                                     <div class="form-group">
@@ -173,13 +173,18 @@
                             <div class="box-title">Article operations</div>
                         </div>
                         <div class="box-footer">
-                            <a th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
+                            <a th:if="${pendingCommentCount == 0}"
+                               th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-commenting-o"></i> Handle comments
                             </a>
-                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social mb3px">
+                            <a th:if="${pendingCommentCount > 0}"
+                               th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-warning mb3px">
+                                <i class="fa fa-commenting-o"></i> Handle comments (<th:block th:text="${pendingCommentCount}"></th:block>)
+                            </a>
+                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-pencil"></i> Edit
                             </a>
-                            <a th:href="@{/entries}" href="#" class="btn btn-block btn-social btn-social mb3px">
+                            <a th:href="@{/entries}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-list"></i> Back to article manager
                             </a>
                             <form method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
@@ -272,10 +277,11 @@
                         </div>
                         <div class="box-body">
                             <a href="#"
-                               class="btn btn-primary mr5px"
+                               class="btn btn-primary btn-social mr5px"
                                th:href="@{/tags/edit/{id}(id=${tag.id})}"
-                               th:text="${tag.name}"
-                               th:each="tag : ${entryData.body.tags}"></a>
+                               th:each="tag : ${entryData.body.tags}">
+                                <i class="fa fa-tag"></i> <th:block th:text="${tag.name}" />
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -289,10 +295,11 @@
                         </div>
                         <div class="box-body">
                             <a href="#"
-                               class="btn btn-primary mr5px"
+                               class="btn btn-primary btn-social mr5px"
                                th:href="@{/files/view/{id}(id=${file.reference.split('/')[1]})}"
-                               th:text="${file.originalFilename}"
-                               th:each="file : ${entryData.body.attachments}"></a>
+                               th:each="file : ${entryData.body.attachments}">
+                                <i class="fa fa-download"></i> <th:block th:text="${file.originalFilename}" />
+                            </a>
                         </div>
                     </div>
                 </div>

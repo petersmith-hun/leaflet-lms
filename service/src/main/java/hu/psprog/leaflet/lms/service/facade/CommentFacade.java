@@ -3,10 +3,13 @@ package hu.psprog.leaflet.lms.service.facade;
 import hu.psprog.leaflet.api.rest.request.comment.CommentUpdateRequestModel;
 import hu.psprog.leaflet.api.rest.response.comment.CommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentDataModel;
+import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
+
+import java.util.Map;
 
 /**
  * Comment operations facade.
@@ -37,6 +40,33 @@ public interface CommentFacade {
      * @throws CommunicationFailureException if Bridge fails to reach Leaflet
      */
     ExtendedCommentDataModel getComment(Long commentID) throws CommunicationFailureException;
+
+    /**
+     * Returns a paginated list of pending (not enabled but also not logically deleted) comments.
+     *
+     * @param page page number (page indexing starts at 1)
+     * @param limit max number of comments on a page
+     * @return page of comments wrapped in {@link WrapperBodyDataModel<CommentListDataModel>} object
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    WrapperBodyDataModel<ExtendedCommentListDataModel> getPendingComments(int page, int limit) throws CommunicationFailureException;
+
+    /**
+     * Returns the number of pending comments by entry as a map of entry IDs and their respective pending comment count.
+     *
+     * @return pending comment count by entry as a map of entry IDs and the counts as {@link Long}
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    Map<Long, Long> getNumberOfPendingCommentsByEntry() throws CommunicationFailureException;
+
+    /**
+     * Returns the number of pending comments for a given entry.
+     *
+     * @param entryID ID of the entry to return comments for
+     * @return pending comment count for the given entry
+     * @throws CommunicationFailureException if Bridge fails to reach Leaflet
+     */
+    Long getNumberOfPendingCommentsForEntry(Long entryID) throws CommunicationFailureException;
 
     /**
      * Processes comment update request.

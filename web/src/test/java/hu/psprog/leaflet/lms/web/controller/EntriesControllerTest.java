@@ -8,6 +8,7 @@ import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
 import hu.psprog.leaflet.lms.service.domain.entry.ModifyEntryRequest;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
+import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
@@ -50,6 +51,8 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_ENTRY_DATA = "entryData";
     private static final String FIELD_RESOURCE_SERVER_URL = "resourceServerUrl";
     private static final String FIELD_CATEGORIES = "categories";
+    private static final String FIELD_PENDING_COMMENTS = "pendingComments";
+    private static final String FIELD_PENDING_COMMENT_COUNT = "pendingCommentCount";
     private static final String PATH_ENTRIES = "/entries";
     private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
     private static final EntrySearchParameters ENTRY_SEARCH_PARAMETERS = new EntrySearchParameters();
@@ -57,6 +60,9 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
     @Mock
     private EntryFacade entryFacade;
+
+    @Mock
+    private CommentFacade commentFacade;
 
     @Mock
     private CategoryFacade categoryFacade;
@@ -83,8 +89,9 @@ public class EntriesControllerTest extends AbstractControllerTest {
         verify(entryFacade).getEntries(ENTRY_SEARCH_PARAMETERS);
         verify(categoryFacade).getAllCategories();
         verify(entryPaginationHelper).extractPaginationAttributes(WRAPPER_BODY_DATA_MODEL, request);
+        verify(commentFacade).getNumberOfPendingCommentsByEntry();
         verifyViewCreated(VIEW_LIST);
-        verifyFieldsSet(FIELD_CONTENT, FIELD_CATEGORIES, FIELD_PAGINATION);
+        verifyFieldsSet(FIELD_CONTENT, FIELD_CATEGORIES, FIELD_PAGINATION, FIELD_PENDING_COMMENTS);
     }
 
     @Test
@@ -98,8 +105,9 @@ public class EntriesControllerTest extends AbstractControllerTest {
 
         // then
         verify(entryFacade).getEntry(ENTRY_ID);
+        verify(commentFacade).getNumberOfPendingCommentsForEntry(ENTRY_ID);
         verifyViewCreated(VIEW_DETAILS);
-        verifyFieldsSet(FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL);
+        verifyFieldsSet(FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL, FIELD_PENDING_COMMENT_COUNT);
     }
 
     @Test
