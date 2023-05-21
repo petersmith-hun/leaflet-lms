@@ -39,7 +39,7 @@ public class SystemConfigurationFacadeImplTest {
     private static final LogRequest LOG_REQUEST = new LogRequest();
     private static final String TLQL_LOG_REQUEST = "search with conditions source='leaflet'";
     private static final LogEventPage LOG_EVENT_PAGE_RESPONSE = LogEventPage.getBuilder().build();
-    private static final List<Container> EXISTING_CONTAINERS_RESPONSE = Collections.singletonList(Container.getBuilder().build());
+    private static final List<Container> EXISTING_CONTAINERS_RESPONSE = Collections.singletonList(Container.builder().build());
     private static final String REGISTRY_ID = "registry-1";
     private static final String REPOSITORY_ID = "repository-1";
     private static final String TAG = "1.0";

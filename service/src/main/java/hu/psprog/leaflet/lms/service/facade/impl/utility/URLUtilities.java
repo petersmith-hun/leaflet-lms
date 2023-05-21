@@ -8,7 +8,6 @@ import org.springframework.util.AntPathMatcher;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * URL related manipulator tools.
@@ -21,7 +20,7 @@ public class URLUtilities {
     private static final String CHAR_SLASH = "/";
     private static final String CHAR_BACKSLASH = "\\";
 
-    private AntPathMatcher antPathMatcher;
+    private final AntPathMatcher antPathMatcher;
 
     public URLUtilities() {
         this.antPathMatcher = new AntPathMatcher();
@@ -58,9 +57,9 @@ public class URLUtilities {
      */
     public UUID extractFilePathUUID(FileDataModel fileDataModel) {
 
-        String normalizedReference = fileDataModel.getReference().startsWith(CHAR_SLASH)
-                ? fileDataModel.getReference()
-                : CHAR_SLASH + fileDataModel.getReference();
+        String normalizedReference = fileDataModel.reference().startsWith(CHAR_SLASH)
+                ? fileDataModel.reference()
+                : CHAR_SLASH + fileDataModel.reference();
 
         return UUID.fromString(normalizedReference.split(CHAR_SLASH)[1]);
     }
@@ -106,9 +105,7 @@ public class URLUtilities {
 
         String builtURL = StringUtils.EMPTY;
         if (levelFromBeginning < urlParts.length && levelFromEnding < urlParts.length) {
-            builtURL = Arrays
-                    .stream(Arrays.copyOfRange(urlParts, levelFromBeginning, urlParts.length - levelFromEnding))
-                    .collect(Collectors.joining(CHAR_SLASH));
+            builtURL = String.join(CHAR_SLASH, Arrays.copyOfRange(urlParts, levelFromBeginning, urlParts.length - levelFromEnding));
         }
 
         return builtURL;
@@ -122,7 +119,7 @@ public class URLUtilities {
 
     private String removeStartingSlash(String url) {
         return url.startsWith(CHAR_SLASH)
-                ? url.substring(1, url.length())
+                ? url.substring(1)
                 : url;
     }
 

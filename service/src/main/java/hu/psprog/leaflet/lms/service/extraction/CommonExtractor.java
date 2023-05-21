@@ -26,7 +26,7 @@ public class CommonExtractor {
      * @return UUID extracted from {@link FileDataModel}
      */
     public UUID extractPathUUIDFromReference(FileDataModel fileDataModel) {
-        return extractPathUUIDFromReference(fileDataModel.getReference());
+        return extractPathUUIDFromReference(fileDataModel.reference());
     }
 
     /**

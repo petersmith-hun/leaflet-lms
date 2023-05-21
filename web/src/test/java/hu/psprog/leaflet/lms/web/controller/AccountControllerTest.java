@@ -6,15 +6,14 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
+import jakarta.servlet.ServletException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.servlet.ServletException;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -46,8 +45,13 @@ public class AccountControllerTest extends AbstractControllerTest {
     @Mock
     private UserFacade userFacade;
 
-    @InjectMocks
     private AccountController accountController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        accountController = new AccountController(modelAndViewFactory, userFacade);
+    }
 
     @Test
     public void shouldShowUpdateProfileForm() throws CommunicationFailureException {

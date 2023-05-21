@@ -72,7 +72,7 @@ public class CommentFacadeImpl implements CommentFacade {
             commentSearchResult = getPendingComments(page++, COMMENT_PAGE_SIZE_FOR_PENDING_CHECK);
             entryIDsWithPendingComment.addAll(collectEntryIDs(commentSearchResult));
 
-        } while (commentSearchResult.getPagination().isHasNext());
+        } while (commentSearchResult.pagination().hasNext());
 
         return entryIDsWithPendingComment.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
@@ -102,15 +102,15 @@ public class CommentFacadeImpl implements CommentFacade {
 
     @Override
     public boolean processStatusChange(Long commentID) throws CommunicationFailureException {
-        return commentBridgeService.changeStatus(commentID).isEnabled();
+        return commentBridgeService.changeStatus(commentID).enabled();
     }
 
     private List<Long> collectEntryIDs(WrapperBodyDataModel<ExtendedCommentListDataModel> commentSearchResult) {
 
-        return commentSearchResult.getBody()
-                .getComments().stream()
-                .map(ExtendedCommentDataModel::getAssociatedEntry)
-                .map(EntryDataModel::getId)
+        return commentSearchResult.body()
+                .comments().stream()
+                .map(ExtendedCommentDataModel::associatedEntry)
+                .map(EntryDataModel::id)
                 .collect(Collectors.toList());
     }
 }

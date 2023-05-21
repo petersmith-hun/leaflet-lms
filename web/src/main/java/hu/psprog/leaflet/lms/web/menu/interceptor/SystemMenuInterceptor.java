@@ -1,13 +1,13 @@
 package hu.psprog.leaflet.lms.web.menu.interceptor;
 
 import hu.psprog.leaflet.lms.web.menu.domain.SystemMenu;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -16,11 +16,11 @@ import java.util.Objects;
  * @author Peter Smith
  */
 @Component
-public class SystemMenuInterceptor extends HandlerInterceptorAdapter {
+public class SystemMenuInterceptor implements HandlerInterceptor {
 
     private static final String MENU = "menu";
 
-    private SystemMenu systemMenu;
+    private final SystemMenu systemMenu;
 
     @Autowired
     public SystemMenuInterceptor(SystemMenu systemMenu) {
@@ -28,12 +28,10 @@ public class SystemMenuInterceptor extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 
         if (Objects.nonNull(modelAndView)) {
             modelAndView.addObject(MENU, systemMenu.getMenu());
         }
-
-        super.postHandle(request, response, handler, modelAndView);
     }
 }

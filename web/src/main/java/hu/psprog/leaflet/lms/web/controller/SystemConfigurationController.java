@@ -4,6 +4,7 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.LogViewerPaginationHelper;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import hu.psprog.leaflet.tlp.api.domain.LogEventPage;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
 import hu.psprog.leaflet.tlp.api.domain.OrderBy;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
@@ -45,11 +46,13 @@ public class SystemConfigurationController extends BaseController {
     private static final String PATH_EDIT_SEO = PATH_SYSTEM + PATH_SEO;
     private static final String SEO_UPDATED = "Default SEO attributes have been updated";
 
-    private SystemConfigurationFacade systemConfigurationFacade;
-    private LogViewerPaginationHelper logViewerPaginationHelper;
+    private final SystemConfigurationFacade systemConfigurationFacade;
+    private final LogViewerPaginationHelper logViewerPaginationHelper;
 
     @Autowired
-    public SystemConfigurationController(SystemConfigurationFacade systemConfigurationFacade, LogViewerPaginationHelper logViewerPaginationHelper) {
+    public SystemConfigurationController(ModelAndViewFactory modelAndViewFactory, SystemConfigurationFacade systemConfigurationFacade,
+                                         LogViewerPaginationHelper logViewerPaginationHelper) {
+        super(modelAndViewFactory);
         this.systemConfigurationFacade = systemConfigurationFacade;
         this.logViewerPaginationHelper = logViewerPaginationHelper;
     }

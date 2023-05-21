@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +34,11 @@ import java.util.stream.Collectors;
 public class TranslationManagementFacadeImpl implements TranslationManagementFacade {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TranslationManagementFacadeImpl.class);
-    private static final Charset UTF_8_CHARSET = Charset.forName("UTF-8");
+    private static final Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
     private static final String FAILED_TO_READ_INPUT_CSV = "Failed to read input CSV";
     private static final String LINE_SPLIT_EXPRESSION = ";";
 
-    private TranslationServiceClient translationServiceClient;
+    private final TranslationServiceClient translationServiceClient;
 
     @Autowired
     public TranslationManagementFacadeImpl(TranslationServiceClient translationServiceClient) {
@@ -57,17 +58,18 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
     @Override
     public UUID processCreatePack(TranslationPackUploadRequestModel translationPackUploadRequestModel) throws CommunicationFailureException {
 
-        TranslationPackCreationRequest translationPackCreationRequest = new TranslationPackCreationRequest();
-        translationPackCreationRequest.setPackName(translationPackUploadRequestModel.getPackName());
-        translationPackCreationRequest.setLocale(translationPackUploadRequestModel.getLocale());
-        translationPackCreationRequest.setDefinitions(extractDefinitions(translationPackUploadRequestModel));
+        TranslationPackCreationRequest translationPackCreationRequest = TranslationPackCreationRequest.getBuilder()
+                .withPackName(translationPackUploadRequestModel.getPackName())
+                .withLocale(translationPackUploadRequestModel.getLocale())
+                .withDefinitions(extractDefinitions(translationPackUploadRequestModel))
+                .build();
 
         if (translationPackCreationRequest.getDefinitions().isEmpty()) {
             throw new IllegalArgumentException("Translation pack definitions cannot be empty");
         }
 
         return Optional.ofNullable(translationServiceClient.createTranslationPack(translationPackCreationRequest))
-                .map(TranslationPackMetaInfo::getId)
+                .map(TranslationPack::id)
                 .orElse(null);
     }
 
@@ -78,7 +80,7 @@ public class TranslationManagementFacadeImpl implements TranslationManagementFac
 
     @Override
     public boolean processChangePackStatus(UUID packID) throws CommunicationFailureException {
-        return translationServiceClient.changePackStatus(packID).isEnabled();
+        return translationServiceClient.changePackStatus(packID).enabled();
     }
 
     private Map<String, String> extractDefinitions(TranslationPackUploadRequestModel translationPackUploadRequestModel) {

@@ -4,10 +4,10 @@ import hu.psprog.leaflet.api.rest.request.category.CategoryCreateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,8 +38,13 @@ public class CategoriesControllerTest extends AbstractControllerTest {
     @Mock
     private CategoryFacade categoryFacade;
 
-    @InjectMocks
     private CategoriesController categoriesController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        categoriesController = new CategoriesController(modelAndViewFactory, categoryFacade);
+    }
 
     @Test
     public void shouldListCategories() throws CommunicationFailureException {

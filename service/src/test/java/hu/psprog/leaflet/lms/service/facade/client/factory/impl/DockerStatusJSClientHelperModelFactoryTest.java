@@ -53,9 +53,9 @@ class DockerStatusJSClientHelperModelFactoryTest {
 
         // then
         assertThat(result, notNullValue());
-        assertThat(result.isEnabled(), is(IS_ENABLED));
-        assertThat(result.getDetailsEndpoint(), equalTo(DETAILS_ENDPOINT));
-        assertThat(result.getStatusEndpoint(), equalTo(STATUS_ENDPOINT));
-        assertThat(result.getAuthorization(), equalTo(AUTHORIZATION_HEADER));
+        assertThat(result.enabled(), is(IS_ENABLED));
+        assertThat(result.detailsEndpoint(), equalTo(DETAILS_ENDPOINT));
+        assertThat(result.statusEndpoint(), equalTo(STATUS_ENDPOINT));
+        assertThat(result.authorization(), equalTo(AUTHORIZATION_HEADER));
     }
 }

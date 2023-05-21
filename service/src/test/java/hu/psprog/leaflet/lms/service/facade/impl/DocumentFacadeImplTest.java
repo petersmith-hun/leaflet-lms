@@ -51,7 +51,7 @@ public class DocumentFacadeImplTest {
         List<EditDocumentDataModel> result = documentFacade.getAllDocuments();
 
         // then
-        assertThat(result, equalTo(response.getDocuments()));
+        assertThat(result, equalTo(response.documents()));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class DocumentFacadeImplTest {
     public void shouldGetDocument() throws CommunicationFailureException {
 
         // given
-        WrapperBodyDataModel<EditDocumentDataModel> response = WrapperBodyDataModel.getBuilder()
+        WrapperBodyDataModel<EditDocumentDataModel> response = WrapperBodyDataModel.<EditDocumentDataModel>getBuilder()
                 .withBody(prepareEditDocumentDataModel())
                 .build();
         given(documentBridgeService.getDocumentByID(DOCUMENT_ID)).willReturn(response);
@@ -159,12 +159,12 @@ public class DocumentFacadeImplTest {
 
     private DocumentListDataModel prepareDocumentListDataModel() {
         return DocumentListDataModel.getBuilder()
-                .withItem(prepareEditDocumentDataModel())
+                .withDocuments(List.of(prepareEditDocumentDataModel()))
                 .build();
     }
 
     private EditDocumentDataModel prepareEditDocumentDataModel() {
-        return EditDocumentDataModel.getExtendedBuilder()
+        return EditDocumentDataModel.getBuilder()
                 .withId(DOCUMENT_ID)
                 .withRawContent(CONTENT)
                 .withEnabled(true)

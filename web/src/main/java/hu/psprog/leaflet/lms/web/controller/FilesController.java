@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -51,11 +52,12 @@ public class FilesController extends BaseController {
 
     static final String PATH_FILES = "/files";
 
-    private FileFacade fileFacade;
-    private URLUtilities urlUtilities;
+    private final FileFacade fileFacade;
+    private final URLUtilities urlUtilities;
 
     @Autowired
-    public FilesController(FileFacade fileFacade, URLUtilities urlUtilities) {
+    public FilesController(ModelAndViewFactory modelAndViewFactory, FileFacade fileFacade, URLUtilities urlUtilities) {
+        super(modelAndViewFactory);
         this.fileFacade = fileFacade;
         this.urlUtilities = urlUtilities;
     }

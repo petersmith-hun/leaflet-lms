@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 public class CategoryFacadeImpl implements CategoryFacade {
 
-    private CategoryBridgeService categoryBridgeService;
+    private final CategoryBridgeService categoryBridgeService;
 
     @Autowired
     public CategoryFacadeImpl(CategoryBridgeService categoryBridgeService) {
@@ -29,7 +29,7 @@ public class CategoryFacadeImpl implements CategoryFacade {
 
     @Override
     public List<CategoryDataModel> getAllCategories() throws CommunicationFailureException {
-        return Optional.ofNullable(categoryBridgeService.getAllCategories().getCategories())
+        return Optional.ofNullable(categoryBridgeService.getAllCategories().categories())
                 .orElse(Collections.emptyList());
     }
 
@@ -41,7 +41,7 @@ public class CategoryFacadeImpl implements CategoryFacade {
     @Override
     public Long processCreateCategory(CategoryCreateRequestModel categoryCreateRequestModel) throws CommunicationFailureException {
         return Optional.ofNullable(categoryBridgeService.createCategory(categoryCreateRequestModel))
-                .map(CategoryDataModel::getId)
+                .map(CategoryDataModel::id)
                 .orElse(null);
     }
 
@@ -52,7 +52,7 @@ public class CategoryFacadeImpl implements CategoryFacade {
 
     @Override
     public boolean processChangeStatus(Long categoryID) throws CommunicationFailureException {
-        return categoryBridgeService.changeStatus(categoryID).isEnabled();
+        return categoryBridgeService.changeStatus(categoryID).enabled();
     }
 
     @Override

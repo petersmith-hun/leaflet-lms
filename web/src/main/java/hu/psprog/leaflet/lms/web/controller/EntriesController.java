@@ -12,6 +12,7 @@ import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
 import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -47,16 +48,18 @@ public class EntriesController extends BaseController {
     static final String PATH_ENTRIES = "/entries";
     private static final String PATH_CREATE_ENTRY = PATH_ENTRIES + PATH_CREATE;
 
-    private EntryFacade entryFacade;
-    private CategoryFacade categoryFacade;
-    private CommentFacade commentFacade;
-    private EntryPaginationHelper paginationHelper;
-    private String resourceServerUrl;
+    private final EntryFacade entryFacade;
+    private final CategoryFacade categoryFacade;
+    private final CommentFacade commentFacade;
+    private final EntryPaginationHelper paginationHelper;
+    private final String resourceServerUrl;
 
     @Autowired
-    public EntriesController(EntryFacade entryFacade, CategoryFacade categoryFacade,
-                             CommentFacade commentFacade, EntryPaginationHelper paginationHelper,
+    public EntriesController(ModelAndViewFactory modelAndViewFactory, EntryFacade entryFacade,
+                             CategoryFacade categoryFacade, CommentFacade commentFacade,
+                             EntryPaginationHelper paginationHelper,
                              @Value("${webapp.resource-server-url}") String resourceServerUrl) {
+        super(modelAndViewFactory);
         this.entryFacade = entryFacade;
         this.categoryFacade = categoryFacade;
         this.commentFacade = commentFacade;
@@ -81,7 +84,7 @@ public class EntriesController extends BaseController {
         Map<Long, Long> pendingCommentsCountMap = commentFacade.getNumberOfPendingCommentsByEntry();
 
         return modelAndViewFactory.createForView(VIEW_ENTRIES_LIST)
-                .withAttribute("content", response.getBody())
+                .withAttribute("content", response.body())
                 .withAttribute("pendingComments", pendingCommentsCountMap)
                 .withAttribute("categories", categoryFacade.getAllCategories())
                 .withAttribute("pagination", paginationHelper.extractPaginationAttributes(response, request))
@@ -121,9 +124,9 @@ public class EntriesController extends BaseController {
         EntryFormContent response = entryFacade.fillForm();
 
         return modelAndViewFactory.createForView(VIEW_ENTRIES_EDIT_FORM)
-                .withAttribute("tagSelector", response.getExistingTags())
-                .withAttribute("categorySelector", response.getExistingCategories())
-                .withAttribute("fileSelector", response.getExistingFiles())
+                .withAttribute("tagSelector", response.existingTags())
+                .withAttribute("categorySelector", response.existingCategories())
+                .withAttribute("fileSelector", response.existingFiles())
                 .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }
@@ -165,10 +168,11 @@ public class EntriesController extends BaseController {
         EntryFormContent response = entryFacade.fillForm(id);
 
         return modelAndViewFactory.createForView(VIEW_ENTRIES_EDIT_FORM)
-                .withAttribute("tagSelector", response.getExistingTags())
-                .withAttribute("categorySelector", response.getExistingCategories())
-                .withAttribute("fileSelector", response.getExistingFiles())
-                .withAttribute("entryData", response.getEntryData())
+                .withAttribute("tagSelector", response.existingTags())
+                .withAttribute("categorySelector", response.existingCategories())
+                .withAttribute("fileSelector", response.existingFiles())
+                .withAttribute("entryData", response.entryData())
+                .withAttribute("attachedFileReferences", response.attachedFileReferences())
                 .withAttribute("resourceServerUrl", resourceServerUrl)
                 .build();
     }

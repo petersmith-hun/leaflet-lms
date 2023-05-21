@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.tag.TagCreateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.TagFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,10 +34,11 @@ public class TagsController extends BaseController {
     static final String PATH_TAGS = "/tags";
     private static final String PATH_CREATE_TAG = PATH_TAGS + PATH_CREATE;
 
-    private TagFacade tagFacade;
+    private final TagFacade tagFacade;
 
     @Autowired
-    public TagsController(TagFacade tagFacade) {
+    public TagsController(ModelAndViewFactory modelAndViewFactory, TagFacade tagFacade) {
+        super(modelAndViewFactory);
         this.tagFacade = tagFacade;
     }
 

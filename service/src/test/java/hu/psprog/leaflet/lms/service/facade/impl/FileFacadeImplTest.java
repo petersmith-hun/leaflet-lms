@@ -84,7 +84,7 @@ public class FileFacadeImplTest {
 
         // then
         assertThat(result.size(), equalTo(1));
-        assertThat(result.get(0).getReference(), equalTo(REFERENCE));
+        assertThat(result.get(0).reference(), equalTo(REFERENCE));
     }
 
     @Test
@@ -112,8 +112,8 @@ public class FileFacadeImplTest {
 
         // then
         assertThat(result, notNullValue());
-        assertThat(result.getFiles(), notNullValue());
-        assertThat(result.getSubFolders(), notNullValue());
+        assertThat(result.files(), notNullValue());
+        assertThat(result.subFolders(), notNullValue());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class FileFacadeImplTest {
         FileDataModel result = fileFacade.getFileDetails(PATH_UUID);
 
         // then
-        assertThat(result.getReference(), equalTo(REFERENCE));
+        assertThat(result.reference(), equalTo(REFERENCE));
     }
 
     @ParameterizedTest

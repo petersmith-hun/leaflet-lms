@@ -65,7 +65,7 @@ public class TagFacadeImplTest {
 
         // then
         assertThat(result.size(), equalTo(1));
-        assertThat(result.get(0).getName(), equalTo(TAG_NAME));
+        assertThat(result.get(0).name(), equalTo(TAG_NAME));
     }
 
     @Test
@@ -85,10 +85,10 @@ public class TagFacadeImplTest {
 
         // given
         ModifyEntryRequest modifyEntryRequest = new ModifyEntryRequest();
-        EditEntryDataModel editEntryDataModel = EditEntryDataModel.getExtendedBuilder()
+        EditEntryDataModel editEntryDataModel = EditEntryDataModel.getBuilder()
                 .withId(ENTRY_ID)
                 .build();
-        given(entityConnectionDifferenceCalculator.createContextFor(eq(modifyEntryRequest.getTags()), eq(editEntryDataModel.getTags()), any())).willReturn(context);
+        given(entityConnectionDifferenceCalculator.createContextFor(eq(modifyEntryRequest.getTags()), eq(editEntryDataModel.tags()), any())).willReturn(context);
         given(context.collectForAttach()).willReturn(Collections.singletonList(ID_TO_ATTACH));
         given(context.collectForDetach()).willReturn(Collections.singletonList(ID_TO_DETACH));
 
@@ -110,7 +110,7 @@ public class TagFacadeImplTest {
         TagDataModel result = tagFacade.getTag(TAG_ID);
 
         // then
-        assertThat(result.getName(), equalTo(TAG_NAME));
+        assertThat(result.name(), equalTo(TAG_NAME));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class TagFacadeImplTest {
 
     private TagListDataModel prepareTagListDataModel() {
         return TagListDataModel.getBuilder()
-                .withItem(prepareTagDataModel())
+                .withTags(List.of(prepareTagDataModel()))
                 .build();
     }
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Dashboard controller.
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/")
-public class DashboardController {
+public class DashboardController extends BaseController {
 
     private static final String VIEW_DASHBOARD_HOME = "view/dashboard/home";
     private static final int COMMENT_PAGE_SIZE = 3;
@@ -30,15 +30,14 @@ public class DashboardController {
     private final CommentFacade commentFacade;
     private final DashboardFacade dashboardFacade;
     private final CommentPaginationHelper paginationHelper;
-    private final ModelAndViewFactory modelAndViewFactory;
 
     @Autowired
-    public DashboardController(CommentFacade commentFacade, DashboardFacade dashboardFacade,
-                               CommentPaginationHelper paginationHelper, ModelAndViewFactory modelAndViewFactory) {
+    public DashboardController(ModelAndViewFactory modelAndViewFactory, CommentFacade commentFacade,
+                               DashboardFacade dashboardFacade, CommentPaginationHelper paginationHelper) {
+        super(modelAndViewFactory);
         this.commentFacade = commentFacade;
         this.dashboardFacade = dashboardFacade;
         this.paginationHelper = paginationHelper;
-        this.modelAndViewFactory = modelAndViewFactory;
     }
 
     /**

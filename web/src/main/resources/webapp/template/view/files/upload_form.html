@@ -11,7 +11,7 @@
                 <div class="col-md-12">
                     <div class="box box-solid">
                         <div class="box-body">
-                            <a class="btn btn-primary" href="#" th:href="@{/files/browse/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}">
+                            <a class="btn btn-primary" href="#" th:href="@{/files/browse/__${@URLUtilities.extractSubPath(2, 0, request.getServletPath())}__}">
                                 <i class="fa fa-backward"></i> Back to file browser
                             </a>
                         </div>
@@ -26,7 +26,7 @@
                         </div>
                         <div class="box-body">
                             <form method="post" th:action="@{''}" enctype="multipart/form-data">
-                                <input id="subFolder" name="subFolder" type="hidden" th:value="${@URLUtilities.extractSubPath(3, 0, #request.getServletPath())}" />
+                                <input id="subFolder" name="subFolder" type="hidden" th:value="${@URLUtilities.extractSubPath(3, 0, request.getServletPath())}" />
                                 <div class="form-group">
                                     <label for="inputFile"></label>
                                     <input id="inputFile" name="inputFile" type="file" th:accept="${acceptableMimeTypes}" />

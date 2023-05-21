@@ -46,16 +46,16 @@ public class FileFacadeImpl implements FileFacade {
 
     @Override
     public List<FileDataModel> getUploadedFiles() throws CommunicationFailureException {
-        return Optional.ofNullable(fileBridgeService.getUploadedFiles().getFiles())
+        return Optional.ofNullable(fileBridgeService.getUploadedFiles().files())
                 .orElse(Collections.emptyList());
     }
 
     @Override
     public FilesByFolder getFilesByFolder(String path) throws CommunicationFailureException {
 
-        return FilesByFolder.getBuilder()
-                .withSubFolders(fileBrowser.getFolders(path))
-                .withFiles(fileBrowser.getFiles(path))
+        return FilesByFolder.builder()
+                .subFolders(fileBrowser.getFolders(path))
+                .files(fileBrowser.getFiles(path))
                 .build();
     }
 
@@ -84,9 +84,9 @@ public class FileFacadeImpl implements FileFacade {
 
         String normalizedPath = urlUtilities.normalize(path);
 
-        return fileBridgeService.getDirectories().getAcceptors().stream()
-                .filter(directoryDataModel -> normalizedPath.startsWith(directoryDataModel.getRoot()))
-                .flatMap(directoryDataModel -> directoryDataModel.getAcceptableMimeTypes().stream())
+        return fileBridgeService.getDirectories().acceptors().stream()
+                .filter(directoryDataModel -> normalizedPath.startsWith(directoryDataModel.root()))
+                .flatMap(directoryDataModel -> directoryDataModel.acceptableMimeTypes().stream())
                 .collect(Collectors.toList());
     }
 

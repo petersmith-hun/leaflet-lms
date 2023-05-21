@@ -18,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 public class StackAdminServiceClientImplTest {
 
     private static final RegisteredServices REGISTERED_SERVICES = new RegisteredServices(Arrays.asList("SVC1", "SVC2", "SVC3"));
-    private static final List<Container> CONTAINER_LIST = Collections.singletonList(Container.getBuilder().withId("1234").build());
+    private static final List<Container> CONTAINER_LIST = Collections.singletonList(Container.builder().id("1234").build());
     private static final GenericType<List<Container>> CONTAINER_LIST_GENERIC_TYPE = new GenericType<>() {};
     private static final GenericType<Map<String, String>> REGISTRIES_GENERIC_TYPE = new GenericType<>() {};
     private static final String REGISTRY_ID = "registry-1";

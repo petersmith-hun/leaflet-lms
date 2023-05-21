@@ -4,10 +4,10 @@ import hu.psprog.leaflet.api.rest.request.routing.FrontEndRouteUpdateRequestMode
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FrontEndRoutingSupportFacade;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -39,8 +39,13 @@ public class FrontEndRoutingManagementControllerTest extends AbstractControllerT
     @Mock
     private FrontEndRoutingSupportFacade frontEndRoutingSupportFacade;
 
-    @InjectMocks
     private FrontEndRoutingManagementController frontEndRoutingManagementController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        frontEndRoutingManagementController = new FrontEndRoutingManagementController(modelAndViewFactory, frontEndRoutingSupportFacade);
+    }
 
     @Test
     public void shouldListRoutes() throws CommunicationFailureException {

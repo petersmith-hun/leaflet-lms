@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 @Component
 public class FileBrowser {
 
-    private FileBridgeService fileBridgeService;
-    private URLUtilities urlUtilities;
+    private final FileBridgeService fileBridgeService;
+    private final URLUtilities urlUtilities;
 
     @Autowired
     public FileBrowser(FileBridgeService fileBridgeService, URLUtilities urlUtilities) {
@@ -48,9 +48,9 @@ public class FileBrowser {
         List<FileDataModel> files = Collections.emptyList();
         if (!StringUtils.EMPTY.equals(normalizedPath)) {
             FileListDataModel fileList = fileBridgeService.getUploadedFiles();
-            files = fileList.getFiles().stream()
+            files = fileList.files().stream()
                     .filter(fileDataModel -> {
-                        String normalizedFilePath = urlUtilities.normalize(fileDataModel.getPath());
+                        String normalizedFilePath = urlUtilities.normalize(fileDataModel.path());
                         String[] filePathParts = urlUtilities.splitURL(normalizedFilePath);
                         String[] normalizedPathParts = urlUtilities.splitURL(normalizedPath);
 
@@ -78,15 +78,15 @@ public class FileBrowser {
         DirectoryListDataModel directories = fileBridgeService.getDirectories();
 
         if (StringUtils.EMPTY.equals(normalizedPath)) {
-            folders = directories.getAcceptors().stream()
-                    .map(DirectoryDataModel::getRoot)
+            folders = directories.acceptors().stream()
+                    .map(DirectoryDataModel::root)
                     .collect(Collectors.toList());
         } else {
             String[] normalizedPathParts = urlUtilities.splitURL(normalizedPath);
-            folders = directories.getAcceptors().stream()
-                    .filter(directoryDataModel -> directoryDataModel.getRoot().equals(normalizedPathParts[0]))
+            folders = directories.acceptors().stream()
+                    .filter(directoryDataModel -> directoryDataModel.root().equals(normalizedPathParts[0]))
                     .findFirst()
-                    .map(DirectoryDataModel::getChildren)
+                    .map(DirectoryDataModel::children)
                     .orElse(Collections.emptyList())
                     .stream()
                     .filter(childDirectory -> {

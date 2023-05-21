@@ -24,8 +24,8 @@ import java.util.Optional;
 @Service
 public class TagFacadeImpl implements TagFacade {
 
-    private EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator;
-    private TagBridgeService tagBridgeService;
+    private final EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator;
+    private final TagBridgeService tagBridgeService;
 
     @Autowired
     public TagFacadeImpl(EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator, TagBridgeService tagBridgeService) {
@@ -35,14 +35,14 @@ public class TagFacadeImpl implements TagFacade {
 
     @Override
     public List<TagDataModel> getAllTags() throws CommunicationFailureException {
-        return Optional.ofNullable(tagBridgeService.getAllTags().getTags())
+        return Optional.ofNullable(tagBridgeService.getAllTags().tags())
                 .orElse(Collections.emptyList());
     }
 
     @Override
     public void handleAssignmentsOnChange(ModifyEntryRequest modifyEntryRequest, EditEntryDataModel editEntryDataModel) throws CommunicationFailureException {
         EntityConnectionDifferenceCalculator.EntityConnectionContext<Long, TagDataModel> connectionContext =
-                entityConnectionDifferenceCalculator.createContextFor(modifyEntryRequest.getTags(), editEntryDataModel.getTags(), TagDataModel::getId);
+                entityConnectionDifferenceCalculator.createContextFor(modifyEntryRequest.getTags(), editEntryDataModel.tags(), TagDataModel::id);
 
         for (Long tagID : connectionContext.collectForAttach()) {
             tagBridgeService.attachTag(createTagAssignmentRequestModel(editEntryDataModel, tagID));
@@ -61,7 +61,7 @@ public class TagFacadeImpl implements TagFacade {
     @Override
     public Long processCreateTag(TagCreateRequestModel tagCreateRequestModel) throws CommunicationFailureException {
         return Optional.ofNullable(tagBridgeService.createTag(tagCreateRequestModel))
-                .map(TagDataModel::getId)
+                .map(TagDataModel::id)
                 .orElse(null);
     }
 
@@ -72,7 +72,7 @@ public class TagFacadeImpl implements TagFacade {
 
     @Override
     public boolean processStatusChange(Long tagID) throws CommunicationFailureException {
-        return tagBridgeService.changeStatus(tagID).isEnabled();
+        return tagBridgeService.changeStatus(tagID).enabled();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class TagFacadeImpl implements TagFacade {
     private TagAssignmentRequestModel createTagAssignmentRequestModel(EditEntryDataModel entryDataModel, Long tagID) {
 
         TagAssignmentRequestModel tagAssignmentRequestModel = new TagAssignmentRequestModel();
-        tagAssignmentRequestModel.setEntryID(entryDataModel.getId());
+        tagAssignmentRequestModel.setEntryID(entryDataModel.id());
         tagAssignmentRequestModel.setTagID(tagID);
 
         return tagAssignmentRequestModel;

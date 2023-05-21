@@ -5,7 +5,7 @@ import hu.psprog.leaflet.tlp.api.domain.OrderBy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;

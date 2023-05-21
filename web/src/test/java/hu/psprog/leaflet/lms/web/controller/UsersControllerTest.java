@@ -6,10 +6,10 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -44,8 +44,13 @@ public class UsersControllerTest extends AbstractControllerTest {
     @Mock
     private UserFacade userFacade;
 
-    @InjectMocks
     private UsersController usersController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        usersController = new UsersController(modelAndViewFactory, userFacade);
+    }
 
     @Test
     public void shouldListUsers() throws CommunicationFailureException {
@@ -118,7 +123,7 @@ public class UsersControllerTest extends AbstractControllerTest {
     public void shouldShowChangeUserRoleForm() throws CommunicationFailureException {
 
         // given
-        given(userFacade.retrieveUserDetails(USER_ID)).willReturn(ExtendedUserDataModel.getExtendedBuilder().build());
+        given(userFacade.retrieveUserDetails(USER_ID)).willReturn(ExtendedUserDataModel.getBuilder().build());
 
         // when
         usersController.showChangeUserRoleForm(USER_ID);

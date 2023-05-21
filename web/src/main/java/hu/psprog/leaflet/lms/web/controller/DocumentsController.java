@@ -4,6 +4,7 @@ import hu.psprog.leaflet.api.rest.request.document.DocumentCreateRequestModel;
 import hu.psprog.leaflet.api.rest.request.document.DocumentUpdateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.DocumentFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -37,12 +38,13 @@ public class DocumentsController extends BaseController {
     private static final String PATH_CREATE_DOCUMENT = PATH_DOCUMENTS + PATH_CREATE;
     private static final String LIST_PATH_REDIRECTION_PARAMETER = "list";
 
-    private DocumentFacade documentFacade;
-    private String resourceServerUrl;
+    private final DocumentFacade documentFacade;
+    private final String resourceServerUrl;
 
     @Autowired
-    public DocumentsController(DocumentFacade documentFacade,
+    public DocumentsController(ModelAndViewFactory modelAndViewFactory, DocumentFacade documentFacade,
                                @Value("${webapp.resource-server-url}") String resourceServerUrl) {
+        super(modelAndViewFactory);
         this.documentFacade = documentFacade;
         this.resourceServerUrl = resourceServerUrl;
     }

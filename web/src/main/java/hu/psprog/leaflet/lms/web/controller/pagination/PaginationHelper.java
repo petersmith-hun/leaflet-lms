@@ -3,7 +3,7 @@ package hu.psprog.leaflet.lms.web.controller.pagination;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -17,7 +17,7 @@ import java.util.function.Function;
  * @param <T> field enum value of a paginated entity's available sort fields
  * @author Peter Smith
  */
-public abstract class PaginationHelper<T extends Enum> {
+public abstract class PaginationHelper<T extends Enum<T>> {
 
     private static final String DESC = "desc";
     private static final int FIRST_PAGE = 1;
@@ -48,7 +48,7 @@ public abstract class PaginationHelper<T extends Enum> {
      */
     public OrderDirection mapOrderDirection(Optional<String> optionalOrderDirection) {
         return optionalOrderDirection
-                .map(orderDirection -> orderDirection.toLowerCase().equals(DESC)
+                .map(orderDirection -> orderDirection.equalsIgnoreCase(DESC)
                         ? OrderDirection.DESC
                         : OrderDirection.ASC)
                 .orElse(paginationDefaults.getOrderDirection());

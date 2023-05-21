@@ -34,7 +34,7 @@ public class AttachmentFacadeImplTest {
     private static final UUID PATH_UUID_TO_DETACH = UUID.randomUUID();
     private static final ModifyEntryRequest MODIFY_ENTRY_REQUEST = prepareModifyEntryRequest();
     private static final long ENTRY_ID = 1L;
-    private static final EditEntryDataModel EDIT_ENTRY_DATA_MODEL = EditEntryDataModel.getExtendedBuilder()
+    private static final EditEntryDataModel EDIT_ENTRY_DATA_MODEL = EditEntryDataModel.getBuilder()
             .withId(ENTRY_ID)
             .withAttachments(Collections.singletonList(FileDataModel.getBuilder()
                     .withReference(PATH_UUID_TO_DETACH.toString())
@@ -60,7 +60,7 @@ public class AttachmentFacadeImplTest {
     public void shouldHandleAssignmentsWithChanges() throws CommunicationFailureException {
 
         // given
-        given(calculator.createContextFor(eq(MODIFY_ENTRY_REQUEST.getAttachments()), eq(EDIT_ENTRY_DATA_MODEL.getAttachments()), any()))
+        given(calculator.createContextFor(eq(MODIFY_ENTRY_REQUEST.getAttachments()), eq(EDIT_ENTRY_DATA_MODEL.attachments()), any()))
                 .willReturn(context);
         given(context.collectForAttach()).willReturn(Collections.singletonList(PATH_UUID_TO_ATTACH));
         given(context.collectForDetach()).willReturn(Collections.singletonList(PATH_UUID_TO_DETACH));

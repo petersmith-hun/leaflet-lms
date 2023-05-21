@@ -1,7 +1,6 @@
 package hu.psprog.leaflet.lms.service.domain.dashboard;
 
 import lombok.Builder;
-import lombok.Data;
 
 import java.util.Map;
 
@@ -10,12 +9,10 @@ import java.util.Map;
  *
  * @author Peter Smith
  */
-@Data
 @Builder
-public class DockerStatusJSClientHelperModel implements JSClientHelperModel {
-
-    private final boolean enabled;
-    private final Map<String, String> authorization;
-    private final String statusEndpoint;
-    private final String detailsEndpoint;
-}
+public record DockerStatusJSClientHelperModel(
+        boolean enabled,
+        Map<String, String> authorization,
+        String statusEndpoint,
+        String detailsEndpoint
+) implements JSClientHelperModel { }

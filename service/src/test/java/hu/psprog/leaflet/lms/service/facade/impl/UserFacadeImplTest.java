@@ -53,7 +53,7 @@ public class UserFacadeImplTest {
     @Mock
     private UserBridgeService userBridgeService;
 
-    @Mock(lenient = true)
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private Authentication authentication;
 
     @InjectMocks
@@ -76,7 +76,7 @@ public class UserFacadeImplTest {
 
         // then
         assertThat(result.size(), equalTo(1));
-        assertThat(result.get(0).getUsername(), equalTo(USERNAME));
+        assertThat(result.get(0).username(), equalTo(USERNAME));
     }
 
     @Test
@@ -198,12 +198,12 @@ public class UserFacadeImplTest {
 
     private UserListDataModel prepareUserListDataModel() {
         return UserListDataModel.getBuilder()
-                .withItem(prepareExtendedUserDataModel())
+                .withUsers(List.of(prepareExtendedUserDataModel()))
                 .build();
     }
 
     private ExtendedUserDataModel prepareExtendedUserDataModel() {
-        return ExtendedUserDataModel.getExtendedBuilder()
+        return ExtendedUserDataModel.getBuilder()
                 .withId(USER_ID)
                 .withUsername(USERNAME)
                 .withEmail(EMAIL)

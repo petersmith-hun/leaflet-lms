@@ -34,10 +34,10 @@ public class GeneralStatusSetterInterceptorTest {
     private static final String NON_REDIRECTION_VIEW = "/home";
     private static final String STATUS_ATTRIBUTE = "generalStatus";
 
-    @Mock(lenient = true)
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private ModelAndView modelAndView;
 
-    @Mock(lenient = true)
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private Map<String, Object> model;
 
     @InjectMocks

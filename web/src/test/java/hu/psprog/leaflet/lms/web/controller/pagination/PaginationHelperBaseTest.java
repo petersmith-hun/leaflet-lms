@@ -18,7 +18,7 @@ public abstract class PaginationHelperBaseTest {
     static final String DEFAULT_ORDER_BY = "CREATED";
     static final OrderDirection DEFAULT_ORDER_DIRECTION = OrderDirection.ASC;
 
-    @Mock(lenient = true)
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private PaginationDefaults paginationDefaults;
 
     MockHttpServletRequest request;

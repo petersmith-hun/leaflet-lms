@@ -6,15 +6,15 @@ import hu.psprog.leaflet.lms.service.domain.system.SEOConfiguration;
 import hu.psprog.leaflet.lms.service.facade.SystemConfigurationFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.LogViewerPaginationHelper;
 import hu.psprog.leaflet.tlp.api.domain.LogRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.mockito.Mockito.doThrow;
@@ -68,8 +68,13 @@ public class SystemConfigurationControllerTest extends AbstractControllerTest {
     @Mock
     private HttpServletRequest request;
 
-    @InjectMocks
     private SystemConfigurationController systemConfigurationController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        systemConfigurationController = new SystemConfigurationController(modelAndViewFactory, systemConfigurationFacade, logViewerPaginationHelper);
+    }
 
     @Test
     public void shouldShowSEOConfigurationForm() throws CommunicationFailureException {

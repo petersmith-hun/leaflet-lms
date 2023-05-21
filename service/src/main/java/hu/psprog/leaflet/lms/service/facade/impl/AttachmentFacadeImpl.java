@@ -22,9 +22,9 @@ import java.util.UUID;
 @Service
 public class AttachmentFacadeImpl implements AttachmentFacade {
 
-    private EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator;
-    private AttachmentBridgeService attachmentBridgeService;
-    private CommonExtractor commonExtractor;
+    private final EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator;
+    private final AttachmentBridgeService attachmentBridgeService;
+    private final CommonExtractor commonExtractor;
 
     @Autowired
     public AttachmentFacadeImpl(EntityConnectionDifferenceCalculator entityConnectionDifferenceCalculator,
@@ -37,7 +37,7 @@ public class AttachmentFacadeImpl implements AttachmentFacade {
     @Override
     public void handleAssignmentsOnChange(ModifyEntryRequest modifyEntryRequest, EditEntryDataModel editEntryDataModel) throws CommunicationFailureException {
         EntityConnectionDifferenceCalculator.EntityConnectionContext<UUID, FileDataModel> connectionContext =
-                entityConnectionDifferenceCalculator.createContextFor(modifyEntryRequest.getAttachments(), editEntryDataModel.getAttachments(), commonExtractor::extractPathUUIDFromReference);
+                entityConnectionDifferenceCalculator.createContextFor(modifyEntryRequest.getAttachments(), editEntryDataModel.attachments(), commonExtractor::extractPathUUIDFromReference);
 
         for (UUID pathUUID : connectionContext.collectForAttach()) {
             attachmentBridgeService.attach(createAttachmentRequestModel(editEntryDataModel, pathUUID));
@@ -51,7 +51,7 @@ public class AttachmentFacadeImpl implements AttachmentFacade {
     private AttachmentRequestModel createAttachmentRequestModel(EditEntryDataModel editEntryDataModel, UUID attachmentPathUUID) {
 
         AttachmentRequestModel attachmentRequestModel = new AttachmentRequestModel();
-        attachmentRequestModel.setEntryID(editEntryDataModel.getId());
+        attachmentRequestModel.setEntryID(editEntryDataModel.id());
         attachmentRequestModel.setPathUUID(attachmentPathUUID);
 
         return attachmentRequestModel;

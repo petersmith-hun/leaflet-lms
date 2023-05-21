@@ -6,10 +6,10 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.DocumentFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -39,12 +39,18 @@ public class DocumentsControllerTest extends AbstractControllerTest {
     private static final String FIELD_RESOURCE_SERVER_URL = "resourceServerUrl";
     private static final String PATH_DOCUMENTS = "/documents";
     private static final String PATH_DOCUMENTS_CREATE = PATH_DOCUMENTS + "/create";
+    private static final String RESOURCE_SERVER_URL = "http://localhost:9999/files";
 
     @Mock
     private DocumentFacade documentFacade;
 
-    @InjectMocks
     private DocumentsController documentsController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        documentsController = new DocumentsController(modelAndViewFactory, documentFacade, RESOURCE_SERVER_URL);
+    }
 
     @Test
     public void shouldListDocuments() throws CommunicationFailureException {

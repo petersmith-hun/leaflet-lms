@@ -14,12 +14,12 @@ public interface JSClientHelperModel {
      *
      * @return {@code true} if the monitoring operation set is enabled, {@code false} otherwise
      */
-    boolean isEnabled();
+    boolean enabled();
 
     /**
      * Returns an authorization header for the monitoring operation set.
      *
      * @return an authorization header for the monitoring operation set as {@link Map} of {@link String} key and value pair(s)
      */
-    Map<String, String> getAuthorization();
+    Map<String, String> authorization();
 }

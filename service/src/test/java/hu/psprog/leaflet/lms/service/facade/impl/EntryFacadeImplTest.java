@@ -196,8 +196,8 @@ public class EntryFacadeImplTest {
 
     private void prepareFillFormCall(boolean withEntryData) throws CommunicationFailureException {
 
-        given(categoryFacade.getAllCategories()).willReturn(Collections.singletonList(new CategoryDataModel()));
-        given(tagFacade.getAllTags()).willReturn(Collections.singletonList(new TagDataModel()));
+        given(categoryFacade.getAllCategories()).willReturn(Collections.singletonList(CategoryDataModel.getBuilder().build()));
+        given(tagFacade.getAllTags()).willReturn(Collections.singletonList(TagDataModel.getBuilder().build()));
         given(fileFacade.getUploadedFiles()).willReturn(Collections.singletonList(FileDataModel.builder().build()));
         if (withEntryData) {
             given(entryBridgeService.getEntryByID(ENTRY_ID)).willReturn(wrapResponse(prepareEditEntryDataModel()));
@@ -206,16 +206,19 @@ public class EntryFacadeImplTest {
 
     private void assertFillForm(EntryFormContent result, boolean withEntryData) {
 
-        assertThat(result.getExistingCategories().isEmpty(), is(false));
-        assertThat(result.getExistingFiles().isEmpty(), is(false));
-        assertThat(result.getExistingTags().isEmpty(), is(false));
+        assertThat(result.existingCategories().isEmpty(), is(false));
+        assertThat(result.existingFiles().isEmpty(), is(false));
+        assertThat(result.existingTags().isEmpty(), is(false));
         if (withEntryData) {
-            assertThat(result.getEntryData(), notNullValue());
+            assertThat(result.entryData(), notNullValue());
+            assertThat(result.attachedFileReferences(), equalTo(List.of("ref1")));
+        } else {
+            assertThat(result.attachedFileReferences(), equalTo(Collections.emptyList()));
         }
     }
 
     private <T extends BaseBodyDataModel> WrapperBodyDataModel<T> wrapResponse(T response) {
-        return WrapperBodyDataModel.getBuilder()
+        return WrapperBodyDataModel.<T>getBuilder()
                 .withBody(response)
                 .build();
     }
@@ -228,10 +231,13 @@ public class EntryFacadeImplTest {
     }
 
     private EditEntryDataModel prepareEditEntryDataModel() {
-        return EditEntryDataModel.getExtendedBuilder()
+        return EditEntryDataModel.getBuilder()
                 .withId(ENTRY_ID)
                 .withLink("link-1")
                 .withEnabled(true)
+                .withAttachments(List.of(hu.psprog.leaflet.api.rest.response.file.FileDataModel.getBuilder()
+                        .withReference("ref1")
+                        .build()))
                 .build();
     }
 }

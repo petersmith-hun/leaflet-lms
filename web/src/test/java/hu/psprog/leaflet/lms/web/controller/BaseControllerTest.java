@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -35,7 +35,7 @@ public class BaseControllerTest {
     private static final String VALIDATION_FAILURE = "Validation failure.";
     private static final String VALIDATION_ERROR_PAGE = "view/error/validation";
     private static final String DEFAULT_HANDLER = "Default handler";
-    private static final ValidationErrorMessageResponse INVALID_VALUE = ValidationErrorMessageResponse.getExtendedBuilder()
+    private static final ValidationErrorMessageResponse INVALID_VALUE = ValidationErrorMessageResponse.getBuilder()
             .withField("field-1")
             .withMessage("Invalid value")
             .build();

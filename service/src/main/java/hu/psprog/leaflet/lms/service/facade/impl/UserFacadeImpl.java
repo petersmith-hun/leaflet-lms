@@ -24,7 +24,7 @@ import java.util.Optional;
 @Service
 public class UserFacadeImpl implements UserFacade {
 
-    private UserBridgeService userBridgeService;
+    private final UserBridgeService userBridgeService;
 
     @Autowired
     public UserFacadeImpl(UserBridgeService userBridgeService) {
@@ -33,7 +33,7 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public List<ExtendedUserDataModel> listUsers() throws CommunicationFailureException {
-        return Optional.ofNullable(userBridgeService.getAllUsers().getUsers())
+        return Optional.ofNullable(userBridgeService.getAllUsers().users())
                 .orElse(Collections.emptyList());
     }
 
@@ -45,7 +45,7 @@ public class UserFacadeImpl implements UserFacade {
     @Override
     public Long processUserCreation(UserCreateRequestModel userCreateRequestModel) throws CommunicationFailureException {
         return Optional.ofNullable(userBridgeService.createUser(userCreateRequestModel))
-                .map(ExtendedUserDataModel::getId)
+                .map(ExtendedUserDataModel::id)
                 .orElse(0L);
     }
 

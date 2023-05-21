@@ -2,12 +2,13 @@ package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.api.rest.request.comment.CommentSearchParameters;
 import hu.psprog.leaflet.api.rest.request.comment.CommentUpdateRequestModel;
+import hu.psprog.leaflet.api.rest.response.comment.CommentDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.CommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.common.PaginationDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
-import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
+import hu.psprog.leaflet.api.rest.response.entry.EntryDataModel;
 import hu.psprog.leaflet.bridge.client.domain.OrderBy;
 import hu.psprog.leaflet.bridge.client.domain.OrderDirection;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
@@ -21,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -56,9 +58,9 @@ public class CommentFacadeImplTest {
     public void shouldGetCommentsForEntry() throws CommunicationFailureException {
 
         // given
-        WrapperBodyDataModel<CommentListDataModel> response = WrapperBodyDataModel.getBuilder()
+        WrapperBodyDataModel<CommentListDataModel> response = WrapperBodyDataModel.<CommentListDataModel>getBuilder()
                 .withBody(CommentListDataModel.getBuilder()
-                        .withItem(prepareExtendedCommentDataModel(1))
+                        .withComments(List.of(prepareCommentDataModel()))
                         .build())
                 .build();
         given(commentBridgeService.getPageOfCommentsForEntry(ENTRY_ID, PAGE, LIMIT, ORDER_BY, ORDER_DIRECTION)).willReturn(response);
@@ -185,12 +187,20 @@ public class CommentFacadeImplTest {
         assertThat(result, is(true));
     }
 
-    private ExtendedCommentDataModel prepareExtendedCommentDataModel(long entryID) {
+    private CommentDataModel prepareCommentDataModel() {
 
-        return ExtendedCommentDataModel.getExtendedBuilder()
+        return CommentDataModel.getBuilder()
                 .withContent(CONTENT)
                 .withEnabled(true)
-                .withAssociatedEntry(EditEntryDataModel.getBuilder()
+                .build();
+    }
+
+    private ExtendedCommentDataModel prepareExtendedCommentDataModel(long entryID) {
+
+        return ExtendedCommentDataModel.getBuilder()
+                .withContent(CONTENT)
+                .withEnabled(true)
+                .withAssociatedEntry(EntryDataModel.getBuilder()
                         .withId(entryID)
                         .build())
                 .build();
@@ -207,16 +217,18 @@ public class CommentFacadeImplTest {
         return commentSearchParameters;
     }
 
-    private WrapperBodyDataModel createSearchResponse(boolean hasNextPage) {
+    private WrapperBodyDataModel<ExtendedCommentListDataModel> createSearchResponse(boolean hasNextPage) {
 
-        return WrapperBodyDataModel.getBuilder()
+        return WrapperBodyDataModel.<ExtendedCommentListDataModel>getBuilder()
                 .withBody(ExtendedCommentListDataModel.getBuilder()
-                        .withItem(prepareExtendedCommentDataModel(1))
-                        .withItem(prepareExtendedCommentDataModel(2))
-                        .withItem(prepareExtendedCommentDataModel(2))
-                        .withItem(prepareExtendedCommentDataModel(2))
-                        .withItem(prepareExtendedCommentDataModel(3))
-                        .withItem(prepareExtendedCommentDataModel(3))
+                        .withComments(List.of(
+                                prepareExtendedCommentDataModel(1),
+                                prepareExtendedCommentDataModel(2),
+                                prepareExtendedCommentDataModel(2),
+                                prepareExtendedCommentDataModel(2),
+                                prepareExtendedCommentDataModel(3),
+                                prepareExtendedCommentDataModel(3)
+                        ))
                         .build())
                 .withPagination(PaginationDataModel.getBuilder()
                         .withHasNext(hasNextPage)

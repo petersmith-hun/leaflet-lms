@@ -1,5 +1,6 @@
 package hu.psprog.leaflet.lms.web.interceptor;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,8 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ public class CommonPageDataInterceptorTest {
     private HttpServletRequest request;
 
     @Mock
+    private HttpServletResponse response;
+
+    @Mock
     private BuildProperties buildProperties;
 
     @BeforeEach
@@ -44,23 +48,25 @@ public class CommonPageDataInterceptorTest {
     }
 
     @Test
-    public void shouldPostHandleAddApplicationVersionToModelAndView() throws Exception {
+    public void shouldPostHandleAddApplicationVersionToModelAndView() {
 
         // given
         ModelAndView modelAndView = new ModelAndView();
         given(request.getDispatcherType()).willReturn(DispatcherType.REQUEST);
 
         // when
-        commonPageDataInterceptor.postHandle(request, null, null, modelAndView);
+        commonPageDataInterceptor.postHandle(request, response, null, modelAndView);
 
         // then
-        assertThat(modelAndView.getModel().size(), equalTo(1));
+        assertThat(modelAndView.getModel().size(), equalTo(3));
         assertThat(modelAndView.getModelMap().get("common"), equalTo(COMMON_PAGE_DATA_MAP));
+        assertThat(modelAndView.getModelMap().get("request"), equalTo(request));
+        assertThat(modelAndView.getModelMap().get("response"), equalTo(response));
     }
 
 
     @Test
-    public void shouldPostHandleDoNothingIfDispatcherTypeIsNotRequest() throws Exception {
+    public void shouldPostHandleDoNothingIfDispatcherTypeIsNotRequest() {
 
         // given
         ModelAndView modelAndView = new ModelAndView();
@@ -74,7 +80,7 @@ public class CommonPageDataInterceptorTest {
     }
 
     @Test
-    public void shouldPostHandleDoNothingIfModelAndViewIsNull() throws Exception {
+    public void shouldPostHandleDoNothingIfModelAndViewIsNull() {
 
         // given
         given(request.getDispatcherType()).willReturn(DispatcherType.REQUEST);

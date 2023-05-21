@@ -4,10 +4,10 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,8 +42,13 @@ public class TranslationManagementControllerTest extends AbstractControllerTest 
     @Mock
     private TranslationManagementFacade translationManagementFacade;
 
-    @InjectMocks
     private TranslationManagementController translationManagementController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        translationManagementController = new TranslationManagementController(modelAndViewFactory, translationManagementFacade);
+    }
 
     @Test
     public void shouldListPacks() throws CommunicationFailureException {

@@ -5,6 +5,7 @@ import hu.psprog.leaflet.api.rest.response.user.ExtendedUserDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.role.AvailableRole;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,10 +38,11 @@ public class UsersController extends BaseController {
     static final String PATH_USERS = "/users";
     private static final String PATH_CREATE_USER = PATH_USERS + PATH_CREATE;
 
-    private UserFacade userFacade;
+    private final UserFacade userFacade;
 
     @Autowired
-    public UsersController(UserFacade userFacade) {
+    public UsersController(ModelAndViewFactory modelAndViewFactory, UserFacade userFacade) {
+        super(modelAndViewFactory);
         this.userFacade = userFacade;
     }
 
@@ -123,8 +125,8 @@ public class UsersController extends BaseController {
 
         return modelAndViewFactory.createForView(VIEW_USERS_CHANGE_ROLE)
                 .withAttribute("roles", userFacade.getAvailableRoles())
-                .withAttribute("currentRole", details.getRole())
-                .withAttribute("username", details.getUsername())
+                .withAttribute("currentRole", details.role())
+                .withAttribute("username", details.username())
                 .build();
     }
 
