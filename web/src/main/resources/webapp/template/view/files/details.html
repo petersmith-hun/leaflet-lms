@@ -16,7 +16,7 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
             <div class="row">
@@ -26,10 +26,10 @@
                             <a class="btn btn-primary" href="#" th:href="@{/files/browse/__${@URLUtilities.getUpURL(file.path, 0)}__}">
                                 <i class="fa fa-backward"></i> Back to file browser
                             </a>
-                            <a th:href="@{/files/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-sm btn-warning">
+                            <a th:href="@{/files/edit/{id}(id=__${request.getAttribute('id')}__)}" href="#" class="btn btn-sm btn-warning">
                                 <i class="fa fa-pencil"></i> Edit meta info
                             </a>
-                            <form class="inline" method="post" th:action="@{/files/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                            <form class="inline" method="post" th:action="@{/files/delete/{id}(id=__${request.getAttribute('id')}__)}">
                                 <button class="btn btn-danger" onclick="return confirm('Are you sure to delete this file?')">
                                     <i class="fa fa-times"></i>  Delete file
                                 </button>

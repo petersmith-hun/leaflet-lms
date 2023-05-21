@@ -25,7 +25,7 @@ public class SEOConfigurationDCPAdapter extends AbstractDCPAdapter<SEOConfigurat
         META_DESCRIPTION(SEOConfiguration::getDefaultDescription),
         META_KEYWORDS(SEOConfiguration::getDefaultKeywords);
 
-        private Function<SEOConfiguration, String> domainMapper;
+        private final Function<SEOConfiguration, String> domainMapper;
 
         SEOKey(Function<SEOConfiguration, String> domainMapper) {
             this.domainMapper = domainMapper;

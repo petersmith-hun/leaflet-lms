@@ -11,7 +11,7 @@
     </head>
     <body>
         <main class="main-content" style="font-family: 'Calibri'; padding: 20px;">
-            <h1 style="font-size: 3em; color: #555555;" th:text="${#response.status}">Status</h1>
+            <h1 style="font-size: 3em; color: #555555;" th:text="${response == null ? '' : response.status}">Status</h1>
             <p style="font-weight: bold; font-size: 1.5em;" th:text="${message}">Error message</p>
             <p><a class="btn btn-link pull-left" th:href="@{/}" href="/">Back to LMS home</a></p>
         </main>

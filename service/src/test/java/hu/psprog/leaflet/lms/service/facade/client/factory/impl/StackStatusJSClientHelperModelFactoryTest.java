@@ -51,8 +51,8 @@ class StackStatusJSClientHelperModelFactoryTest {
 
         // then
         assertThat(result, notNullValue());
-        assertThat(result.isEnabled(), is(IS_ENABLED));
-        assertThat(result.getDiscoverEndpoint(), equalTo(DISCOVER_ENDPOINT));
-        assertThat(result.getAuthorization(), equalTo(AUTHORIZATION_HEADER));
+        assertThat(result.enabled(), is(IS_ENABLED));
+        assertThat(result.discoverEndpoint(), equalTo(DISCOVER_ENDPOINT));
+        assertThat(result.authorization(), equalTo(AUTHORIZATION_HEADER));
     }
 }

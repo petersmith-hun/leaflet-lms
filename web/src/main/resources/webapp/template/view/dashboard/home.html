@@ -5,9 +5,9 @@
 <head>
     <script type="text/javascript" th:inline="javascript">
         const stackStatusConfig = {
-            enabled: /*[[${stackAdminClient.isEnabled()}]]*/ false,
-            authorization: /*[[${stackAdminClient.getAuthorization()}]]*/ null,
-            discoverEndpoint: /*[[${stackAdminClient.getDiscoverEndpoint()}]]*/ null
+            enabled: /*[[${stackAdminClient.enabled()}]]*/ false,
+            authorization: /*[[${stackAdminClient.authorization()}]]*/ null,
+            discoverEndpoint: /*[[${stackAdminClient.discoverEndpoint()}]]*/ null
         };
     </script>
 </head>
@@ -93,10 +93,10 @@
                     <div class="col-md-9" style="text-align: center;">
                             <th:block
                                     th:replace="
-                            _fragment/pagination :: pagination(
+                            ~{_fragment/pagination :: pagination(
                                 ${'?commentPage={page}'},
                                 ${pageNum},
-                                ${pagination})" />
+                                ${pagination})}" />
                     </div>
                 </div>
             </section>

@@ -43,9 +43,9 @@ public class EntityConnectionDifferenceCalculator {
      */
     public static class EntityConnectionContext<M, C extends BaseBodyDataModel> {
 
-        private List<M> modificationRequestConnectionList;
-        private List<C> currentConnectionList;
-        private Function<C, M> modelMapper;
+        private final List<M> modificationRequestConnectionList;
+        private final List<C> currentConnectionList;
+        private final Function<C, M> modelMapper;
 
         private EntityConnectionContext(List<M> modificationRequestConnectionList, List<C> currentConnectionList, Function<C, M> modelMapper) {
             this.modificationRequestConnectionList = modificationRequestConnectionList;

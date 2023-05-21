@@ -3,10 +3,10 @@
 <head>
     <script type="text/javascript" th:inline="javascript">
 		const dockerClusterStatusConfig = {
-			enabled: /*[[${stackAdminClient.isEnabled()}]]*/ false,
-			authorization: /*[[${stackAdminClient.getAuthorization()}]]*/ null,
-			statusEndpoint: /*[[${stackAdminClient.getStatusEndpoint()}]]*/ null,
-			detailsEndpoint: /*[[${stackAdminClient.getDetailsEndpoint()}]]*/ null
+			enabled: /*[[${stackAdminClient.enabled()}]]*/ false,
+			authorization: /*[[${stackAdminClient.authorization()}]]*/ null,
+			statusEndpoint: /*[[${stackAdminClient.statusEndpoint()}]]*/ null,
+			detailsEndpoint: /*[[${stackAdminClient.detailsEndpoint()}]]*/ null
 		};
     </script>
 </head>

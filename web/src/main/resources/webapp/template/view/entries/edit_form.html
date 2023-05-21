@@ -39,7 +39,7 @@
         <div class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
             <form method="post" th:action="@{''}">
@@ -190,7 +190,7 @@
                                             <select multiple class="form-control select--choices-multiple" name="attachments"
                                                     id="attachments">
                                                 <option th:each="file : ${fileSelector}"
-                                                        th:selected="${entryData != null and entryData.body.attachments.contains(file)}"
+                                                        th:selected="${entryData != null and attachedFileReferences.contains(file.reference)}"
                                                         th:value="${@commonExtractor.extractPathUUIDFromReference(file.reference)}"
                                                         th:text="${file.originalFilename}">
                                                 </option>
@@ -208,7 +208,7 @@
                                 <div class="box-title">Article operations</div>
                             </div>
                             <div class="box-footer">
-                                <a th:href="@{/entries/view/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social"
+                                <a th:href="@{/entries/view/{id}(id=__${request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-social"
                                    th:if="${entryData != null}">
                                     <i class="fa fa-eye"></i> View article
                                 </a>

@@ -23,7 +23,7 @@ public class SystemMenuConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemMenuConfiguration.class);
     private static final String SYSTEM_MENU_SUCCESSFULLY_INITIALIZED = "System menu successfully initialized with %d top level menu items and %s sub level menu items.";
 
-    private SystemMenuParser systemMenuParser;
+    private final SystemMenuParser systemMenuParser;
 
     @Autowired
     public SystemMenuConfiguration(SystemMenuParser systemMenuParser) {

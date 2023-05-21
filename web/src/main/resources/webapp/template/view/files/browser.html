@@ -11,19 +11,19 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
-            <div class="row" th:if="${@URLUtilities.extractSubPath(1, 0, #request.getServletPath())} != 'browse'">
+            <div class="row" th:if="${@URLUtilities.extractSubPath(1, 0, request.getServletPath())} != 'browse'">
                 <div class="col-md-12">
                     <div class="box box-solid">
                         <div class="box-body">
                             <a class="btn btn-primary" href="#"
-                               th:href="@{/files/upload/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}">
+                               th:href="@{/files/upload/__${@URLUtilities.extractSubPath(2, 0, request.getServletPath())}__}">
                                 <i class="fa fa-upload"></i> Upload file here
                             </a>
                             <a class="btn btn-primary" href="#"
-                               th:href="@{/files/directory/create/__${@URLUtilities.extractSubPath(2, 0, #request.getServletPath())}__}">
+                               th:href="@{/files/directory/create/__${@URLUtilities.extractSubPath(2, 0, request.getServletPath())}__}">
                                 <i class="fa fa-folder-o"></i> Create directory here
                             </a>
                         </div>

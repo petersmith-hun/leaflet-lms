@@ -1,6 +1,7 @@
 package hu.psprog.leaflet.lms.web.controller;
 
 import hu.psprog.leaflet.api.rest.request.comment.CommentUpdateRequestModel;
+import hu.psprog.leaflet.api.rest.response.comment.CommentListDataModel;
 import hu.psprog.leaflet.api.rest.response.comment.ExtendedCommentDataModel;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntryDataModel;
@@ -8,15 +9,15 @@ import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.web.controller.pagination.CommentPaginationHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +43,7 @@ public class CommentsControllerTest extends AbstractControllerTest {
     private static final String COMMENT_VIEW_PATH = "/comments/view/" + COMMENT_ID;
     private static final String DELETE_REDIRECTION_PATH = "/comments/" + ENTRY_ID;
     private static final String FIELD_COMMENT = "comment";
-    private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
+    private static final WrapperBodyDataModel<CommentListDataModel> WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.<CommentListDataModel>getBuilder().build();
 
     @Mock
     private CommentFacade commentFacade;
@@ -53,8 +54,13 @@ public class CommentsControllerTest extends AbstractControllerTest {
     @Mock
     private HttpServletRequest request;
 
-    @InjectMocks
     private CommentsController commentsController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        commentsController = new CommentsController(modelAndViewFactory, commentFacade, commentPaginationHelper);
+    }
 
     @Test
     public void shouldListCommentsForEntry() throws CommunicationFailureException {
@@ -218,7 +224,7 @@ public class CommentsControllerTest extends AbstractControllerTest {
     }
 
     private ExtendedCommentDataModel prepareExtendedCommentDataModel() {
-        return ExtendedCommentDataModel.getExtendedBuilder()
+        return ExtendedCommentDataModel.getBuilder()
                 .withAssociatedEntry(EntryDataModel.getBuilder()
                         .withId(ENTRY_ID)
                         .build())

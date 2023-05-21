@@ -96,7 +96,7 @@ public class TranslationManagementFacadeImplTest {
         // given
         TRANSLATION_PACK_UPLOAD_REQUEST_MODEL.setDefinitions(MOCK_MULTIPART_FILE);
         given(translationServiceClient.createTranslationPack(any(TranslationPackCreationRequest.class)))
-                .willReturn(TranslationPack.getPackBuilder().withId(PACK_ID).build());
+                .willReturn(TranslationPack.getBuilder().withId(PACK_ID).build());
 
         // when
         UUID result = translationManagementFacade.processCreatePack(TRANSLATION_PACK_UPLOAD_REQUEST_MODEL);
@@ -151,7 +151,7 @@ public class TranslationManagementFacadeImplTest {
     public void shouldProcessChangePackStatusWithEnabledResult() throws CommunicationFailureException {
 
         // given
-        given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getPackBuilder().withEnabled(true).build());
+        given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getBuilder().withEnabled(true).build());
 
         // when
         boolean result = translationManagementFacade.processChangePackStatus(PACK_ID);
@@ -164,7 +164,7 @@ public class TranslationManagementFacadeImplTest {
     public void shouldProcessChangePackStatusWithDisabledResult() throws CommunicationFailureException {
 
         // given
-        given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getPackBuilder().withEnabled(false).build());
+        given(translationServiceClient.changePackStatus(PACK_ID)).willReturn(TranslationPack.getBuilder().withEnabled(false).build());
 
         // when
         boolean result = translationManagementFacade.processChangePackStatus(PACK_ID);

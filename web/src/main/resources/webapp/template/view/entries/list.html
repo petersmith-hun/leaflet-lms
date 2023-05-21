@@ -49,15 +49,15 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-9">
                     <div class="box box-success">
                         <div class="box-header">
-                            <h3 class="box-title" th:if="${#request.getParameterMap().isEmpty()}">All articles</h3>
-                            <h3 class="box-title" th:if="${!#request.getParameterMap().isEmpty()}">Articles by filter</h3>
+                            <h3 class="box-title" th:if="${request.getParameterMap().isEmpty()}">All articles</h3>
+                            <h3 class="box-title" th:if="${!request.getParameterMap().isEmpty()}">Articles by filter</h3>
                         </div>
                         <div class="box-body">
 
@@ -179,18 +179,18 @@
                             <div class="box-footer box-footer--table-control">
                                 <th:block
                                     th:replace="
-                                        _fragment/limit :: limitSearch(
+                                        ~{_fragment/limit :: limitSearch(
                                             ${'/entries/{page}'},
                                             ${pageNum},
                                             ${pagination},
-                                            ${searchParameters})" />
+                                            ${searchParameters})}" />
                                 <th:block
                                         th:replace="
-                                        _fragment/pagination :: paginationSearch(
+                                        ~{_fragment/pagination :: paginationSearch(
                                             ${'/entries/{page}'},
                                             ${pageNum},
                                             ${pagination},
-                                            ${searchParameters})" />
+                                            ${searchParameters})}" />
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.category.CategoryCreateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.CategoryFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,10 +34,11 @@ public class CategoriesController extends BaseController {
     static final String PATH_CATEGORIES = "/categories";
     private static final String PATH_CREATE_CATEGORY = PATH_CATEGORIES + PATH_CREATE;
 
-    private CategoryFacade categoryFacade;
+    private final CategoryFacade categoryFacade;
 
     @Autowired
-    public CategoriesController(CategoryFacade categoryFacade) {
+    public CategoriesController(ModelAndViewFactory modelAndViewFactory, CategoryFacade categoryFacade) {
+        super(modelAndViewFactory);
         this.categoryFacade = categoryFacade;
     }
 

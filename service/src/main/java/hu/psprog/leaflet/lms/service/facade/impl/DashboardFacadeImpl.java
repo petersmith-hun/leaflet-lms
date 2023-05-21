@@ -49,7 +49,7 @@ public class DashboardFacadeImpl implements DashboardFacade {
 
     private List<String> getListOfRegisteredServices() {
         return Optional.ofNullable(stackAdminServiceClient.getRegisteredServices())
-                .map(RegisteredServices::getRegisteredServices)
+                .map(RegisteredServices::registeredServices)
                 .orElse(Collections.emptyList());
     }
 }

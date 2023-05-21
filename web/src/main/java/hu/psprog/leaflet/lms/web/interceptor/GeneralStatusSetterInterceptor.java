@@ -1,13 +1,13 @@
 package hu.psprog.leaflet.lms.web.interceptor;
 
 import hu.psprog.leaflet.lms.service.domain.common.ResponseStatus;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import java.util.Optional;
  * @author Peter Smith
  */
 @Component
-public class GeneralStatusSetterInterceptor extends HandlerInterceptorAdapter {
+public class GeneralStatusSetterInterceptor implements HandlerInterceptor {
 
     public static final String VALIDATION_FAILED_ATTRIBUTE = "validationFailed";
 
@@ -30,8 +30,7 @@ public class GeneralStatusSetterInterceptor extends HandlerInterceptorAdapter {
     private static final String REDIRECTION_VIEW_PREFIX = "redirect:";
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        super.postHandle(request, response, handler, modelAndView);
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 
         if (Objects.nonNull(modelAndView) && !isRedirection(modelAndView)) {
             setGeneralStatus(modelAndView);

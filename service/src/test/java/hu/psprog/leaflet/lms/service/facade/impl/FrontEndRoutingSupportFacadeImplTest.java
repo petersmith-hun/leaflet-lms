@@ -114,7 +114,7 @@ public class FrontEndRoutingSupportFacadeImplTest {
     }
 
     private static ExtendedFrontEndRouteDataModel prepareExtendedFrontEndRouteDataModel() {
-        return ExtendedFrontEndRouteDataModel.getExtendedBuilder()
+        return ExtendedFrontEndRouteDataModel.getBuilder()
                 .withId(ROUTE_ID)
                 .withRouteId("route-id")
                 .withEnabled(true)
@@ -122,8 +122,8 @@ public class FrontEndRoutingSupportFacadeImplTest {
     }
 
     private static ExtendedFrontEndRouteListDataModel prepareExtendedFrontEndRouteListDataModel() {
-        return ExtendedFrontEndRouteListDataModel.getExtendedBuilder()
-                .withItem(EXTENDED_FRONT_END_ROUTE_DATA_MODEL)
+        return ExtendedFrontEndRouteListDataModel.getBuilder()
+                .withRoutes(List.of(EXTENDED_FRONT_END_ROUTE_DATA_MODEL))
                 .build();
     }
 }

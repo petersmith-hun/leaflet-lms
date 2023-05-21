@@ -28,7 +28,7 @@
                             <h3 class="box-title">Comment '<span style="font-style: italic;" th:text="${comment.content}"></span>' will be deleted ...</h3>
                         </div>
                         <div class="box-body">
-                            <form method="post" th:action="@{/comments/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                            <form method="post" th:action="@{/comments/delete/{id}(id=__${request.getAttribute('id')}__)}">
                                 <div class="form-group">
                                     <label for="permanent">
                                         <input type="checkbox" name="permanent" id="permanent" /> Delete permanently?

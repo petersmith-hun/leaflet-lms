@@ -4,8 +4,8 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1 th:if="${#request.getAttribute('id') == null}">Create route</h1>
-            <h1 th:unless="${#request.getAttribute('id') == null}" th:text="${'Edit existing route: ' + route.name}">Edit route</h1>
+            <h1 th:if="${request.getAttribute('id') == null}">Create route</h1>
+            <h1 th:unless="${request.getAttribute('id') == null}" th:text="${'Edit existing route: ' + route.name}">Edit route</h1>
         </section>
         <section class="content">
             <div class="row">
@@ -15,7 +15,7 @@
                             <a th:href="@{/system/routes}" href="#" class="btn btn-sm btn-info">
                                 <i class="fa fa-backward"></i> Back to front-end routes management
                             </a>
-                            <a th:unless="${#request.getAttribute('id') == null}" th:href="@{/system/routes/view/{id}(id=${route.id})}" href="#" class="btn btn-sm btn-info">
+                            <a th:unless="${request.getAttribute('id') == null}" th:href="@{/system/routes/view/{id}(id=${route.id})}" href="#" class="btn btn-sm btn-info">
                                 <i class="fa fa-info-circle"></i> Details
                             </a>
                         </div>

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class FrontEndRoutingSupportFacadeImpl implements FrontEndRoutingSupportFacade {
 
-    private FrontEndRoutingSupportBridgeService frontEndRoutingSupportBridgeService;
+    private final FrontEndRoutingSupportBridgeService frontEndRoutingSupportBridgeService;
 
     @Autowired
     public FrontEndRoutingSupportFacadeImpl(FrontEndRoutingSupportBridgeService frontEndRoutingSupportBridgeService) {
@@ -30,7 +30,7 @@ public class FrontEndRoutingSupportFacadeImpl implements FrontEndRoutingSupportF
 
     @Override
     public List<ExtendedFrontEndRouteDataModel> getRoutes() throws CommunicationFailureException {
-        return Optional.ofNullable(frontEndRoutingSupportBridgeService.getAllRoutes().getRoutes())
+        return Optional.ofNullable(frontEndRoutingSupportBridgeService.getAllRoutes().routes())
                 .map(routes -> routes.stream()
                         .map(ExtendedFrontEndRouteDataModel.class::cast)
                         .collect(Collectors.toList()))
@@ -45,7 +45,7 @@ public class FrontEndRoutingSupportFacadeImpl implements FrontEndRoutingSupportF
     @Override
     public Long processCreateRoute(FrontEndRouteUpdateRequestModel frontEndRouteUpdateRequestModel) throws CommunicationFailureException {
         return Optional.ofNullable(frontEndRoutingSupportBridgeService.createRoute(frontEndRouteUpdateRequestModel))
-                .map(ExtendedFrontEndRouteDataModel::getId)
+                .map(ExtendedFrontEndRouteDataModel::id)
                 .orElse(null);
     }
 
@@ -56,7 +56,7 @@ public class FrontEndRoutingSupportFacadeImpl implements FrontEndRoutingSupportF
 
     @Override
     public boolean processStatusChange(Long routeID) throws CommunicationFailureException {
-        return frontEndRoutingSupportBridgeService.changeStatus(routeID).isEnabled();
+        return frontEndRoutingSupportBridgeService.changeStatus(routeID).enabled();
     }
 
     @Override

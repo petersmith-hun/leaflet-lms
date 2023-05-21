@@ -50,7 +50,7 @@ public class DashboardControllerTest extends AbstractControllerTest {
     @BeforeEach
     public void setup() {
         super.setup();
-        dashboardController = new DashboardController(commentFacade, dashboardFacade, paginationHelper, modelAndViewFactory);
+        dashboardController = new DashboardController(modelAndViewFactory, commentFacade, dashboardFacade, paginationHelper);
     }
 
     @Test

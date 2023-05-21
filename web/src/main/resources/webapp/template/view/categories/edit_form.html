@@ -4,8 +4,8 @@
 <th:block layout:fragment="content">
     <section class="content-wrapper">
         <section class="content-header">
-            <h1 th:if="${#request.getAttribute('id') == null}">Create category</h1>
-            <h1 th:unless="${#request.getAttribute('id') == null}" th:text="${'Edit existing category: ' + category.title}">Edit category</h1>
+            <h1 th:if="${request.getAttribute('id') == null}">Create category</h1>
+            <h1 th:unless="${request.getAttribute('id') == null}" th:text="${'Edit existing category: ' + category.title}">Edit category</h1>
         </section>
         <section class="content">
             <div class="row">

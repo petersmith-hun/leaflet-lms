@@ -7,10 +7,10 @@ import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
 import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -64,8 +64,13 @@ public class FilesControllerTest extends AbstractControllerTest {
     @Mock
     private URLUtilities urlUtilities;
 
-    @InjectMocks
     private FilesController filesController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        filesController = new FilesController(modelAndViewFactory, fileFacade, urlUtilities);
+    }
 
     @Test
     public void shouldListFiles() throws CommunicationFailureException {

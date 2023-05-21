@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.api.rest.request.routing.FrontEndRouteUpdateRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.FrontEndRoutingSupportFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,10 +34,11 @@ public class FrontEndRoutingManagementController extends BaseController {
     static final String PATH_SYSTEM_ROUTES = "/system/routes";
     private static final String PATH_CREATE_ROUTE = PATH_SYSTEM_ROUTES + PATH_CREATE;
 
-    private FrontEndRoutingSupportFacade frontEndRoutingSupportFacade;
+    private final FrontEndRoutingSupportFacade frontEndRoutingSupportFacade;
 
     @Autowired
-    public FrontEndRoutingManagementController(FrontEndRoutingSupportFacade frontEndRoutingSupportFacade) {
+    public FrontEndRoutingManagementController(ModelAndViewFactory modelAndViewFactory, FrontEndRoutingSupportFacade frontEndRoutingSupportFacade) {
+        super(modelAndViewFactory);
         this.frontEndRoutingSupportFacade = frontEndRoutingSupportFacade;
     }
 

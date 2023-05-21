@@ -12,17 +12,16 @@ import hu.psprog.leaflet.lms.service.facade.CommentFacade;
 import hu.psprog.leaflet.lms.service.facade.EntryFacade;
 import hu.psprog.leaflet.lms.web.auth.mock.WithMockedJWTUser;
 import hu.psprog.leaflet.lms.web.controller.pagination.EntryPaginationHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.Extensions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,10 +52,12 @@ public class EntriesControllerTest extends AbstractControllerTest {
     private static final String FIELD_CATEGORIES = "categories";
     private static final String FIELD_PENDING_COMMENTS = "pendingComments";
     private static final String FIELD_PENDING_COMMENT_COUNT = "pendingCommentCount";
+    private static final String FIELD_ATTACHED_FILE_REFERENCES = "attachedFileReferences";
     private static final String PATH_ENTRIES = "/entries";
     private static final String PATH_ENTRIES_CREATE = PATH_ENTRIES + "/create";
     private static final EntrySearchParameters ENTRY_SEARCH_PARAMETERS = new EntrySearchParameters();
     private static final WrapperBodyDataModel WRAPPER_BODY_DATA_MODEL = WrapperBodyDataModel.getBuilder().build();
+    private static final String RESOURCE_SERVER_URL = "http://localhost:9999/files";
 
     @Mock
     private EntryFacade entryFacade;
@@ -73,8 +74,13 @@ public class EntriesControllerTest extends AbstractControllerTest {
     @Mock
     private HttpServletRequest request;
 
-    @InjectMocks
     private EntriesController entriesController;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+        entriesController = new EntriesController(modelAndViewFactory, entryFacade, categoryFacade, commentFacade, entryPaginationHelper, RESOURCE_SERVER_URL);
+    }
 
     @Test
     public void shouldListEntries() throws CommunicationFailureException {
@@ -114,7 +120,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
     public void shouldShowCreateForm() throws CommunicationFailureException {
 
         // given
-        given(entryFacade.fillForm()).willReturn(EntryFormContent.getBuilder().build());
+        given(entryFacade.fillForm()).willReturn(EntryFormContent.builder().build());
 
         // when
         entriesController.showCreateEntryForm();
@@ -161,7 +167,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
     public void shouldShowEditEntryForm() throws CommunicationFailureException {
 
         // given
-        given(entryFacade.fillForm(ENTRY_ID)).willReturn(EntryFormContent.getBuilder().build());
+        given(entryFacade.fillForm(ENTRY_ID)).willReturn(EntryFormContent.builder().build());
 
         // when
         entriesController.showEditEntryForm(ENTRY_ID);
@@ -169,7 +175,7 @@ public class EntriesControllerTest extends AbstractControllerTest {
         // then
         verify(entryFacade).fillForm(ENTRY_ID);
         verifyViewCreated(VIEW_EDIT_FORM);
-        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL);
+        verifyFieldsSet(FIELD_TAG_SELECTOR, FIELD_CATEGORY_SELECTOR, FIELD_FILE_SELECTOR, FIELD_ENTRY_DATA, FIELD_RESOURCE_SERVER_URL, FIELD_ATTACHED_FILE_REFERENCES);
     }
 
     @Test

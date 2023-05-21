@@ -3,6 +3,7 @@ package hu.psprog.leaflet.lms.web.controller;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.domain.translations.TranslationPackUploadRequestModel;
 import hu.psprog.leaflet.lms.service.facade.TranslationManagementFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +34,11 @@ public class TranslationManagementController extends BaseController {
     static final String PATH_SYSTEM_TRANSLATIONS = "/system/translations";
     private static final String PATH_CREATE_TRANSLATION_PACK = PATH_SYSTEM_TRANSLATIONS + PATH_CREATE;
 
-    private TranslationManagementFacade translationManagementFacade;
+    private final TranslationManagementFacade translationManagementFacade;
 
     @Autowired
-    public TranslationManagementController(TranslationManagementFacade translationManagementFacade) {
+    public TranslationManagementController(ModelAndViewFactory modelAndViewFactory, TranslationManagementFacade translationManagementFacade) {
+        super(modelAndViewFactory);
         this.translationManagementFacade = translationManagementFacade;
     }
 

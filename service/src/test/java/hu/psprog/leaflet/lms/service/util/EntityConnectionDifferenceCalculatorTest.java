@@ -159,7 +159,7 @@ public class EntityConnectionDifferenceCalculatorTest {
                 .collect(Collectors.toList());
     }
 
-    private class TestModel extends BaseBodyDataModel {
+    private static class TestModel implements BaseBodyDataModel {
 
         private Long id;
 

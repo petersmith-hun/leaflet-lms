@@ -25,7 +25,7 @@ public class SimpleSystemMenuParser implements SystemMenuParser {
     private static final String FAILED_TO_PARSE_SYSTEM_MENU = "Failed to parse system menu.";
     private static final String MENU_CONFIG_LOCATION = "menu.json";
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public SimpleSystemMenuParser(ObjectMapper objectMapper) {

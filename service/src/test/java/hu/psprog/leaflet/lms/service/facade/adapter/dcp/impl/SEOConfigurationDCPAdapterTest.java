@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -118,20 +120,24 @@ public class SEOConfigurationDCPAdapterTest {
 
     private DCPListDataModel prepareDCPListDataModelForUpdate() {
         return DCPListDataModel.getBuilder()
-                .withItem(prepareDCPDataModel(UNRELATED_KEY, UNRELATED_VALUE))
-                .withItem(prepareDCPDataModel(KEY_PAGE_TITLE, VALUE_PAGE_TITLE))
-                .withItem(prepareDCPDataModel(KEY_META_TITLE, VALUE_META_TITLE))
+                .withDcpStore(List.of(
+                        prepareDCPDataModel(UNRELATED_KEY, UNRELATED_VALUE),
+                        prepareDCPDataModel(KEY_PAGE_TITLE, VALUE_PAGE_TITLE),
+                        prepareDCPDataModel(KEY_META_TITLE, VALUE_META_TITLE)
+                ))
                 .build();
     }
 
     private DCPListDataModel prepareDCPListDataModelForCollect() {
         return DCPListDataModel.getBuilder()
-                .withItem(prepareDCPDataModel(UNRELATED_KEY, UNRELATED_VALUE))
-                .withItem(prepareDCPDataModel(KEY_PAGE_TITLE, VALUE_PAGE_TITLE))
-                .withItem(prepareDCPDataModel(KEY_META_TITLE, VALUE_META_TITLE))
-                .withItem(prepareDCPDataModel(KEY_META_DESCRIPTION, VALUE_META_DESCRIPTION))
-                .withItem(prepareDCPDataModel(KEY_META_KEYWORDS, VALUE_META_KEYWORDS))
-                .withItem(prepareDCPDataModel(UNRELATED_KEY_2, UNRELATED_VALUE_2))
+                .withDcpStore(List.of(
+                        prepareDCPDataModel(UNRELATED_KEY, UNRELATED_VALUE),
+                        prepareDCPDataModel(KEY_PAGE_TITLE, VALUE_PAGE_TITLE),
+                        prepareDCPDataModel(KEY_META_TITLE, VALUE_META_TITLE),
+                        prepareDCPDataModel(KEY_META_DESCRIPTION, VALUE_META_DESCRIPTION),
+                        prepareDCPDataModel(KEY_META_KEYWORDS, VALUE_META_KEYWORDS),
+                        prepareDCPDataModel(UNRELATED_KEY_2, UNRELATED_VALUE_2)
+                ))
                 .build();
     }
     

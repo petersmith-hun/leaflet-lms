@@ -43,7 +43,7 @@ public class CategoryFacadeImplTest {
 
         // given
         given(categoryBridgeService.getAllCategories()).willReturn(CategoryListDataModel.getBuilder()
-                .withItem(CategoryDataModel.getBuilder().withTitle(TITLE).build())
+                .withCategories(List.of(CategoryDataModel.getBuilder().withTitle(TITLE).build()))
                 .build());
 
         // when
@@ -51,7 +51,7 @@ public class CategoryFacadeImplTest {
 
         // then
         assertThat(result.size(), equalTo(1));
-        assertThat(result.get(0).getTitle(), equalTo(TITLE));
+        assertThat(result.get(0).title(), equalTo(TITLE));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class CategoryFacadeImplTest {
         CategoryDataModel result = categoryFacade.getCategory(CATEGORY_ID);
 
         // then
-        assertThat(result.getTitle(), equalTo(TITLE));
+        assertThat(result.title(), equalTo(TITLE));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class CategoryFacadeImplTest {
 
     private CategoryDataModel prepareCategoryDataModel() {
         return CategoryDataModel.getBuilder()
-                .withID(CATEGORY_ID)
+                .withId(CATEGORY_ID)
                 .withTitle(TITLE)
                 .withEnabled(true)
                 .build();

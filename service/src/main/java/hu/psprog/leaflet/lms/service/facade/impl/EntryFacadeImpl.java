@@ -6,6 +6,7 @@ import hu.psprog.leaflet.api.rest.request.entry.EntrySearchParameters;
 import hu.psprog.leaflet.api.rest.response.common.WrapperBodyDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EditEntryDataModel;
 import hu.psprog.leaflet.api.rest.response.entry.EntrySearchResultDataModel;
+import hu.psprog.leaflet.api.rest.response.file.FileDataModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.bridge.service.EntryBridgeService;
 import hu.psprog.leaflet.lms.service.domain.entry.EntryFormContent;
@@ -19,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Implementation of {@link EntryFacade}.
@@ -65,13 +69,16 @@ public class EntryFacadeImpl implements EntryFacade {
     @Override
     public EntryFormContent fillForm(Long entryID) throws CommunicationFailureException {
 
-        return EntryFormContent.getBuilder()
-                .withExistingCategories(categoryFacade.getAllCategories())
-                .withExistingTags(tagFacade.getAllTags())
-                .withExistingFiles(fileFacade.getUploadedFiles())
-                .withEntryData(Objects.nonNull(entryID)
-                        ? entryBridgeService.getEntryByID(entryID)
-                        : null)
+        WrapperBodyDataModel<EditEntryDataModel> entryData = Objects.nonNull(entryID)
+                ? entryBridgeService.getEntryByID(entryID)
+                : null;
+
+        return EntryFormContent.builder()
+                .existingCategories(categoryFacade.getAllCategories())
+                .existingTags(tagFacade.getAllTags())
+                .existingFiles(fileFacade.getUploadedFiles())
+                .attachedFileReferences(getAttachedFileReferences(entryData))
+                .entryData(entryData)
                 .build();
     }
 
@@ -87,7 +94,7 @@ public class EntryFacadeImpl implements EntryFacade {
 
     @Override
     public boolean processStatusChange(Long id) throws CommunicationFailureException {
-        return entryBridgeService.changeStatus(id).isEnabled();
+        return entryBridgeService.changeStatus(id).enabled();
     }
 
     @Override
@@ -100,8 +107,8 @@ public class EntryFacadeImpl implements EntryFacade {
 
         ModifyEntryRequest modifyEntryRequest = new ModifyEntryRequest();
         WrapperBodyDataModel<EditEntryDataModel> editEntryDataModel = entryBridgeService.getEntryByID(id);
-        tagFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel.getBody());
-        attachmentFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel.getBody());
+        tagFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel.body());
+        attachmentFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel.body());
 
         entryBridgeService.deleteEntry(id);
     }
@@ -115,6 +122,17 @@ public class EntryFacadeImpl implements EntryFacade {
         tagFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel);
         attachmentFacade.handleAssignmentsOnChange(modifyEntryRequest, editEntryDataModel);
 
-        return editEntryDataModel.getId();
+        return editEntryDataModel.id();
+    }
+
+    private List<String> getAttachedFileReferences(WrapperBodyDataModel<EditEntryDataModel> entryData) {
+
+        return Optional.ofNullable(entryData)
+                .map(WrapperBodyDataModel::body)
+                .map(EditEntryDataModel::attachments)
+                .map(files -> files.stream()
+                        .map(FileDataModel::reference)
+                        .toList())
+                .orElseGet(Collections::emptyList);
     }
 }

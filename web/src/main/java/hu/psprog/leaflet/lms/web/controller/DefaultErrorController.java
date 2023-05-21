@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,7 +39,7 @@ public class DefaultErrorController implements ErrorController {
 
     static final String PATH_ERROR = "/error";
 
-    private ErrorAttributes errorAttributes;
+    private final ErrorAttributes errorAttributes;
 
     @Autowired
     public DefaultErrorController(ErrorAttributes errorAttributes) {

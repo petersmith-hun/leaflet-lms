@@ -8,7 +8,6 @@ import hu.psprog.leaflet.bridge.client.exception.ValidationFailureException;
 import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -62,8 +61,11 @@ class BaseController {
 
     static final String REQUEST_PARAM_REDIRECT = "redirect";
 
-    @Autowired
     ModelAndViewFactory modelAndViewFactory;
+
+    public BaseController(ModelAndViewFactory modelAndViewFactory) {
+        this.modelAndViewFactory = modelAndViewFactory;
+    }
 
     /**
      * Returns current authenticated user's ID.
@@ -177,15 +179,15 @@ class BaseController {
     }
 
     private Map<String, String> extractValidationViolations(ValidationErrorMessageListResponse validationErrorMessageListResponse) {
-        return validationErrorMessageListResponse.getValidation().stream()
-                .collect(Collectors.toMap(ValidationErrorMessageResponse::getField, ValidationErrorMessageResponse::getMessage));
+        return validationErrorMessageListResponse.validation().stream()
+                .collect(Collectors.toMap(ValidationErrorMessageResponse::field, ValidationErrorMessageResponse::message));
     }
 
     private ModelAndView buildModelAndView(ValidationFailureException exception) {
 
         ModelAndView modelAndView = new ModelAndView(VALIDATION_ERROR_PAGE);
         modelAndView.addObject(VIEW_ATTRIBUTE_MESSAGE, exception.getMessage());
-        modelAndView.addObject(VIEW_ATTRIBUTE_VALIDATION_ERRORS, exception.getErrorMessage().getValidation());
+        modelAndView.addObject(VIEW_ATTRIBUTE_VALIDATION_ERRORS, exception.getErrorMessage().validation());
         modelAndView.setStatus(HttpStatus.BAD_REQUEST);
 
         return modelAndView;

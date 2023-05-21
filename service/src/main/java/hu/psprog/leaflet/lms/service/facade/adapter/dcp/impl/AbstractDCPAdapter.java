@@ -38,7 +38,7 @@ abstract class AbstractDCPAdapter<T> implements DCPAdapter<T> {
         List<String> existingDCPKeys = getExistingDCPKeys();
         for (DCPDataModel dataItem : mapToDataModel(data)) {
             DCPRequestModel dcpRequestModel = mapDCPDataModelToRequestModel(dataItem);
-            if (existingDCPKeys.contains(dataItem.getKey())) {
+            if (existingDCPKeys.contains(dataItem.key())) {
                 dcpStoreBridgeService.updateDCPEntry(dcpRequestModel);
             } else {
                 dcpStoreBridgeService.createDCPEntry(dcpRequestModel);
@@ -46,11 +46,11 @@ abstract class AbstractDCPAdapter<T> implements DCPAdapter<T> {
         }
     }
 
-    String extractValue(List<DCPDataModel> dcpDataModelList, Enum key) {
+    String extractValue(List<DCPDataModel> dcpDataModelList, Enum<?> key) {
         return dcpDataModelList.stream()
-                .filter(dcpDataModel -> dcpDataModel.getKey().equals(key.name()))
+                .filter(dcpDataModel -> dcpDataModel.key().equals(key.name()))
                 .findFirst()
-                .map(DCPDataModel::getValue)
+                .map(DCPDataModel::value)
                 .orElse(null);
     }
 
@@ -80,20 +80,20 @@ abstract class AbstractDCPAdapter<T> implements DCPAdapter<T> {
     private DCPRequestModel mapDCPDataModelToRequestModel(DCPDataModel dcpDataModel) {
 
         DCPRequestModel dcpRequestModel = new DCPRequestModel();
-        dcpRequestModel.setKey(dcpDataModel.getKey());
-        dcpRequestModel.setValue(dcpDataModel.getValue());
+        dcpRequestModel.setKey(dcpDataModel.key());
+        dcpRequestModel.setValue(dcpDataModel.value());
 
         return dcpRequestModel;
     }
 
     private List<String> getExistingDCPKeys() throws CommunicationFailureException {
         return getDCPEntries().stream()
-                .map(DCPDataModel::getKey)
+                .map(DCPDataModel::key)
                 .collect(Collectors.toList());
     }
 
     private List<DCPDataModel> getDCPEntries() throws CommunicationFailureException {
-        return Optional.ofNullable(dcpStoreBridgeService.getAllDCPEntries().getDcpStore())
+        return Optional.ofNullable(dcpStoreBridgeService.getAllDCPEntries().dcpStore())
                 .orElseGet(Collections::emptyList);
     }
 }

@@ -14,7 +14,7 @@
                             <a class="btn btn-primary" href="#" th:href="@{/files/browse/__${@URLUtilities.getUpURL(file.path, 0)}__}">
                                 <i class="fa fa-backward"></i> Back to file browser
                             </a>
-                            <a class="btn btn-primary" href="#" th:href="@{/files/view/{id}(id=__${#request.getAttribute('id')}__)}">
+                            <a class="btn btn-primary" href="#" th:href="@{/files/view/{id}(id=__${request.getAttribute('id')}__)}">
                                 <i class="fa fa-backward"></i> Back to file viewer
                             </a>
                         </div>

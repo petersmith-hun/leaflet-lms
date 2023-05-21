@@ -4,6 +4,7 @@ import hu.psprog.leaflet.api.rest.request.user.PasswordChangeRequestModel;
 import hu.psprog.leaflet.api.rest.request.user.UpdateProfileRequestModel;
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
 import hu.psprog.leaflet.lms.service.facade.UserFacade;
+import hu.psprog.leaflet.lms.web.factory.ModelAndViewFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static hu.psprog.leaflet.lms.web.config.SecurityConfiguration.PATH_LOGIN;
 
@@ -46,10 +47,11 @@ public class AccountController extends BaseController {
     private static final String PATH_ACCOUNT_UPDATE_PROFILE = PATH_ACCOUNT + PATH_UPDATE_PROFILE;
     private static final String PATH_ACCOUNT_CHANGE_PASSWORD = PATH_ACCOUNT + PATH_CHANGE_PASSWORD;
 
-    private UserFacade userFacade;
+    private final UserFacade userFacade;
 
     @Autowired
-    public AccountController(UserFacade userFacade) {
+    public AccountController(ModelAndViewFactory modelAndViewFactory, UserFacade userFacade) {
+        super(modelAndViewFactory);
         this.userFacade = userFacade;
     }
 

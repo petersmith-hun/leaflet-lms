@@ -74,7 +74,7 @@
 
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})" />
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}" />
                 </div>
             </div>
 
@@ -174,20 +174,20 @@
                         </div>
                         <div class="box-footer">
                             <a th:if="${pendingCommentCount == 0}"
-                               th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
+                               th:href="@{/comments/{id}(id=__${request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-commenting-o"></i> Handle comments
                             </a>
                             <a th:if="${pendingCommentCount > 0}"
-                               th:href="@{/comments/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-warning mb3px">
+                               th:href="@{/comments/{id}(id=__${request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social btn-warning mb3px">
                                 <i class="fa fa-commenting-o"></i> Handle comments (<th:block th:text="${pendingCommentCount}"></th:block>)
                             </a>
-                            <a th:href="@{/entries/edit/{id}(id=__${#request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
+                            <a th:href="@{/entries/edit/{id}(id=__${request.getAttribute('id')}__)}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-pencil"></i> Edit
                             </a>
                             <a th:href="@{/entries}" href="#" class="btn btn-block btn-social mb3px">
                                 <i class="fa fa-list"></i> Back to article manager
                             </a>
-                            <form method="post" th:action="@{/entries/status/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
+                            <form method="post" th:action="@{/entries/status/{id}(id=__${request.getAttribute('id')}__)}" class="mb3px">
                                 <button type="button" class="btn btn-block btn-social btn-danger" th:if="${entryData.body.enabled}" onclick="confirmOperation(this)">
                                     <i class="fa fa-toggle-off"></i> Disable
                                 </button>
@@ -195,7 +195,7 @@
                                     <i class="fa fa-toggle-on"></i> Enable
                                 </button>
                             </form>
-                            <form method="post" th:action="@{/entries/publication/{id}(id=__${#request.getAttribute('id')}__)}" class="mb3px">
+                            <form method="post" th:action="@{/entries/publication/{id}(id=__${request.getAttribute('id')}__)}" class="mb3px">
                                 <th:block th:if="${entryData.body.entryStatus == 'PUBLIC'}">
                                     <input type="hidden" name="status" value="DRAFT" />
                                     <button type="button" class="btn btn-block btn-social btn-danger" onclick="confirmOperation(this)">
@@ -215,7 +215,7 @@
                                     </button>
                                 </th:block>
                             </form>
-                            <form method="post" th:action="@{/entries/delete/{id}(id=__${#request.getAttribute('id')}__)}">
+                            <form method="post" th:action="@{/entries/delete/{id}(id=__${request.getAttribute('id')}__)}">
                                 <button type="button" class="btn btn-block btn-social btn-danger" onclick="confirmOperation(this)">
                                     <i class="fa fa-trash"></i>  Delete entry
                                 </button>

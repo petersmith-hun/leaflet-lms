@@ -18,7 +18,7 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
-                    <th:block th:replace="_fragment/message :: message(${flash})"/>
+                    <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
             <div class="row">
@@ -93,16 +93,16 @@
                         <div class="box-footer box-footer--table-control">
                             <th:block
                                     th:replace="
-                                        _fragment/limit :: limit(
-                                            ${'/comments/' + __${#request.getAttribute('id')}__ + '/{page}'},
+                                        ~{_fragment/limit :: limit(
+                                            ${'/comments/' + __${request.getAttribute('id')}__ + '/{page}'},
                                             ${pageNum},
-                                            ${pagination})" />
+                                            ${pagination})}" />
                             <th:block
                                     th:replace="
-                                        _fragment/pagination :: pagination(
-                                            ${'/comments/' + __${#request.getAttribute('id')}__ + '/{page}'},
+                                        ~{_fragment/pagination :: pagination(
+                                            ${'/comments/' + __${request.getAttribute('id')}__ + '/{page}'},
                                             ${pageNum},
-                                            ${pagination})" />
+                                            ${pagination})}" />
                         </div>
                     </div>
                 </div>

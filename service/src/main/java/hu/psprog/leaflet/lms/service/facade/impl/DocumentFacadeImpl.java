@@ -22,7 +22,7 @@ import java.util.Optional;
 @Service
 public class DocumentFacadeImpl implements DocumentFacade {
 
-    private DocumentBridgeService documentBridgeService;
+    private final DocumentBridgeService documentBridgeService;
 
     @Autowired
     public DocumentFacadeImpl(DocumentBridgeService documentBridgeService) {
@@ -31,7 +31,7 @@ public class DocumentFacadeImpl implements DocumentFacade {
 
     @Override
     public List<EditDocumentDataModel> getAllDocuments() throws CommunicationFailureException {
-        return Optional.ofNullable(documentBridgeService.getAllDocuments().getDocuments())
+        return Optional.ofNullable(documentBridgeService.getAllDocuments().documents())
                 .orElse(Collections.emptyList());
     }
 
@@ -43,7 +43,7 @@ public class DocumentFacadeImpl implements DocumentFacade {
     @Override
     public Long processCreateDocument(DocumentCreateRequestModel documentCreateRequestModel) throws CommunicationFailureException {
         return Optional.ofNullable(documentBridgeService.createDocument(documentCreateRequestModel))
-                .map(EditDocumentDataModel::getId)
+                .map(EditDocumentDataModel::id)
                 .orElse(null);
     }
 
@@ -59,6 +59,6 @@ public class DocumentFacadeImpl implements DocumentFacade {
 
     @Override
     public boolean processChangeDocumentStatus(Long documentID) throws CommunicationFailureException {
-        return documentBridgeService.changeStatus(documentID).isEnabled();
+        return documentBridgeService.changeStatus(documentID).enabled();
     }
 }

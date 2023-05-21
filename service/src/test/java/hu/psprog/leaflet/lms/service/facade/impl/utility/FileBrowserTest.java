@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -56,7 +55,7 @@ public class FileBrowserTest {
     private static final String SUB2_SUB5= "sub2/sub5";
     private static final String SUB2_SUB5_SUB6 = "sub2/sub5/sub6";
 
-    @Mock(lenient = true)
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private FileBridgeService fileBridgeService;
 
     @Spy
@@ -77,7 +76,7 @@ public class FileBrowserTest {
 
         // then
         assertThat(result.size(), equalTo(expectedFiles.size()));
-        assertThat(result.stream().map(FileDataModel::getPath).collect(Collectors.toList()).containsAll(expectedFiles), is(true));
+        assertThat(result.stream().map(FileDataModel::path).toList().containsAll(expectedFiles), is(true));
     }
 
     @ParameterizedTest
