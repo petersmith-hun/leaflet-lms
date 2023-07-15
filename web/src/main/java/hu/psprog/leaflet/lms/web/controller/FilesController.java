@@ -75,7 +75,7 @@ public class FilesController extends BaseController {
 
         return modelAndViewFactory
                 .createForView(VIEW_FILES_BROWSER)
-                .withAttribute("browser", fileFacade.getFilesByFolder(urlUtilities.extractSubPath(PATTERN_FILE_BROWSER_ROOT_PATH, request.getServletPath())))
+                .withAttribute("browser", fileFacade.browse(urlUtilities.extractSubPath(PATTERN_FILE_BROWSER_ROOT_PATH, request.getServletPath())))
                 .withAttribute("currentURL", urlUtilities.normalize(request.getServletPath()))
                 .withAttribute("upURL", urlUtilities.getUpURL(request.getServletPath(), 2))
                 .build();

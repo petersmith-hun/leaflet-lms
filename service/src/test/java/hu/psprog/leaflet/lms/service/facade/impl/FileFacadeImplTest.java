@@ -1,8 +1,6 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
-import hu.psprog.leaflet.lms.service.facade.impl.utility.FileBrowser;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
 import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
@@ -11,6 +9,7 @@ import hu.psprog.leaflet.lsrs.api.response.DirectoryDataModel;
 import hu.psprog.leaflet.lsrs.api.response.DirectoryListDataModel;
 import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
 import hu.psprog.leaflet.lsrs.api.response.FileListDataModel;
+import hu.psprog.leaflet.lsrs.api.response.VFSBrowserModel;
 import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +22,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +45,7 @@ public class FileFacadeImplTest {
 
     private static final String REFERENCE = "file-ref-1";
     private static final String PATH = "test/path";
+    private static final String PATH_WITH_LEADING_SLASH = "/test/path";
     private static final byte[] BYTE_ARRAY = "content".getBytes();
     private static final UUID PATH_UUID = UUID.randomUUID();
     private static final String FILENAME = "image.jpg";
@@ -58,12 +56,10 @@ public class FileFacadeImplTest {
     private static final String FAKE_MIME_IMAGE_PNG = prepareFakeMimeType(IMAGES_ROOT, "png");
     private static final String FAKE_MIME_OTHER_EXE = prepareFakeMimeType(OTHERS_ROOT, "exe");
     private static final String FAKE_MIME_OTHER_JAR = prepareFakeMimeType(OTHERS_ROOT, "jar");
+    private static final VFSBrowserModel VFS_BROWSER_MODEL = VFSBrowserModel.builder().build();
 
     @Mock
     private FileBridgeService fileBridgeService;
-
-    @Mock
-    private FileBrowser fileBrowser;
 
     @Mock
     private URLUtilities urlUtilities;
@@ -101,19 +97,29 @@ public class FileFacadeImplTest {
     }
 
     @Test
-    public void shouldGetFilesByFolder() throws CommunicationFailureException {
+    public void shouldBrowseCallVFSBrowserEndpoint() throws CommunicationFailureException {
 
         // given
-        given(fileBrowser.getFiles(PATH)).willReturn(Collections.emptyList());
-        given(fileBrowser.getFolders(PATH)).willReturn(Collections.emptyList());
+        given(fileBridgeService.browse(PATH)).willReturn(VFS_BROWSER_MODEL);
 
         // when
-        FilesByFolder result = fileFacade.getFilesByFolder(PATH);
+        VFSBrowserModel result = fileFacade.browse(PATH);
 
         // then
-        assertThat(result, notNullValue());
-        assertThat(result.files(), notNullValue());
-        assertThat(result.subFolders(), notNullValue());
+        assertThat(result, equalTo(VFS_BROWSER_MODEL));
+    }
+
+    @Test
+    public void shouldBrowseStripLeadingSlashAndCallVFSBrowserEndpoint() throws CommunicationFailureException {
+
+        // given
+        given(fileBridgeService.browse(PATH)).willReturn(VFS_BROWSER_MODEL);
+
+        // when
+        VFSBrowserModel result = fileFacade.browse(PATH_WITH_LEADING_SLASH);
+
+        // then
+        assertThat(result, equalTo(VFS_BROWSER_MODEL));
     }
 
     @Test

@@ -1,14 +1,13 @@
 package hu.psprog.leaflet.lms.service.facade.impl;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
 import hu.psprog.leaflet.lms.service.facade.FileFacade;
-import hu.psprog.leaflet.lms.service.facade.impl.utility.FileBrowser;
 import hu.psprog.leaflet.lms.service.facade.impl.utility.URLUtilities;
 import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
 import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.VFSBrowserModel;
 import hu.psprog.leaflet.lsrs.client.FileBridgeService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -34,13 +33,11 @@ public class FileFacadeImpl implements FileFacade {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileFacadeImpl.class);
 
     private final FileBridgeService fileBridgeService;
-    private final FileBrowser fileBrowser;
     private final URLUtilities urlUtilities;
 
     @Autowired
-    public FileFacadeImpl(FileBridgeService fileBridgeService, FileBrowser fileBrowser, URLUtilities urlUtilities) {
+    public FileFacadeImpl(FileBridgeService fileBridgeService, URLUtilities urlUtilities) {
         this.fileBridgeService = fileBridgeService;
-        this.fileBrowser = fileBrowser;
         this.urlUtilities = urlUtilities;
     }
 
@@ -51,12 +48,13 @@ public class FileFacadeImpl implements FileFacade {
     }
 
     @Override
-    public FilesByFolder getFilesByFolder(String path) throws CommunicationFailureException {
+    public VFSBrowserModel browse(String path) throws CommunicationFailureException {
 
-        return FilesByFolder.builder()
-                .subFolders(fileBrowser.getFolders(path))
-                .files(fileBrowser.getFiles(path))
-                .build();
+        String normalizedPath = path.startsWith("/")
+                ? path.substring(1)
+                : path;
+
+        return fileBridgeService.browse(normalizedPath);
     }
 
     @Override

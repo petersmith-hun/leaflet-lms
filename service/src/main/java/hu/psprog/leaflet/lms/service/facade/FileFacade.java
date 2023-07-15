@@ -1,11 +1,11 @@
 package hu.psprog.leaflet.lms.service.facade;
 
 import hu.psprog.leaflet.bridge.client.exception.CommunicationFailureException;
-import hu.psprog.leaflet.lms.service.domain.file.FilesByFolder;
 import hu.psprog.leaflet.lsrs.api.request.DirectoryCreationRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.FileUploadRequestModel;
 import hu.psprog.leaflet.lsrs.api.request.UpdateFileMetaInfoRequestModel;
 import hu.psprog.leaflet.lsrs.api.response.FileDataModel;
+import hu.psprog.leaflet.lsrs.api.response.VFSBrowserModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,10 +29,10 @@ public interface FileFacade {
      * Returns list of files stored under given folder.
      *
      * @param path path to the folder
-     * @return list of files wrapped in {@link FilesByFolder}
+     * @return list of files wrapped in {@link VFSBrowserModel}
      * @throws CommunicationFailureException if client fails to reach backend application
      */
-    FilesByFolder getFilesByFolder(String path) throws CommunicationFailureException;
+    VFSBrowserModel browse(String path) throws CommunicationFailureException;
 
     /**
      * Retrieves a file resource for download.
