@@ -83,7 +83,7 @@ public class FilesControllerTest extends AbstractControllerTest {
         filesController.listFiles(request);
 
         // then
-        verify(fileFacade).getFilesByFolder(anyString());
+        verify(fileFacade).browse(anyString());
         verify(urlUtilities).extractSubPath(anyString(), anyString());
         verify(urlUtilities).normalize(anyString());
         verify(urlUtilities).getUpURL(anyString(), anyInt());

@@ -14,16 +14,16 @@
                     <th:block th:replace="~{_fragment/message :: message(${flash})}"/>
                 </div>
             </div>
-            <div class="row" th:if="${@URLUtilities.extractSubPath(1, 0, request.getServletPath())} != 'browse'">
+            <div class="row" th:if="${browser.currentPath != '/'}">
                 <div class="col-md-12">
                     <div class="box box-solid">
                         <div class="box-body">
                             <a class="btn btn-primary" href="#"
-                               th:href="@{/files/upload/__${@URLUtilities.extractSubPath(2, 0, request.getServletPath())}__}">
+                               th:href="@{/files/upload__${browser.currentPath}__}">
                                 <i class="fa fa-upload"></i> Upload file here
                             </a>
                             <a class="btn btn-primary" href="#"
-                               th:href="@{/files/directory/create/__${@URLUtilities.extractSubPath(2, 0, request.getServletPath())}__}">
+                               th:href="@{/files/directory/create__${browser.currentPath}__}">
                                 <i class="fa fa-folder-o"></i> Create directory here
                             </a>
                         </div>
@@ -34,7 +34,7 @@
                 <div class="col-md-9">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <h3 class="box-title">Browse virtual storage</h3>
+                            <h3 class="box-title">Browse virtual storage  <small th:text="${browser.currentPath}"></small></h3>
                         </div>
                         <div class="box-body">
                             <div class="table-responsive">
@@ -42,15 +42,15 @@
                                     <tbody>
                                     <tr>
                                         <td colspan="2">
-                                            <a style="font-size: 18px;" class="glyphicon glyphicon-level-up" th:href="@{/__${upURL}__}"></a>
+                                            <a style="font-size: 18px;" class="glyphicon glyphicon-level-up" th:href="@{/files/browse__${browser.parent}__}"></a>
                                         </td>
                                     </tr>
-                                    <th:block th:if="${!browser.subFolders.isEmpty()}">
-                                        <tr th:each="folder: ${browser.subFolders}">
+                                    <th:block th:if="${!browser.directories.isEmpty()}">
+                                        <tr th:each="folder: ${browser.directories}">
                                             <td colspan="2">
-                                                <a th:href="@{/__${currentURL}__/__${folder}__}">
+                                                <a th:href="@{/files/browse__${folder.absolutePath}__}">
                                                     <span class="glyphicon glyphicon-folder-open">&nbsp;</span>
-                                                    <span th:text="${folder}">folder</span>
+                                                    <span th:text="${folder.folderName}">folder</span>
                                                 </a>
                                             </td>
                                         </tr>
@@ -61,7 +61,7 @@
                                                 <img th:src="@{/files/resource__${file.reference}__}" style="max-width: 150px;" th:if="${file.acceptedAs == 'image/jpeg' or file.acceptedAs == 'image/png'}">
                                             </td>
                                             <td>
-                                                <a th:href="@{/files/view/__${@URLUtilities.extractFilePathUUID(file)}__}" th:text="${file.originalFilename}">Test file</a>
+                                                <a th:href="@{/files/view/__${file.pathUUID}__}" th:text="${file.originalFilename}">Test file</a>
                                             </td>
                                         </tr>
                                     </th:block>
